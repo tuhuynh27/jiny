@@ -1,0 +1,61 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.tuhuynh",
+    "module": "httpserver",
+    "version": "0.1-ALPHA",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "6.1",
+      "buildId": "cqqnfixbcjhunclgmbgjvykmh4"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "httpserver-0.1-ALPHA.jar",
+          "url": "httpserver-0.1-ALPHA.jar",
+          "size": 13966,
+          "sha512": "2411a128cb85b5469573f0d63dbd2ade49e4e68f574b2ff804fa2a823b2ba8805e7789da346349157f599b35f1f9edc5157a18267a95c6a2465165ef2b2f3fda",
+          "sha256": "c26f91da2143542918ae7e7400b96bdf65a1d57a88f591ad899fd096d6da5878",
+          "sha1": "7241593fe2ba7d730e39584a0c1fcb01fa2f9f00",
+          "md5": "8bb22683dc2bf76360f52968a6cc7b2f"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "httpserver-0.1-ALPHA.jar",
+          "url": "httpserver-0.1-ALPHA.jar",
+          "size": 13966,
+          "sha512": "2411a128cb85b5469573f0d63dbd2ade49e4e68f574b2ff804fa2a823b2ba8805e7789da346349157f599b35f1f9edc5157a18267a95c6a2465165ef2b2f3fda",
+          "sha256": "c26f91da2143542918ae7e7400b96bdf65a1d57a88f591ad899fd096d6da5878",
+          "sha1": "7241593fe2ba7d730e39584a0c1fcb01fa2f9f00",
+          "md5": "8bb22683dc2bf76360f52968a6cc7b2f"
+        }
+      ]
+    }
+  ]
+}
