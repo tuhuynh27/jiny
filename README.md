@@ -109,7 +109,7 @@ public final class TestServer {
 - Improve the request context with extra routing pattern matching (path: /request/:path)
 - Support query params in request context
 - Support annotation to beautify the code (@Handler)
-- **Support an NIO (Non Blocking I/O) HTTP Server based on `java.nio`**
+- **Support an NIO (Non Blocking I/O) HTTP Server & Client based on `java.nio`**
 
 ## Dependencies
 
