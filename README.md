@@ -18,14 +18,14 @@ I build this for my [LINE Bot webhook server](https://github.com/huynhminhtufu/l
 <dependency>
   <groupId>com.tuhuynh</groupId>
   <artifactId>httpserver</artifactId>
-  <version>0.1.3-ALPHA</version>
+  <version>0.1.4-ALPHA</version>
 </dependency>
 ```
 
 or build.gradle:
 
 ```groovy
-compile group: 'com.tuhuynh', name: 'httpserver', version: '0.1.3-ALPHA'
+compile group: 'com.tuhuynh', name: 'httpserver', version: '0.1.4-ALPHA'
 ```
 
 2. Use it (Java 8 compatible!)
@@ -98,7 +98,7 @@ public final class TestServer {
 }
 ```
 
-(after build: 15kb .jar file)
+(after build: size is just 30-50 KB .jar file, run and init cost about 20-30MB RAM)
 
 ## Changelogs
 
@@ -133,19 +133,20 @@ public final class TestServer {
 ### Up coming:
 
 - Improve the request context with extra routing pattern matching (path: /request/:path)
-- Support annotation to beautify the code (@Handler)
+- Support annotation to decorate the code (@Handler @Router)
 - **Support an NIO (Non Blocking I/O) HTTP Server & Client based on `java.nio`**
+- Support built-in JSON marshall/unmarshall support
 
 ## Dependencies
 
-**Zero dependency**, it just use the Java core built-in APIs, `lombok` is used to compile and build the library.
+**Zero dependency**, it just uses the Java core built-in APIs, also `lombok` is used to compile and build the library.
 
-Lines of code:
+Lines of code: 428
 ```
   39 ./src/main/java/com/tuhuynh/httpserver/HTTPServer.java
- 131 ./src/main/java/com/tuhuynh/httpserver/utils/HandlerUtils.java
+ 140 ./src/main/java/com/tuhuynh/httpserver/utils/HandlerUtils.java
   74 ./src/main/java/com/tuhuynh/httpserver/HTTPClient.java
   61 ./src/main/java/com/tuhuynh/httpserver/handlers/HandlerPipeline.java
  101 ./src/main/java/com/tuhuynh/httpserver/handlers/HandlerBinder.java
- 419 total
+ 428 total
 ```
