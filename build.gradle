@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'com.tuhuynh'
-version '0.1.1-ALPHA'
+version '0.1.2-ALPHA'
 
 sourceCompatibility = 1.8
 
@@ -38,7 +38,7 @@ dependencies {
 }
 
 ext {
-    javaMainClass = 'com.tuhuynh.httpserver.TestServer'
+    javaMainClass = 'com.tuhuynh.httpserver.tests.TestServer'
 }
 
 application {

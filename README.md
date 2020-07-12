@@ -18,14 +18,14 @@ I build this for my [LINE Bot webhook server](https://github.com/huynhminhtufu/l
 <dependency>
   <groupId>com.tuhuynh</groupId>
   <artifactId>httpserver</artifactId>
-  <version>0.1.1-ALPHA</version>
+  <version>0.1.2-ALPHA</version>
 </dependency>
 ```
 
 or build.gradle:
 
 ```groovy
-compile group: 'com.tuhuynh', name: 'httpserver', version: '0.1.1-ALPHA'
+compile group: 'com.tuhuynh', name: 'httpserver', version: '0.1.2-ALPHA'
 ```
 
 2. Use it (Java 8 compatible!)
@@ -40,11 +40,12 @@ package com.server.test;
 import java.io.IOException;
 import java.util.Random;
 
+import com.tuhuynh.httpserver.HTTPClient;
 import com.tuhuynh.httpserver.HTTPServer;
 import com.tuhuynh.httpserver.handlers.HandlerBinder.HttpResponse;
 import com.tuhuynh.httpserver.utils.HandlerUtils.RequestMethod;
 
-public final class Main {
+public final class TestServer {
     public static void main(String[] args) throws IOException {
         final HTTPServer server = new HTTPServer(8080);
 
@@ -65,6 +66,12 @@ public final class Main {
         server.addHandler(RequestMethod.GET, "/random", ctx -> {
             final Random rand = new Random();
             return HttpResponse.of(String.valueOf(rand.nextInt(100 + 1)));
+        });
+
+        server.addHandler(RequestMethod.GET, "/meme", ctx -> {
+            // Built-in HTTP Client
+            final String meme = HTTPClient.builder().url("https://meme-api.herokuapp.com/gimme").method("GET").build().perform();
+            return HttpResponse.of(meme);
         });
 
         server.addHandler(RequestMethod.GET, "/panic", ctx -> HttpResponse.of("Panic").status(500));
@@ -91,12 +98,16 @@ public final class Main {
 - Add HttpResponse Object for handling response struct
 - Remove redundant constant and lombok usage
 
+### 0.1.2-ALPHA
+
+- Add built-in HTTP Client
+- Refactor code
+
 ### Up coming:
 
 - Improve the request context with extra routing pattern matching (path: /request/:path)
 - Support query params in request context
 - Support annotation to beautify the code (@Handler)
-- Support a built-in HTTP Client
 - **Support an NIO (Non Blocking I/O) HTTP Server based on `java.nio`**
 
 ## Dependencies
