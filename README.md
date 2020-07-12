@@ -70,7 +70,8 @@ public final class TestServer {
 
         server.addHandler(RequestMethod.GET, "/meme", ctx -> {
             // Built-in HTTP Client
-            final String meme = HTTPClient.builder().url("https://meme-api.herokuapp.com/gimme").method("GET").build().perform();
+            final String meme = HTTPClient.builder().url("https://meme-api.herokuapp.com/gimme").method("GET")
+                                          .build().perform();
             return HttpResponse.of(meme);
         });
 

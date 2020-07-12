@@ -47,7 +47,8 @@ public final class HTTPClient {
         val responseStatus = conn.getResponseCode();
         val isError = responseStatus >= 400;
 
-        val in = new BufferedReader(new InputStreamReader(!isError ? conn.getInputStream() : conn.getErrorStream()));
+        val in = new BufferedReader(
+                new InputStreamReader(!isError ? conn.getInputStream() : conn.getErrorStream()));
         val responseStringArr = new ArrayList<String>();
         String decodedString;
         while ((decodedString = in.readLine()) != null) {
@@ -56,8 +57,7 @@ public final class HTTPClient {
         in.close();
 
         val sb = new StringBuilder();
-        for (val s : responseStringArr)
-        {
+        for (val s : responseStringArr) {
             sb.append(s);
         }
         return sb.toString();
