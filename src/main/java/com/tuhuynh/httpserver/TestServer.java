@@ -21,7 +21,8 @@ public final class TestServer {
             }
             return HttpResponse.of("Sleep done!");
         });
-        server.addHandler(RequestMethod.GET, "/thread", ctx -> HttpResponse.of(Thread.currentThread().getName()));
+        server.addHandler(RequestMethod.GET, "/thread",
+                          ctx -> HttpResponse.of(Thread.currentThread().getName()));
 
         server.addHandler(RequestMethod.GET, "/random", ctx -> {
             final Random rand = new Random();

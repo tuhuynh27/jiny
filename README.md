@@ -4,7 +4,13 @@ A bottom-up approach to learn the network programming in Java core, by creating 
 
 ![](https://miro.medium.com/max/1400/1*ziPHz443ne9yNwK0CmA0lQ.png)
 
+## Why?
+
+I build this for my [LINE Bot webhook server](https://github.com/huynhminhtufu/line-bot) which will be rewritten in Java, [Servlet APIs](https://docs.oracle.com/javaee/7/api/javax/servlet/package-summary.html) / [JavaEE](https://www.oracle.com/java/technologies/java-ee-glance.html) stuff is too heavy-weight, super complex and f*cking verbose and Java 8 SE is lacking a built-in simple HTTP handler. :smirk:
+
 ## How to use com.tuhuynh.httpserver
+
+(thanks [Github Packages](https://docs.github.com/en/packages) <3)
 
 1. Add this to pom.xml:
 
@@ -22,11 +28,11 @@ or build.gradle:
 compile group: 'com.tuhuynh', name: 'httpserver', version: '0.1.1-ALPHA'
 ```
 
-2. Use it:
+2. Use it (Java 8 compatible!)
+
+(It's easy to use like a Node.js [Express](https://expressjs.com/) server or Golang's built-in [net/http](https://golang.org/pkg/net/http/) package)
 
 Note: This HTTP Server library is inspired by **[LINE's Armeria](https://armeria.dev/)**
-
-(It's easy to use like a Node.js Express server)
 
 ```java
 package com.server.test;
@@ -53,7 +59,8 @@ public final class Main {
             }
             return HttpResponse.of("Sleep done!");
         });
-        server.addHandler(RequestMethod.GET, "/thread", ctx -> HttpResponse.of(Thread.currentThread().getName()));
+        server.addHandler(RequestMethod.GET, "/thread",
+                          ctx -> HttpResponse.of(Thread.currentThread().getName()));
 
         server.addHandler(RequestMethod.GET, "/random", ctx -> {
             final Random rand = new Random();
@@ -69,11 +76,12 @@ public final class Main {
 
 (after build: 15kb .jar file)
 
-## Features
+## Changelogs
 
 ### 0.1.0-ALPHA
 
 - A very naive and basic HTTP Server
+- Raw implementation, lightweight & no dependency
 - Listen on a given TCP Port
 - Easy to add a handler with a (Method/Path/Functional_Handler) define
 - Handled inside with a Cached ThreadPool
@@ -88,7 +96,8 @@ public final class Main {
 - Improve the request context with extra routing pattern matching (path: /request/:path)
 - Support query params in request context
 - Support annotation to beautify the code (@Handler)
-- Support an NIO (Non Blocking I/O) HTTP Server based on `java.nio`
+- Support a built-in HTTP Client
+- **Support an NIO (Non Blocking I/O) HTTP Server based on `java.nio`**
 
 ## Dependencies
 

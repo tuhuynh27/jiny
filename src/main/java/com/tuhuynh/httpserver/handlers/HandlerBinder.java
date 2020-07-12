@@ -38,6 +38,7 @@ public final class HandlerBinder {
         public static HttpResponse of(final String text) {
             return new HttpResponse(200, text);
         }
+
         private int httpStatusCode;
         private String responseString;
 
