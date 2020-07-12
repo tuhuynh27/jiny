@@ -18,14 +18,14 @@ I build this for my [LINE Bot webhook server](https://github.com/huynhminhtufu/l
 <dependency>
   <groupId>com.tuhuynh</groupId>
   <artifactId>httpserver</artifactId>
-  <version>0.1.2-ALPHA</version>
+  <version>0.1.3-ALPHA</version>
 </dependency>
 ```
 
 or build.gradle:
 
 ```groovy
-compile group: 'com.tuhuynh', name: 'httpserver', version: '0.1.2-ALPHA'
+compile group: 'com.tuhuynh', name: 'httpserver', version: '0.1.3-ALPHA'
 ```
 
 2. Use it (Java 8 compatible!)
@@ -58,6 +58,13 @@ public final class TestServer {
         server.addHandler(RequestMethod.GET, "/random", ctx -> {
             final Random rand = new Random();
             return HttpResponse.of(String.valueOf(rand.nextInt(100 + 1)));
+        });
+
+        // Get query params, ex: /query?hello=world
+        server.addHandler(RequestMethod.GET, "/query", ctx -> {
+            String world = ctx.getQueryParams().get("hello");
+            String count = ctx.getQueryParams().get("count");
+            return HttpResponse.of("Hello: " + world + ", Count: " + count);
         });
 
         // Perform as a proxy server
@@ -97,15 +104,20 @@ public final class TestServer {
 - Add HttpResponse Object for handling response struct
 - Remove redundant constant and lombok usage
 
-### 0.1.2-ALPHA
+### 0.1.3-ALPHA
 
 - Add built-in HTTP Client
 - Refactor code
 
+### 0.1.3-ALPHA
+
+- Support default error handling
+- Support get query params from Context
+- Improve HTTP Client response
+
 ### Up coming:
 
 - Improve the request context with extra routing pattern matching (path: /request/:path)
-- Support query params in request context
 - Support annotation to beautify the code (@Handler)
 - **Support an NIO (Non Blocking I/O) HTTP Server & Client based on `java.nio`**
 

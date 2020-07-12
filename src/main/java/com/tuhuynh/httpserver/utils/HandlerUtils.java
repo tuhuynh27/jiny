@@ -1,5 +1,8 @@
 package com.tuhuynh.httpserver.utils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Pattern;
@@ -26,11 +29,16 @@ public final class HandlerUtils {
             header.put(headerArr[0], headerArr[1]);
         }
 
+        val path = metaArr[1].toLowerCase();
+        val indexOfQuestionMark = path.indexOf('?');
+        val queryParamsString = indexOfQuestionMark == -1 ? null : path.substring(indexOfQuestionMark + 1);
+
         return RequestContext.builder()
                              .method(getMethod(metaArr[0]))
-                             .path(metaArr[1].toLowerCase())
+                             .path(path)
                              .header(header)
                              .payload(payload)
+                             .queryParams(splitQuery(queryParamsString))
                              .build();
     }
 
@@ -55,6 +63,19 @@ public final class HandlerUtils {
                 .getResponseString() + '\n';
     }
 
+    public static HashMap<String, String> splitQuery(final String url) {
+        if (url == null || url.isEmpty()) {
+            return new HashMap<>();
+        }
+        val urlArr = url.split("&");
+        val hashMap = new HashMap<String, String>();
+        for (val urlElement : urlArr) {
+            val keyVal = splitQueryParameter(urlElement);
+            hashMap.put(keyVal.getKey(), keyVal.getValue());
+        }
+        return hashMap;
+    }
+
     private static RequestMethod getMethod(final String originalMethod) {
         val method = originalMethod.toLowerCase();
         switch (method) {
@@ -66,6 +87,21 @@ public final class HandlerUtils {
                 return RequestMethod.DELETE;
             default:
                 return RequestMethod.GET;
+        }
+    }
+
+    private static SimpleImmutableEntry<String, String> splitQueryParameter(String it) {
+        val idx = it.indexOf('=');
+        val key = idx > 0 ? it.substring(0, idx) : it;
+        val value = idx > 0 && it.length() > idx + 1 ? it.substring(idx + 1) : "";
+        try {
+            return new SimpleImmutableEntry<>(
+                    URLDecoder.decode(key, "UTF-8"),
+                    URLDecoder.decode(value, "UTF-8")
+            );
+        } catch (UnsupportedEncodingException ex) {
+            System.out.println(ex.getMessage());
+            return new SimpleImmutableEntry<>("", "");
         }
     }
 
@@ -83,5 +119,6 @@ public final class HandlerUtils {
         private String path;
         private HashMap<String, String> header;
         private String payload;
+        private HashMap<String, String> queryParams;
     }
 }

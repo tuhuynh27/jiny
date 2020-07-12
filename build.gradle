@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'com.tuhuynh'
-version '0.1.2-ALPHA'
+version '0.1.3-ALPHA'
 
 sourceCompatibility = 1.8
 

@@ -19,7 +19,11 @@ public final class HandlerBinder {
 
     public HttpResponse getResponseObject() throws IOException {
         for (val h : handlerMetadata) {
-            if (requestContext.getMethod() == h.getMethod() && requestContext.getPath().equals(
+            val indexOfQuestionMark = requestContext.getPath().indexOf('?');
+            val reqPath =
+                    indexOfQuestionMark == -1 ? requestContext.getPath() : requestContext.getPath().substring(0,
+                                                                                                              indexOfQuestionMark);
+            if (requestContext.getMethod() == h.getMethod() && reqPath.equals(
                     h.getPath())) {
                 try {
                     return h.handler.handle(requestContext);

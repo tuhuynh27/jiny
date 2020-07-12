@@ -34,6 +34,13 @@ public final class TestServer {
             return HttpResponse.of(String.valueOf(rand.nextInt(100 + 1)));
         });
 
+        // Get query params, ex: /query?hello=world
+        server.addHandler(RequestMethod.GET, "/query", ctx -> {
+            String world = ctx.getQueryParams().get("hello");
+            String count = ctx.getQueryParams().get("count");
+            return HttpResponse.of("Hello: " + world + ", Count: " + count);
+        });
+
         // Perform as a proxy server
         server.addHandler(RequestMethod.GET, "/meme", ctx -> {
             // Built-in HTTP Client
