@@ -8,17 +8,16 @@ import com.tuhuynh.httpserver.HTTPClient.ResponseObject;
 import com.tuhuynh.httpserver.HTTPServer;
 import com.tuhuynh.httpserver.handlers.HandlerBinder.HttpResponse;
 import com.tuhuynh.httpserver.handlers.HandlerBinder.RequestHandler;
-import com.tuhuynh.httpserver.utils.HandlerUtils.RequestMethod;
 
 public final class TestServer {
     public static void main(String[] args) throws IOException {
-        final HTTPServer server = new HTTPServer(8080);
+        final HTTPServer server = HTTPServer.port(8080);
 
-        server.addHandler(RequestMethod.GET, "/", ctx -> HttpResponse.of("Hello World"));
-        server.addHandler(RequestMethod.POST, "/echo", ctx -> HttpResponse.of(ctx.getPayload()));
+        server.get("/", ctx -> HttpResponse.of("Hello World"));
+        server.post("/echo", ctx -> HttpResponse.of(ctx.getPayload()));
 
         // Free to execute blocking tasks with a Cached ThreadPool
-        server.addHandler(RequestMethod.GET, "/sleep", ctx -> {
+        server.get("/sleep", ctx -> {
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
@@ -27,16 +26,16 @@ public final class TestServer {
             return HttpResponse.of("Sleep done!");
         });
 
-        server.addHandler(RequestMethod.GET, "/thread",
-                          ctx -> HttpResponse.of(Thread.currentThread().getName()));
+        server.get("/thread",
+                   ctx -> HttpResponse.of(Thread.currentThread().getName()));
 
-        server.addHandler(RequestMethod.GET, "/random", ctx -> {
+        server.get("/random", ctx -> {
             final Random rand = new Random();
             return HttpResponse.of(String.valueOf(rand.nextInt(100 + 1)));
         });
 
         // Get query params, ex: /query?hello=world
-        server.addHandler(RequestMethod.GET, "/query", ctx -> {
+        server.get("/query", ctx -> {
             final String world = ctx.getQueryParams().get("hello");
             return HttpResponse.of("Hello: " + world);
         });
@@ -54,12 +53,12 @@ public final class TestServer {
         };
         // Then,
         // Inject middleware to the request function chain
-        server.addHandler(RequestMethod.GET, "/protected",
-                          jwtValidator, // jwtMiddleware
-                          ctx -> HttpResponse.of("Login success, hello: " + ctx.getHandlerData("username")));
+        server.get("/protected",
+                   jwtValidator, // jwtMiddleware
+                   ctx -> HttpResponse.of("Login success, hello: " + ctx.getHandlerData("username")));
 
         // Perform as a proxy server
-        server.addHandler(RequestMethod.GET, "/meme", ctx -> {
+        server.get("/meme", ctx -> {
             // Built-in HTTP Client
             final ResponseObject
                     meme = HTTPClient.builder()
@@ -69,7 +68,7 @@ public final class TestServer {
         });
 
         // Handle error
-        server.addHandler(RequestMethod.GET, "/panic", ctx -> {
+        server.get("/panic", ctx -> {
             throw new Exception("Panicked!");
         });
 

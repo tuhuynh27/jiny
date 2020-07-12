@@ -26,13 +26,13 @@ public final class HandlerBinder {
             if (requestContext.getMethod() == h.getMethod() && reqPath.equals(
                     h.getPath())) {
                 try {
-                    if (h.handler.length == 1) {
-                        return h.handler[0].handle(requestContext);
+                    if (h.handlers.length == 1) {
+                        return h.handlers[0].handle(requestContext);
                     }
 
-                    for (int i = 0; i < h.handler.length; i++) {
-                        val isLastItem = i == h.handler.length - 1;
-                        val resultFromPreviousHandler = h.handler[i].handle(requestContext);
+                    for (int i = 0; i < h.handlers.length; i++) {
+                        val isLastItem = i == h.handlers.length - 1;
+                        val resultFromPreviousHandler = h.handlers[i].handle(requestContext);
                         if (!isLastItem && !resultFromPreviousHandler.isAllowNext()) {
                             return resultFromPreviousHandler;
                         } else {
@@ -96,6 +96,6 @@ public final class HandlerBinder {
     public static final class HandlerMetadata {
         private RequestMethod method;
         private String path;
-        private RequestHandler[] handler;
+        private RequestHandler[] handlers;
     }
 }

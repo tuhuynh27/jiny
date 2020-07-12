@@ -13,18 +13,47 @@ import com.tuhuynh.httpserver.handlers.HandlerBinder.RequestHandler;
 import com.tuhuynh.httpserver.handlers.HandlerPipeline;
 import com.tuhuynh.httpserver.utils.HandlerUtils.RequestMethod;
 
-import lombok.RequiredArgsConstructor;
 import lombok.val;
 
-@RequiredArgsConstructor
 public final class HTTPServer {
+    public static HTTPServer port(final int serverPort) {
+        return new HTTPServer(serverPort);
+    }
     private final int serverPort;
     private final Executor executor = Executors.newCachedThreadPool();
     private ArrayList<HandlerMetadata> handlers = new ArrayList<>();
 
-    public void addHandler(final RequestMethod method, final String path, final RequestHandler... handler) {
-        val newHandler = HandlerMetadata.builder().method(method).path(path).handler(handler).build();
-        handlers.add(newHandler);
+    private HTTPServer(final int serverPort) {
+        this.serverPort = serverPort;
+    }
+
+    public void addHandler(final RequestMethod method, final String path, final RequestHandler... handlers) {
+        val newHandlers = HandlerMetadata.builder().method(method).path(path).handlers(handlers).build();
+        this.handlers.add(newHandlers);
+    }
+
+    public void get(final String path, final RequestHandler... handlers) {
+        val newHandlers = HandlerMetadata.builder().method(RequestMethod.GET).path(path).handlers(handlers)
+                                         .build();
+        this.handlers.add(newHandlers);
+    }
+
+    public void post(final String path, final RequestHandler... handlers) {
+        val newHandlers = HandlerMetadata.builder().method(RequestMethod.POST).path(path).handlers(handlers)
+                                         .build();
+        this.handlers.add(newHandlers);
+    }
+
+    public void put(final String path, final RequestHandler... handlers) {
+        val newHandlers = HandlerMetadata.builder().method(RequestMethod.PUT).path(path).handlers(handlers)
+                                         .build();
+        this.handlers.add(newHandlers);
+    }
+
+    public void delete(final String path, final RequestHandler... handlers) {
+        val newHandlers = HandlerMetadata.builder().method(RequestMethod.DELETE).path(path).handlers(handlers)
+                                         .build();
+        this.handlers.add(newHandlers);
     }
 
     public void start() throws IOException {
