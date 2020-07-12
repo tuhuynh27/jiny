@@ -21,7 +21,12 @@ public final class HandlerBinder {
         for (val h : handlerMetadata) {
             if (requestContext.getMethod() == h.getMethod() && requestContext.getPath().equals(
                     h.getPath())) {
-                return h.handler.handle(requestContext);
+                try {
+                    return h.handler.handle(requestContext);
+                } catch (Exception ex) {
+                    System.out.println(ex.getMessage());
+                    return HttpResponse.of("Internal Server Error").status(500);
+                }
             }
         }
 
@@ -30,7 +35,7 @@ public final class HandlerBinder {
 
     @FunctionalInterface
     public interface RequestHandler {
-        HttpResponse handle(RequestContext requestMetadata) throws IOException;
+        HttpResponse handle(RequestContext requestMetadata) throws Exception;
     }
 
     @Getter

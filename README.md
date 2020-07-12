@@ -60,6 +60,7 @@ public final class TestServer {
             }
             return HttpResponse.of("Sleep done!");
         });
+
         server.addHandler(RequestMethod.GET, "/thread",
                           ctx -> HttpResponse.of(Thread.currentThread().getName()));
 
@@ -68,6 +69,7 @@ public final class TestServer {
             return HttpResponse.of(String.valueOf(rand.nextInt(100 + 1)));
         });
 
+        // Perform as a proxy server
         server.addHandler(RequestMethod.GET, "/meme", ctx -> {
             // Built-in HTTP Client
             final String meme = HTTPClient.builder().url("https://meme-api.herokuapp.com/gimme").method("GET")
@@ -75,7 +77,10 @@ public final class TestServer {
             return HttpResponse.of(meme);
         });
 
-        server.addHandler(RequestMethod.GET, "/panic", ctx -> HttpResponse.of("Panic").status(500));
+        // Handle error
+        server.addHandler(RequestMethod.GET, "/panic", ctx -> {
+            throw new Exception("Panicked!");
+        });
 
         server.start();
     }
