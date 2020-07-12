@@ -7,7 +7,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import com.tuhuynh.httpserver.constants.HTTPConstants;
 import com.tuhuynh.httpserver.handlers.HandlerBinder.HandlerMetadata;
 import com.tuhuynh.httpserver.utils.HandlerUtils;
 
@@ -49,17 +48,13 @@ public final class HandlerPipeline implements Runnable {
 
         val requestMetadata = HandlerUtils.parseRequest(requestStringArr, payload.toString());
 
-        val responseString = new HandlerBinder(requestMetadata, handlers).getResponseString();
-        if (responseString.isEmpty()) {
-            out.write(HTTPConstants.HTTP_HEADER_NOT_FOUND);
-            return;
-        }
+        val responseObject = new HandlerBinder(requestMetadata, handlers).getResponseObject();
+        val responseString = HandlerUtils.parseResponse(responseObject);
 
-        out.write(HTTPConstants.HTTP_HEADER_OK + responseString);
+        out.write(responseString);
     }
 
     public void clean() throws IOException {
-        out.write('\n');
         out.flush();
         socket.close();
     }

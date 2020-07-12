@@ -2,10 +2,11 @@ plugins {
     id 'java'
     id 'idea'
     id 'maven-publish'
+    id 'application'
 }
 
 group 'com.tuhuynh'
-version '0.1-ALPHA'
+version '0.1.1-ALPHA'
 
 sourceCompatibility = 1.8
 
@@ -34,4 +35,12 @@ publishing {
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
+}
+
+ext {
+    javaMainClass = 'com.tuhuynh.httpserver.TestServer'
+}
+
+application {
+    mainClassName = javaMainClass
 }

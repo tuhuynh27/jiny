@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
+import com.tuhuynh.httpserver.handlers.HandlerBinder.HttpResponse;
+
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
+import lombok.var;
 
 @NoArgsConstructor
 public final class HandlerUtils {
@@ -32,6 +34,27 @@ public final class HandlerUtils {
                              .build();
     }
 
+    public static String parseResponse(final HttpResponse httpResponse) {
+        var httpStatusText = "";
+        switch (httpResponse.getHttpStatusCode()) {
+            case 200:
+                httpStatusText = "OK";
+                break;
+            case 400:
+                httpStatusText = "BAD REQUEST";
+                break;
+            case 404:
+                httpStatusText = "NOT FOUND";
+                break;
+            case 500:
+                httpStatusText = "INTERNAL SERVER ERROR";
+                break;
+        }
+
+        return "HTTP/1.1 " + httpResponse.getHttpStatusCode() + ' ' + httpStatusText + "\n\n" + httpResponse
+                .getResponseString() + '\n';
+    }
+
     private static RequestMethod getMethod(final String originalMethod) {
         val method = originalMethod.toLowerCase();
         switch (method) {
@@ -53,7 +76,6 @@ public final class HandlerUtils {
         DELETE
     }
 
-    @Data
     @Getter
     @Builder
     public static final class RequestContext {
