@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.util.Random;
 
 import com.tuhuynh.httpserver.HTTPServer;
-import com.tuhuynh.httpserver.utils.HandlerUtils.RequestContext;
+import com.tuhuynh.httpserver.handlers.HandlerBinder.HttpResponse;
 import com.tuhuynh.httpserver.utils.HandlerUtils.RequestMethod;
 
 public final class Main {
