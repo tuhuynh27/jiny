@@ -7,6 +7,7 @@ import com.tuhuynh.httpserver.HTTPClient;
 import com.tuhuynh.httpserver.HTTPClient.ResponseObject;
 import com.tuhuynh.httpserver.HTTPServer;
 import com.tuhuynh.httpserver.handlers.HandlerBinder.HttpResponse;
+import com.tuhuynh.httpserver.handlers.HandlerBinder.RequestHandler;
 import com.tuhuynh.httpserver.utils.HandlerUtils.RequestMethod;
 
 public final class TestServer {
@@ -40,8 +41,8 @@ public final class TestServer {
             return HttpResponse.of("Hello: " + world);
         });
 
-        // Middleware support: Sample JWT Middleware
-        server.addHandler(RequestMethod.GET, "/protected", ctx -> {
+        // Middleware support: Sample JWT Verify Middleware
+        RequestHandler jwtValidator = ctx -> {
             final String authorizationHeader = ctx.getHeader().get("Authorization");
             // Check JWT is valid, below is just a sample check
             if (!authorizationHeader.startsWith("Bearer")) {
@@ -50,7 +51,12 @@ public final class TestServer {
 
             ctx.putHandlerData("username", "tuhuynh");
             return HttpResponse.next();
-        }, ctx -> HttpResponse.of("Login success, hello: " + ctx.getHandlerData("username")));
+        };
+        // Then,
+        // Inject middleware to the request function chain
+        server.addHandler(RequestMethod.GET, "/protected",
+                          jwtValidator, // jwtMiddleware
+                          ctx -> HttpResponse.of("Login success, hello: " + ctx.getHandlerData("username")));
 
         // Perform as a proxy server
         server.addHandler(RequestMethod.GET, "/meme", ctx -> {
