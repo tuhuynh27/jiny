@@ -36,10 +36,20 @@ public final class TestServer {
 
         // Get query params, ex: /query?hello=world
         server.addHandler(RequestMethod.GET, "/query", ctx -> {
-            String world = ctx.getQueryParams().get("hello");
-            String count = ctx.getQueryParams().get("count");
-            return HttpResponse.of("Hello: " + world + ", Count: " + count);
+            final String world = ctx.getQueryParams().get("hello");
+            return HttpResponse.of("Hello: " + world);
         });
+
+        // Middleware support: Sample JWT Middleware
+        server.addHandler(RequestMethod.GET, "/protected", ctx -> {
+            final String authorizationHeader = ctx.getHeader().get("Authorization");
+            // Check JWT is valid, below is just a sample check
+            if (!authorizationHeader.startsWith("Bearer")) {
+                return HttpResponse.reject("Invalid token").status(401);
+            }
+
+            return HttpResponse.next();
+        }, ctx -> HttpResponse.of("Authorized success!"));
 
         // Perform as a proxy server
         server.addHandler(RequestMethod.GET, "/meme", ctx -> {

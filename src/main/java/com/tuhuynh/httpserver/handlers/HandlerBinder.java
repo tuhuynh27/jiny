@@ -26,7 +26,23 @@ public final class HandlerBinder {
             if (requestContext.getMethod() == h.getMethod() && reqPath.equals(
                     h.getPath())) {
                 try {
-                    return h.handler.handle(requestContext);
+                    if (h.handler.length == 1) {
+                        return h.handler[0].handle(requestContext);
+                    }
+
+                    for (int i = 0; i < h.handler.length; i++) {
+                        val isLastItem = i == h.handler.length - 1;
+                        val resultFromPreviousHandler = h.handler[i].handle(requestContext);
+                        if (!isLastItem && !resultFromPreviousHandler.isAllowNext()) {
+                            return resultFromPreviousHandler;
+                        } else {
+                            if (isLastItem) {
+                                return resultFromPreviousHandler;
+                            } else {
+                                continue;
+                            }
+                        }
+                    }
                 } catch (Exception ex) {
                     System.out.println(ex.getMessage());
                     return HttpResponse.of("Internal Server Error").status(500);
@@ -45,19 +61,27 @@ public final class HandlerBinder {
     @Getter
     public static final class HttpResponse {
         public static HttpResponse of(final String text) {
-            return new HttpResponse(200, text);
+            return new HttpResponse(200, text, true);
+        }
+
+        public static HttpResponse next() { return new HttpResponse(0, "", true); }
+
+        public static HttpResponse reject(final String errorText) {
+            return new HttpResponse(400, errorText, false);
         }
 
         private int httpStatusCode;
         private String responseString;
+        private boolean allowNext;
 
-        private HttpResponse(final int httpStatusCode, final String responseString) {
+        private HttpResponse(final int httpStatusCode, final String responseString, final boolean allowNext) {
             this.httpStatusCode = httpStatusCode;
             this.responseString = responseString;
+            this.allowNext = allowNext;
         }
 
         public <T> HttpResponse of(T t) {
-            return new HttpResponse(200, t.toString());
+            return new HttpResponse(200, t.toString(), true);
         }
 
         public HttpResponse status(final int httpStatusCode) {
@@ -72,6 +96,6 @@ public final class HandlerBinder {
     public static final class HandlerMetadata {
         private RequestMethod method;
         private String path;
-        private RequestHandler handler;
+        private RequestHandler[] handler;
     }
 }

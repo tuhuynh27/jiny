@@ -51,6 +51,12 @@ public final class HandlerUtils {
             case 400:
                 httpStatusText = "BAD REQUEST";
                 break;
+            case 401:
+                httpStatusText = "UNAUTHORIZED";
+                break;
+            case 403:
+                httpStatusText = "FORBIDDEN";
+                break;
             case 404:
                 httpStatusText = "NOT FOUND";
                 break;
@@ -120,5 +126,6 @@ public final class HandlerUtils {
         private HashMap<String, String> header;
         private String payload;
         private HashMap<String, String> queryParams;
+        private HashMap<String, String> handlerData;
     }
 }

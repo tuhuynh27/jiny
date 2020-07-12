@@ -22,7 +22,7 @@ public final class HTTPServer {
     private final Executor executor = Executors.newCachedThreadPool();
     private ArrayList<HandlerMetadata> handlers = new ArrayList<>();
 
-    public void addHandler(final RequestMethod method, final String path, final RequestHandler handler) {
+    public void addHandler(final RequestMethod method, final String path, final RequestHandler... handler) {
         val newHandler = HandlerMetadata.builder().method(method).path(path).handler(handler).build();
         handlers.add(newHandler);
     }
