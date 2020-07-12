@@ -35,16 +35,6 @@ compile group: 'com.tuhuynh', name: 'httpserver', version: '0.1.2-ALPHA'
 Note: This HTTP Server library is inspired by **[LINE's Armeria](https://armeria.dev/)**
 
 ```java
-package com.server.test;
-
-import java.io.IOException;
-import java.util.Random;
-
-import com.tuhuynh.httpserver.HTTPClient;
-import com.tuhuynh.httpserver.HTTPServer;
-import com.tuhuynh.httpserver.handlers.HandlerBinder.HttpResponse;
-import com.tuhuynh.httpserver.utils.HandlerUtils.RequestMethod;
-
 public final class TestServer {
     public static void main(String[] args) throws IOException {
         final HTTPServer server = new HTTPServer(8080);
@@ -52,6 +42,7 @@ public final class TestServer {
         server.addHandler(RequestMethod.GET, "/", ctx -> HttpResponse.of("Hello World"));
         server.addHandler(RequestMethod.POST, "/echo", ctx -> HttpResponse.of(ctx.getPayload()));
 
+        // Free to execute blocking tasks with a Cached ThreadPool
         server.addHandler(RequestMethod.GET, "/sleep", ctx -> {
             try {
                 Thread.sleep(5000);
@@ -72,9 +63,11 @@ public final class TestServer {
         // Perform as a proxy server
         server.addHandler(RequestMethod.GET, "/meme", ctx -> {
             // Built-in HTTP Client
-            final String meme = HTTPClient.builder().url("https://meme-api.herokuapp.com/gimme").method("GET")
-                                          .build().perform();
-            return HttpResponse.of(meme);
+            final ResponseObject
+                    meme = HTTPClient.builder()
+                                     .url("https://meme-api.herokuapp.com/gimme").method("GET")
+                                     .build().perform();
+            return HttpResponse.of(meme.getBody());
         });
 
         // Handle error

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import lombok.Builder;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 
@@ -22,7 +23,7 @@ public final class HTTPClient {
     private final HashMap<String, String> headers;
     private final String body;
 
-    public String perform() throws IOException {
+    public ResponseObject perform() throws IOException {
         URL url = new URL(this.url);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod(method);
@@ -60,6 +61,14 @@ public final class HTTPClient {
         for (val s : responseStringArr) {
             sb.append(s);
         }
-        return sb.toString();
+
+        return ResponseObject.builder().status(responseStatus).body(sb.toString()).build();
+    }
+
+    @Builder
+    @Getter
+    public static final class ResponseObject {
+        private final String body;
+        private int status;
     }
 }

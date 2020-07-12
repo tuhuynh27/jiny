@@ -9,6 +9,6 @@ import lombok.val;
 public final class TestClient {
     public static void main(String[] args) throws IOException {
         val result = HTTPClient.builder().url("https://tuhuynh.com").method("GET").build().perform();
-        System.out.println(result);
+        System.out.println(result.getBody());
     }
 }
