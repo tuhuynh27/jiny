@@ -3,4 +3,3 @@ build/
 .gradle/
 .DS_Store
 gradle.properties
-com
