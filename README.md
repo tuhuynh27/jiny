@@ -74,8 +74,9 @@ public final class TestServer {
                 return HttpResponse.reject("Invalid token").status(401);
             }
 
+            ctx.putHandlerData("username", "tuhuynh");
             return HttpResponse.next();
-        }, ctx -> HttpResponse.of("Authorized success!"));
+        }, ctx -> HttpResponse.of("Login success, hello: " + ctx.getHandlerData("username")));
 
         // Perform as a proxy server
         server.addHandler(RequestMethod.GET, "/meme", ctx -> {

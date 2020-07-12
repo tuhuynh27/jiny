@@ -39,6 +39,7 @@ public final class HandlerUtils {
                              .header(header)
                              .payload(payload)
                              .queryParams(splitQuery(queryParamsString))
+                             .handlerData(new HashMap<>())
                              .build();
     }
 
@@ -127,5 +128,13 @@ public final class HandlerUtils {
         private String payload;
         private HashMap<String, String> queryParams;
         private HashMap<String, String> handlerData;
+
+        public void putHandlerData(final String key, final String value) {
+            handlerData.put(key, value);
+        }
+
+        public String getHandlerData(final String key) {
+            return handlerData.get(key);
+        }
     }
 }
