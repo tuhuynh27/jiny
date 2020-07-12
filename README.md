@@ -104,7 +104,7 @@ public final class TestServer {
 - Add HttpResponse Object for handling response struct
 - Remove redundant constant and lombok usage
 
-### 0.1.3-ALPHA
+### 0.1.2-ALPHA
 
 - Add built-in HTTP Client
 - Refactor code
