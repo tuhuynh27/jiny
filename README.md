@@ -10,7 +10,7 @@ I build this for my [LINE Bot webhook server](https://github.com/huynhminhtufu/l
 
 ## How to use com.tuhuynh.httpserver
 
-(thanks [Github Packages](https://docs.github.com/en/packages) <3)
+(thanks [Github Packages](https://github.com/huynhminhtufu/httpserver/packages/309436) <3)
 
 1. Add this to pom.xml:
 
@@ -138,3 +138,13 @@ public final class TestServer {
 ## Dependencies
 
 **Zero dependency**, it just use the Java core built-in APIs, `lombok` is used to compile and build the library.
+
+Lines of code:
+```
+  39 ./src/main/java/com/tuhuynh/httpserver/HTTPServer.java
+ 131 ./src/main/java/com/tuhuynh/httpserver/utils/HandlerUtils.java
+  74 ./src/main/java/com/tuhuynh/httpserver/HTTPClient.java
+  61 ./src/main/java/com/tuhuynh/httpserver/handlers/HandlerPipeline.java
+ 101 ./src/main/java/com/tuhuynh/httpserver/handlers/HandlerBinder.java
+ 419 total
+```
