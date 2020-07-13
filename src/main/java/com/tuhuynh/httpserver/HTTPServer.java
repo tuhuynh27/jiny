@@ -19,6 +19,7 @@ public final class HTTPServer {
     public static HTTPServer port(final int serverPort) {
         return new HTTPServer(serverPort);
     }
+
     private final int serverPort;
     private final Executor executor = Executors.newCachedThreadPool();
     private ArrayList<HandlerMetadata> handlers = new ArrayList<>();

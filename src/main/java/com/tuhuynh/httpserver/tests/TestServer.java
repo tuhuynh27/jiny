@@ -40,6 +40,13 @@ public final class TestServer {
             return HttpResponse.of("Hello: " + world);
         });
 
+        // Get handler params, ex: /params/:categoryID/:itemID
+        server.get("/params/:categoryID/:itemID", ctx -> {
+            String categoryID = ctx.getHandlerParams().get("categoryID");
+            String itemID = ctx.getHandlerParams().get("itemID");
+            return HttpResponse.of("Category ID is " + categoryID + ", Item ID is " + itemID);
+        });
+
         // Middleware support: Sample JWT Verify Middleware
         RequestHandler jwtValidator = ctx -> {
             final String authorizationHeader = ctx.getHeader().get("Authorization");

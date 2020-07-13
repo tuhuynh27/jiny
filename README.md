@@ -18,14 +18,14 @@ I build this for my [LINE Bot webhook server](https://github.com/huynhminhtufu/l
 <dependency>
   <groupId>com.tuhuynh</groupId>
   <artifactId>httpserver</artifactId>
-  <version>0.1.4-ALPHA</version>
+  <version>0.1.5-ALPHA</version>
 </dependency>
 ```
 
 or build.gradle:
 
 ```groovy
-compile group: 'com.tuhuynh', name: 'httpserver', version: '0.1.4-ALPHA'
+compile group: 'com.tuhuynh', name: 'httpserver', version: '0.1.5-ALPHA'
 ```
 
 2. Use it (Java 8 compatible!)
@@ -39,7 +39,7 @@ public final class LightWeightServer {
     public static void main(String[] args) throws IOException {
         final HTTPServer server = HTTPServer.port(8080);
 
-        server.get("/", ctx -> HttpResponse.of("Hello World"));
+        server.use("/", ctx -> HttpResponse.of("Hello World"));
         server.post("/echo", ctx -> HttpResponse.of(ctx.getPayload()));
 
         // Free to execute blocking tasks with a Cached ThreadPool
@@ -64,6 +64,13 @@ public final class LightWeightServer {
         server.get("/query", ctx -> {
             final String world = ctx.getQueryParams().get("hello");
             return HttpResponse.of("Hello: " + world);
+        });
+
+        // Get handler params, ex: /params/:categoryID/:itemID
+        server.get("/params/:categoryID/:itemID", ctx -> {
+            String categoryID = ctx.getHandlerParams().get("categoryID");
+            String itemID = ctx.getHandlerParams().get("itemID");
+            return HttpResponse.of("Category ID is " + categoryID + ", Item ID is " + itemID);
         });
 
         // Middleware support: Sample JWT Verify Middleware
@@ -135,9 +142,14 @@ public final class LightWeightServer {
 
 - Support HTTP Middleware functions chain (like Node.js Express and Go)
 
+### 0.1.5-ALPHA
+
+- Support routing handler params, ex: /params/:categoryID/:itemID
+- Support request path's slash trim
+- Refactor code
+
 ### Up coming:
 
-- Improve the request context with extra routing pattern matching (path: /request/:path)
 - Support annotation to decorate the code (@Handler @Router)
 - **Support an NIO (Non Blocking I/O) HTTP Server & Client based on `java.nio`**
 - Support built-in JSON marshall/unmarshall support

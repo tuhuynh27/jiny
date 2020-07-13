@@ -2,6 +2,8 @@ package com.tuhuynh.httpserver.handlers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import com.tuhuynh.httpserver.utils.HandlerUtils.RequestContext;
 import com.tuhuynh.httpserver.utils.HandlerUtils.RequestMethod;
@@ -29,8 +31,34 @@ public final class HandlerBinder {
                 requestPath = requestPath.substring(0, requestPath.length() - 1);
             }
 
+            val handlerPathOriginal = h.getPath();
+            val handlerPathArrWithHandlerParams = Arrays.stream(handlerPathOriginal.split("/"));
+            val handlerPath = handlerPathArrWithHandlerParams.filter(e -> !e.startsWith(":")).collect(
+                    Collectors.joining("/"));
+
+            val numOfHandlerParams = handlerPathOriginal.length() - handlerPathOriginal.replace(":", "")
+                                                                                       .length();
+            val numOfSlashOfRequestPath = requestPath.length() - requestPath.replace("/", "").length();
+            val numOfSlashOfHandlerPath = handlerPathOriginal.length() - handlerPathOriginal.replace("/", "")
+                                                                                            .length();
+
+            val requestWithHandlerParamsMatched = numOfHandlerParams > 0 && requestPath.startsWith(handlerPath)
+                                                  && numOfSlashOfRequestPath == numOfSlashOfHandlerPath;
+
+            if (requestWithHandlerParamsMatched) {
+                val elementsOfHandlerPath = handlerPathOriginal.split("/");
+                val elementsOfRequestPath = requestPath.split("/");
+                for (int i = 1; i < elementsOfHandlerPath.length; i++) {
+                    if (elementsOfHandlerPath[i].startsWith(":")) {
+                        val handlerParamKey = elementsOfHandlerPath[i].replace(":", "");
+                        val handlerParamValue = elementsOfRequestPath[i];
+                        requestContext.getHandlerParams().put(handlerParamKey, handlerParamValue);
+                    }
+                }
+            }
+
             if ((requestContext.getMethod() == h.getMethod() || (h.getMethod() == RequestMethod.ALL))
-                && requestPath.equals(h.getPath())) {
+                && (requestPath.equals(handlerPath) || requestWithHandlerParamsMatched)) {
                 try {
                     if (h.handlers.length == 1) {
                         return h.handlers[0].handle(requestContext);
