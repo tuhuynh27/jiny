@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
 import com.tuhuynh.httpserver.core.RequestBinder.HandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinder.RequestHandler;
 import com.tuhuynh.httpserver.core.RequestPipeline;
-import com.tuhuynh.httpserver.utils.HandlerUtils.RequestMethod;
+import com.tuhuynh.httpserver.core.RequestUtils.RequestMethod;
 
 import lombok.val;
 

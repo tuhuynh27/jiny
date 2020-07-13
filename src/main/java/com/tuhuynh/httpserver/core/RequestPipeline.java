@@ -8,7 +8,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import com.tuhuynh.httpserver.core.RequestBinder.HandlerMetadata;
-import com.tuhuynh.httpserver.utils.HandlerUtils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -46,10 +45,10 @@ public final class RequestPipeline implements Runnable {
             body.append((char) in.read());
         }
 
-        val requestMetadata = HandlerUtils.parseRequest(requestStringArr, body.toString());
+        val requestMetadata = RequestUtils.parseRequest(requestStringArr, body.toString());
 
         val responseObject = new RequestBinder(requestMetadata, handlers).getResponseObject();
-        val responseString = HandlerUtils.parseResponse(responseObject);
+        val responseString = RequestUtils.parseResponse(responseObject);
 
         out.write(responseString);
     }

@@ -1,4 +1,4 @@
-package com.tuhuynh.httpserver.utils;
+package com.tuhuynh.httpserver.core;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -15,7 +15,7 @@ import lombok.val;
 import lombok.var;
 
 @NoArgsConstructor
-public final class HandlerUtils {
+public final class RequestUtils {
     private static final Pattern HEADER_PATTERN = Pattern.compile(": ");
 
     public static RequestContext parseRequest(final ArrayList<String> request, final String body) {

@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
-import com.tuhuynh.httpserver.utils.HandlerUtils.RequestMethod;
+import com.tuhuynh.httpserver.core.RequestUtils.RequestMethod;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
