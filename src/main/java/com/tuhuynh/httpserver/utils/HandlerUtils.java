@@ -30,6 +30,7 @@ public final class HandlerUtils {
         }
 
         val path = metaArr[1].toLowerCase();
+
         val indexOfQuestionMark = path.indexOf('?');
         val queryParamsString = indexOfQuestionMark == -1 ? null : path.substring(indexOfQuestionMark + 1);
 
@@ -86,6 +87,8 @@ public final class HandlerUtils {
     private static RequestMethod getMethod(final String originalMethod) {
         val method = originalMethod.toLowerCase();
         switch (method) {
+            case "get":
+                return RequestMethod.GET;
             case "post":
                 return RequestMethod.POST;
             case "put":
@@ -93,7 +96,7 @@ public final class HandlerUtils {
             case "delete":
                 return RequestMethod.DELETE;
             default:
-                return RequestMethod.GET;
+                return RequestMethod.ALL;
         }
     }
 
@@ -116,7 +119,8 @@ public final class HandlerUtils {
         GET,
         POST,
         PUT,
-        DELETE
+        DELETE,
+        ALL
     }
 
     @Getter

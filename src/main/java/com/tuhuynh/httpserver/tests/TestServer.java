@@ -13,7 +13,7 @@ public final class TestServer {
     public static void main(String[] args) throws IOException {
         final HTTPServer server = HTTPServer.port(8080);
 
-        server.get("/", ctx -> HttpResponse.of("Hello World"));
+        server.use("/", ctx -> HttpResponse.of("Hello World"));
         server.post("/echo", ctx -> HttpResponse.of(ctx.getPayload()));
 
         // Free to execute blocking tasks with a Cached ThreadPool

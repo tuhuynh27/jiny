@@ -32,6 +32,12 @@ public final class HTTPServer {
         this.handlers.add(newHandlers);
     }
 
+    public void use(final String path, final RequestHandler... handlers) {
+        val newHandlers = HandlerMetadata.builder().method(RequestMethod.ALL).path(path).handlers(handlers)
+                                         .build();
+        this.handlers.add(newHandlers);
+    }
+
     public void get(final String path, final RequestHandler... handlers) {
         val newHandlers = HandlerMetadata.builder().method(RequestMethod.GET).path(path).handlers(handlers)
                                          .build();

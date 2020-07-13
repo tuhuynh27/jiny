@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import lombok.var;
 
 @RequiredArgsConstructor
 public final class HandlerBinder {
@@ -20,16 +21,22 @@ public final class HandlerBinder {
     public HttpResponse getResponseObject() throws IOException {
         for (val h : handlerMetadata) {
             val indexOfQuestionMark = requestContext.getPath().indexOf('?');
-            val reqPath =
+            var requestPath =
                     indexOfQuestionMark == -1 ? requestContext.getPath() : requestContext.getPath().substring(0,
                                                                                                               indexOfQuestionMark);
-            if (requestContext.getMethod() == h.getMethod() && reqPath.equals(
-                    h.getPath())) {
+            // Remove all last '/' from the requestPath
+            while (requestPath.endsWith("/")) {
+                requestPath = requestPath.substring(0, requestPath.length() - 1);
+            }
+
+            if ((requestContext.getMethod() == h.getMethod() || (h.getMethod() == RequestMethod.ALL))
+                && requestPath.equals(h.getPath())) {
                 try {
                     if (h.handlers.length == 1) {
                         return h.handlers[0].handle(requestContext);
                     }
 
+                    // Handle middleware function chain
                     for (int i = 0; i < h.handlers.length; i++) {
                         val isLastItem = i == h.handlers.length - 1;
                         val resultFromPreviousHandler = h.handlers[i].handle(requestContext);
