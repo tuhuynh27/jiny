@@ -11,7 +11,7 @@ import com.tuhuynh.httpserver.core.RequestBinder.RequestHandler;
 
 public final class TestServer {
     public static void main(String[] args) throws IOException {
-        final HTTPServer server = HTTPServer.port(1234);
+        final HTTPServer server = HTTPServer.port(8080);
 
         server.use("/", ctx -> HttpResponse.of("Hello World"));
         server.post("/echo", ctx -> HttpResponse.of(ctx.getBody()));
