@@ -36,14 +36,14 @@ public final class TestServer {
 
         // Get query params, ex: /query?hello=world
         server.get("/query", ctx -> {
-            final String world = ctx.getQueryParams().get("hello");
+            final String world = ctx.getQuery().get("hello");
             return HttpResponse.of("Hello: " + world);
         });
 
         // Get handler params, ex: /params/:categoryID/:itemID
         server.get("/params/:categoryID/:itemID", ctx -> {
-            final String categoryID = ctx.getHandlerParams().get("categoryID");
-            final String itemID = ctx.getHandlerParams().get("itemID");
+            final String categoryID = ctx.getParam().get("categoryID");
+            final String itemID = ctx.getParam().get("itemID");
             return HttpResponse.of("Category ID is " + categoryID + ", Item ID is " + itemID);
         });
 
@@ -61,7 +61,7 @@ public final class TestServer {
         // Inject middleware to the request function chain
         server.get("/protected",
                    jwtValidator, // jwtMiddleware
-                   ctx -> HttpResponse.of("Login success, hello: " + ctx.getHandlerData("username")));
+                   ctx -> HttpResponse.of("Login success, hello: " + ctx.getData("username")));
 
         // Perform as a proxy server
         server.get("/meme", ctx -> {

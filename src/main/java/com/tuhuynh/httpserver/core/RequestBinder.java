@@ -52,7 +52,7 @@ public final class RequestBinder {
                     if (elementsOfHandlerPath[i].startsWith(":")) {
                         val handlerParamKey = elementsOfHandlerPath[i].replace(":", "");
                         val handlerParamValue = elementsOfRequestPath[i];
-                        requestContext.getHandlerParams().put(handlerParamKey, handlerParamValue);
+                        requestContext.getParam().put(handlerParamKey, handlerParamValue);
                     }
                 }
             }
@@ -100,16 +100,16 @@ public final class RequestBinder {
         private String path;
         private HashMap<String, String> header;
         private String body;
-        private HashMap<String, String> queryParams;
-        private HashMap<String, String> handlerParams;
-        private HashMap<String, String> handlerData;
+        private HashMap<String, String> query;
+        private HashMap<String, String> param;
+        private HashMap<String, String> data;
 
         public void putHandlerData(final String key, final String value) {
-            handlerData.put(key, value);
+            data.put(key, value);
         }
 
-        public String getHandlerData(final String key) {
-            return handlerData.get(key);
+        public String getData(final String key) {
+            return data.get(key);
         }
     }
 

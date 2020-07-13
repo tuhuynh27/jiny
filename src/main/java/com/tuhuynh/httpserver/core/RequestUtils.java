@@ -38,9 +38,9 @@ public final class RequestUtils {
                              .path(path)
                              .header(header)
                              .body(body)
-                             .queryParams(splitQuery(queryParamsString))
-                             .handlerParams(new HashMap<>())
-                             .handlerData(new HashMap<>())
+                             .query(splitQuery(queryParamsString))
+                             .param(new HashMap<>())
+                             .data(new HashMap<>())
                              .build();
     }
 

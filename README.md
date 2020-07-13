@@ -70,14 +70,14 @@ public final class LightWeightServer {
 
         // Get query params, ex: /query?hello=world
         server.get("/query", ctx -> {
-            final String world = ctx.getQueryParams().get("hello");
+            final String world = ctx.getQuery().get("hello");
             return HttpResponse.of("Hello: " + world);
         });
 
         // Get handler params, ex: /params/:categoryID/:itemID
         server.get("/params/:categoryID/:itemID", ctx -> {
-            final String categoryID = ctx.getHandlerParams().get("categoryID");
-            final String itemID = ctx.getHandlerParams().get("itemID");
+            final String categoryID = ctx.getParam().get("categoryID");
+            final String itemID = ctx.getParam().get("itemID");
             return HttpResponse.of("Category ID is " + categoryID + ", Item ID is " + itemID);
         });
 
@@ -95,7 +95,7 @@ public final class LightWeightServer {
         // Inject middleware to the request function chain
         server.get("/protected",
                    jwtValidator, // jwtMiddleware
-                   ctx -> HttpResponse.of("Login success, hello: " + ctx.getHandlerData("username")));
+                   ctx -> HttpResponse.of("Login success, hello: " + ctx.getData("username")));
 
         // Perform as a proxy server
         server.get("/meme", ctx -> {
@@ -166,17 +166,17 @@ public final class LightWeightServer {
 
 **Zero dependency**, it just uses the Java core built-in APIs, also `lombok` is used to compile and build the library.
 
-Lines of code: 684
+Lines of code: 683
 ```
-  61 ./src/main/java/com/tuhuynh/httpserver/core/RequestPipeline.java
+  60 ./src/main/java/com/tuhuynh/httpserver/core/RequestPipeline.java
  157 ./src/main/java/com/tuhuynh/httpserver/core/RequestBinder.java
+ 125 ./src/main/java/com/tuhuynh/httpserver/core/RequestUtils.java
   95 ./src/main/java/com/tuhuynh/httpserver/experiments/NIOServer.java
   14 ./src/main/java/com/tuhuynh/httpserver/tests/TestClient.java
   83 ./src/main/java/com/tuhuynh/httpserver/tests/TestServer.java
   75 ./src/main/java/com/tuhuynh/httpserver/HTTPServer.java
- 125 ./src/main/java/com/tuhuynh/httpserver/utils/HandlerUtils.java
   74 ./src/main/java/com/tuhuynh/httpserver/HTTPClient.java
- 684 total
+ 683 total
 ```
 
 ## Side project
