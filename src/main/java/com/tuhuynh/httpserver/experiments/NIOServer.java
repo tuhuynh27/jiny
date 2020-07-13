@@ -81,4 +81,15 @@ public class NIOServer {
             System.out.println(ex.getMessage());
         }
     }
+
+    @AllArgsConstructor
+    public static class ResponseObject {
+        private final String status;
+        private final String threadName;
+
+        @Override
+        public String toString() {
+            return "{\"status\":\"" + status + "\",\"thread_name\":\"" + threadName + "\"}";
+        }
+    }
 }

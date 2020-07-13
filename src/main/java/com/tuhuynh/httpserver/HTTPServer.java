@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import com.tuhuynh.httpserver.handlers.HandlerBinder.HandlerMetadata;
-import com.tuhuynh.httpserver.handlers.HandlerBinder.RequestHandler;
-import com.tuhuynh.httpserver.handlers.HandlerPipeline;
+import com.tuhuynh.httpserver.core.RequestBinder.HandlerMetadata;
+import com.tuhuynh.httpserver.core.RequestBinder.RequestHandler;
+import com.tuhuynh.httpserver.core.RequestPipeline;
 import com.tuhuynh.httpserver.utils.HandlerUtils.RequestMethod;
 
 import lombok.val;
@@ -66,10 +66,10 @@ public final class HTTPServer {
     public void start() throws IOException {
         val serverSocket = new ServerSocket();
         serverSocket.bind(new InetSocketAddress(InetAddress.getLocalHost(), serverPort));
-
+        System.out.println("Started HTTP Server on port " + serverPort);
         for (; ; ) {
             val socket = serverSocket.accept();
-            executor.execute(new HandlerPipeline(socket, handlers));
+            executor.execute(new RequestPipeline(socket, handlers));
         }
     }
 }

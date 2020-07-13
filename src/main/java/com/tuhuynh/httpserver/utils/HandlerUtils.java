@@ -7,10 +7,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
-import com.tuhuynh.httpserver.handlers.HandlerBinder.HttpResponse;
+import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
+import com.tuhuynh.httpserver.core.RequestBinder.RequestContext;
 
-import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import lombok.var;
@@ -19,7 +18,7 @@ import lombok.var;
 public final class HandlerUtils {
     private static final Pattern HEADER_PATTERN = Pattern.compile(": ");
 
-    public static RequestContext parseRequest(final ArrayList<String> request, final String payload) {
+    public static RequestContext parseRequest(final ArrayList<String> request, final String body) {
         val metaArr = request.get(0).split(" ");
 
         val header = new HashMap<String, String>();
@@ -38,7 +37,7 @@ public final class HandlerUtils {
                              .method(getMethod(metaArr[0]))
                              .path(path)
                              .header(header)
-                             .payload(payload)
+                             .body(body)
                              .queryParams(splitQuery(queryParamsString))
                              .handlerParams(new HashMap<>())
                              .handlerData(new HashMap<>())
@@ -122,25 +121,5 @@ public final class HandlerUtils {
         PUT,
         DELETE,
         ALL
-    }
-
-    @Getter
-    @Builder
-    public static final class RequestContext {
-        private RequestMethod method;
-        private String path;
-        private HashMap<String, String> header;
-        private String payload;
-        private HashMap<String, String> queryParams;
-        private HashMap<String, String> handlerParams;
-        private HashMap<String, String> handlerData;
-
-        public void putHandlerData(final String key, final String value) {
-            handlerData.put(key, value);
-        }
-
-        public String getHandlerData(final String key) {
-            return handlerData.get(key);
-        }
     }
 }

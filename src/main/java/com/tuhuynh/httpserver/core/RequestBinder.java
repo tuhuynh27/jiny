@@ -1,11 +1,11 @@
-package com.tuhuynh.httpserver.handlers;
+package com.tuhuynh.httpserver.core;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 
-import com.tuhuynh.httpserver.utils.HandlerUtils.RequestContext;
 import com.tuhuynh.httpserver.utils.HandlerUtils.RequestMethod;
 
 import lombok.AllArgsConstructor;
@@ -16,7 +16,7 @@ import lombok.val;
 import lombok.var;
 
 @RequiredArgsConstructor
-public final class HandlerBinder {
+public final class RequestBinder {
     private final RequestContext requestContext;
     private final ArrayList<HandlerMetadata> handlerMetadata;
 
@@ -61,13 +61,13 @@ public final class HandlerBinder {
                 && (requestPath.equals(handlerPath) || requestWithHandlerParamsMatched)) {
                 try {
                     if (h.handlers.length == 1) {
-                        return h.handlers[0].handle(requestContext);
+                        return h.handlers[0].handleFunc(requestContext);
                     }
 
                     // Handle middleware function chain
                     for (int i = 0; i < h.handlers.length; i++) {
                         val isLastItem = i == h.handlers.length - 1;
-                        val resultFromPreviousHandler = h.handlers[i].handle(requestContext);
+                        val resultFromPreviousHandler = h.handlers[i].handleFunc(requestContext);
                         if (!isLastItem && !resultFromPreviousHandler.isAllowNext()) {
                             return resultFromPreviousHandler;
                         } else {
@@ -90,7 +90,36 @@ public final class HandlerBinder {
 
     @FunctionalInterface
     public interface RequestHandler {
-        HttpResponse handle(RequestContext requestMetadata) throws Exception;
+        HttpResponse handleFunc(RequestContext requestMetadata) throws Exception;
+    }
+
+    @Getter
+    @Builder
+    public static final class RequestContext {
+        private RequestMethod method;
+        private String path;
+        private HashMap<String, String> header;
+        private String body;
+        private HashMap<String, String> queryParams;
+        private HashMap<String, String> handlerParams;
+        private HashMap<String, String> handlerData;
+
+        public void putHandlerData(final String key, final String value) {
+            handlerData.put(key, value);
+        }
+
+        public String getHandlerData(final String key) {
+            return handlerData.get(key);
+        }
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static final class HandlerMetadata {
+        private RequestMethod method;
+        private String path;
+        private RequestHandler[] handlers;
     }
 
     @Getter
@@ -125,12 +154,4 @@ public final class HandlerBinder {
         }
     }
 
-    @Getter
-    @Builder
-    @AllArgsConstructor
-    public static final class HandlerMetadata {
-        private RequestMethod method;
-        private String path;
-        private RequestHandler[] handlers;
-    }
 }

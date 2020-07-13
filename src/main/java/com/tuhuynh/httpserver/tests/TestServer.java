@@ -6,15 +6,15 @@ import java.util.Random;
 import com.tuhuynh.httpserver.HTTPClient;
 import com.tuhuynh.httpserver.HTTPClient.ResponseObject;
 import com.tuhuynh.httpserver.HTTPServer;
-import com.tuhuynh.httpserver.handlers.HandlerBinder.HttpResponse;
-import com.tuhuynh.httpserver.handlers.HandlerBinder.RequestHandler;
+import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
+import com.tuhuynh.httpserver.core.RequestBinder.RequestHandler;
 
 public final class TestServer {
     public static void main(String[] args) throws IOException {
-        final HTTPServer server = HTTPServer.port(8080);
+        final HTTPServer server = HTTPServer.port(1234);
 
         server.use("/", ctx -> HttpResponse.of("Hello World"));
-        server.post("/echo", ctx -> HttpResponse.of(ctx.getPayload()));
+        server.post("/echo", ctx -> HttpResponse.of(ctx.getBody()));
 
         // Free to execute blocking tasks with a Cached ThreadPool
         server.get("/sleep", ctx -> {
@@ -54,7 +54,6 @@ public final class TestServer {
             if (!authorizationHeader.startsWith("Bearer")) {
                 return HttpResponse.reject("Invalid token").status(401);
             }
-
             ctx.putHandlerData("username", "tuhuynh");
             return HttpResponse.next();
         };

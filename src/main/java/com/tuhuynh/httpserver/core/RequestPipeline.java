@@ -1,4 +1,4 @@
-package com.tuhuynh.httpserver.handlers;
+package com.tuhuynh.httpserver.core;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import com.tuhuynh.httpserver.handlers.HandlerBinder.HandlerMetadata;
+import com.tuhuynh.httpserver.core.RequestBinder.HandlerMetadata;
 import com.tuhuynh.httpserver.utils.HandlerUtils;
 
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import lombok.SneakyThrows;
 import lombok.val;
 
 @RequiredArgsConstructor
-public final class HandlerPipeline implements Runnable {
+public final class RequestPipeline implements Runnable {
     private final Socket socket;
     private final ArrayList<HandlerMetadata> handlers;
     private BufferedReader in;
@@ -41,14 +41,14 @@ public final class HandlerPipeline implements Runnable {
             requestStringArr.add(inputLine);
         }
         System.out.println(requestStringArr);
-        val payload = new StringBuilder();
+        val body = new StringBuilder();
         while (in.ready()) {
-            payload.append((char) in.read());
+            body.append((char) in.read());
         }
 
-        val requestMetadata = HandlerUtils.parseRequest(requestStringArr, payload.toString());
+        val requestMetadata = HandlerUtils.parseRequest(requestStringArr, body.toString());
 
-        val responseObject = new HandlerBinder(requestMetadata, handlers).getResponseObject();
+        val responseObject = new RequestBinder(requestMetadata, handlers).getResponseObject();
         val responseString = HandlerUtils.parseResponse(responseObject);
 
         out.write(responseString);
