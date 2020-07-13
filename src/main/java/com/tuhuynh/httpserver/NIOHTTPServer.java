@@ -1,4 +1,4 @@
-package com.tuhuynh.httpserver.experiments;
+package com.tuhuynh.httpserver;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -10,7 +10,10 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import com.tuhuynh.httpserver.core.RequestUtils.RequestMethod;
-import com.tuhuynh.httpserver.experiments.RequestBinderNIO.HandlerMetadata;
+import com.tuhuynh.httpserver.nio.ChannelHandlerNIO;
+import com.tuhuynh.httpserver.nio.RequestBinderNIO.HandlerMetadata;
+import com.tuhuynh.httpserver.nio.RequestBinderNIO.RequestHandler;
+import com.tuhuynh.httpserver.nio.RequestHandlerNIO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -41,7 +44,7 @@ public final class NIOHTTPServer implements Runnable {
     }
 
     private static void dispatch(final SelectionKey selectionKey) {
-        val handler = (ChannelHandler) selectionKey.attachment();
+        val handler = (ChannelHandlerNIO) selectionKey.attachment();
         try {
             if (selectionKey.isReadable() || selectionKey.isAcceptable()) {
                 handler.read();
@@ -54,36 +57,36 @@ public final class NIOHTTPServer implements Runnable {
     }
 
     public void addHandler(final RequestMethod method, final String path,
-                           final RequestBinderNIO.RequestHandler... handlers) {
+                           final RequestHandler... handlers) {
         val newHandlers = HandlerMetadata.builder().method(method).path(path).handlers(handlers).build();
         this.handlers.add(newHandlers);
     }
 
-    public void use(final String path, final RequestBinderNIO.RequestHandler... handlers) {
+    public void use(final String path, final RequestHandler... handlers) {
         val newHandlers = HandlerMetadata.builder().method(RequestMethod.ALL).path(path).handlers(handlers)
                                          .build();
         this.handlers.add(newHandlers);
     }
 
-    public void get(final String path, final RequestBinderNIO.RequestHandler... handlers) {
+    public void get(final String path, final RequestHandler... handlers) {
         val newHandlers = HandlerMetadata.builder().method(RequestMethod.GET).path(path).handlers(handlers)
                                          .build();
         this.handlers.add(newHandlers);
     }
 
-    public void post(final String path, final RequestBinderNIO.RequestHandler... handlers) {
+    public void post(final String path, final RequestHandler... handlers) {
         val newHandlers = HandlerMetadata.builder().method(RequestMethod.POST).path(path).handlers(handlers)
                                          .build();
         this.handlers.add(newHandlers);
     }
 
-    public void put(final String path, final RequestBinderNIO.RequestHandler... handlers) {
+    public void put(final String path, final RequestHandler... handlers) {
         val newHandlers = HandlerMetadata.builder().method(RequestMethod.PUT).path(path).handlers(handlers)
                                          .build();
         this.handlers.add(newHandlers);
     }
 
-    public void delete(final String path, final RequestBinderNIO.RequestHandler... handlers) {
+    public void delete(final String path, final RequestHandler... handlers) {
         val newHandlers = HandlerMetadata.builder().method(RequestMethod.DELETE).path(path).handlers(handlers)
                                          .build();
         this.handlers.add(newHandlers);
@@ -111,14 +114,14 @@ public final class NIOHTTPServer implements Runnable {
     }
 
     @RequiredArgsConstructor
-    private static class ServerAcceptor implements ChannelHandler {
+    private static class ServerAcceptor implements ChannelHandlerNIO {
         private final ServerSocketChannel serverSocket;
         private final Selector selector;
         private final ArrayList<HandlerMetadata> handlers;
 
         @Override
         public void read() throws Exception {
-            new RequestHandler(serverSocket.accept(), selector, handlers);
+            new RequestHandlerNIO(serverSocket.accept(), selector, handlers);
         }
 
         @Override

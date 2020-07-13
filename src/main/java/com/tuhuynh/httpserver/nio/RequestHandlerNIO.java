@@ -1,4 +1,4 @@
-package com.tuhuynh.httpserver.experiments;
+package com.tuhuynh.httpserver.nio;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -9,20 +9,20 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import com.tuhuynh.httpserver.core.RequestUtils;
-import com.tuhuynh.httpserver.experiments.RequestBinderNIO.HandlerMetadata;
+import com.tuhuynh.httpserver.nio.RequestBinderNIO.HandlerMetadata;
 
 import lombok.NoArgsConstructor;
 import lombok.val;
 import lombok.var;
 
-public final class RequestHandler implements ChannelHandler {
+public final class RequestHandlerNIO implements ChannelHandlerNIO {
     private final SocketChannel socketChannel;
     private final Selector selector;
     private final LinkedList<String> messageQueue;
     private final ArrayList<HandlerMetadata> handlers;
 
-    public RequestHandler(final SocketChannel socketChannel, final Selector selector,
-                          final ArrayList<HandlerMetadata> handlers) throws IOException {
+    public RequestHandlerNIO(final SocketChannel socketChannel, final Selector selector,
+                             final ArrayList<HandlerMetadata> handlers) throws IOException {
         this.socketChannel = socketChannel;
         this.selector = selector;
         this.handlers = handlers;

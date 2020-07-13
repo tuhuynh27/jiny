@@ -29,7 +29,7 @@ public final class RequestUtils {
             }
         }
 
-        val path = metaArr[1].toLowerCase();
+        val path = metaArr.length >= 2 ? metaArr[1].toLowerCase() : "";
 
         val indexOfQuestionMark = path.indexOf('?');
         val queryParamsString = indexOfQuestionMark == -1 ? null : path.substring(indexOfQuestionMark + 1);

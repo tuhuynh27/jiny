@@ -4,45 +4,34 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 
 import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
-import com.tuhuynh.httpserver.experiments.NIOHTTPServer;
+import com.tuhuynh.httpserver.NIOHTTPServer;
 
 import lombok.val;
 
 public final class TestNIOServer {
     public static void main(String[] args) throws Exception {
+        val workerPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         val server = NIOHTTPServer.port(1234);
+
+        server.use("/", ctx -> CompletableFuture.supplyAsync(() -> HttpResponse.of("Hello World")));
 
         server.get("/thread", ctx -> CompletableFuture.supplyAsync(() -> HttpResponse.of(Thread.currentThread().getName())));
 
         server.get("/sleep", ctx -> {
             CompletableFuture<HttpResponse> completableFuture = new CompletableFuture<>();
 
-            Executors.newCachedThreadPool().submit(() -> {
+            workerPool.submit(() -> {
                 try {
-                    Thread.sleep(2000);
+                    // Some expensive task
                     val thread = Thread.currentThread().getName();
-                    System.out.println("Worker: " + thread);
-                } catch (InterruptedException e) {
-                    System.out.println(e.getMessage());
-                }
-                ctx.putHandlerData("fuck", "you");
-                completableFuture.complete(HttpResponse.next());
-            });
-
-            return HttpResponse.promise(completableFuture);
-        }, ctx -> {
-            CompletableFuture<HttpResponse> completableFuture = new CompletableFuture<>();
-
-            Executors.newCachedThreadPool().submit(() -> {
-                try {
+                    System.out.println("Executing an enpensive task on " + thread);
                     Thread.sleep(5000);
-                    val thread = Thread.currentThread().getName();
-                    System.out.println("Worker: " + thread);
                 } catch (InterruptedException e) {
                     System.out.println(e.getMessage());
                 }
-                val fuck = ctx.getData().get("fuck");
-                completableFuture.complete(HttpResponse.of(fuck));
+
+                val thread = Thread.currentThread().getName();
+                completableFuture.complete(HttpResponse.of("Work has done, current thread is: " + thread));
             });
 
             return HttpResponse.promise(completableFuture);

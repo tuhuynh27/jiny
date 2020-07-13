@@ -1,4 +1,4 @@
-package com.tuhuynh.httpserver.experiments;
+package com.tuhuynh.httpserver.nio;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +24,8 @@ public final class RequestBinderNIO {
     private CompletableFuture<HttpResponse> isDone = new CompletableFuture<>();
 
     public CompletableFuture<HttpResponse> handlersProcess() throws Exception {
+        var isFound = false;
+
         for (val h : handlerMetadata) {
             val indexOfQuestionMark = requestContext.getPath().indexOf('?');
             var requestPath =
@@ -64,7 +66,13 @@ public final class RequestBinderNIO {
                 && (requestPath.equals(handlerPath) || requestWithHandlerParamsMatched)) {
                 val handlerLinkedList = new LinkedList<>(Arrays.asList(h.handlers));
                 doProcess(handlerLinkedList);
+                isFound = true;
+                break;
             }
+        }
+
+        if (!isFound) {
+            isDone.complete(HttpResponse.of("Not found").status(404));
         }
 
         return isDone;
