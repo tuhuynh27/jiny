@@ -37,10 +37,10 @@ Note: This HTTP Server library is inspired by **[LINE's Armeria](https://armeria
 ```java
 public final class LightWeightServer {
     public static void main(String[] args) throws IOException {
-        final HTTPServer server = HTTPServer.port(8080);
+        final HTTPServer server = HTTPServer.port(1234);
 
         server.use("/", ctx -> HttpResponse.of("Hello World"));
-        server.post("/echo", ctx -> HttpResponse.of(ctx.getPayload()));
+        server.post("/echo", ctx -> HttpResponse.of(ctx.getBody()));
 
         // Free to execute blocking tasks with a Cached ThreadPool
         server.get("/sleep", ctx -> {
@@ -80,7 +80,6 @@ public final class LightWeightServer {
             if (!authorizationHeader.startsWith("Bearer")) {
                 return HttpResponse.reject("Invalid token").status(401);
             }
-
             ctx.putHandlerData("username", "tuhuynh");
             return HttpResponse.next();
         };
@@ -153,20 +152,21 @@ public final class LightWeightServer {
 - Support annotation to decorate the code (@Handler @Router)
 - **Support an NIO (Non Blocking I/O) HTTP Server & Client based on `java.nio`**
 - Support built-in JSON marshall/unmarshall support
+- Improve routing/switch core performance
 
 ## Dependencies
 
 **Zero dependency**, it just uses the Java core built-in APIs, also `lombok` is used to compile and build the library.
 
-Lines of code: 687
+Lines of code: 684
 ```
-    84 ./src/main/java/com/tuhuynh/httpserver/experiments/NIOServer.java
-    14 ./src/main/java/com/tuhuynh/httpserver/tests/TestClient.java
-    84 ./src/main/java/com/tuhuynh/httpserver/tests/TestServer.java
-    75 ./src/main/java/com/tuhuynh/httpserver/HTTPServer.java
-   146 ./src/main/java/com/tuhuynh/httpserver/utils/HandlerUtils.java
-    74 ./src/main/java/com/tuhuynh/httpserver/HTTPClient.java
-    61 ./src/main/java/com/tuhuynh/httpserver/handlers/HandlerPipeline.java
-   136 ./src/main/java/com/tuhuynh/httpserver/handlers/HandlerBinder.java
-   687 total
+  61 ./src/main/java/com/tuhuynh/httpserver/core/RequestPipeline.java
+ 157 ./src/main/java/com/tuhuynh/httpserver/core/RequestBinder.java
+  95 ./src/main/java/com/tuhuynh/httpserver/experiments/NIOServer.java
+  14 ./src/main/java/com/tuhuynh/httpserver/tests/TestClient.java
+  83 ./src/main/java/com/tuhuynh/httpserver/tests/TestServer.java
+  75 ./src/main/java/com/tuhuynh/httpserver/HTTPServer.java
+ 125 ./src/main/java/com/tuhuynh/httpserver/utils/HandlerUtils.java
+  74 ./src/main/java/com/tuhuynh/httpserver/HTTPClient.java
+ 684 total
 ```
