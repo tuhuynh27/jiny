@@ -45,7 +45,8 @@ public final class RequestPipeline implements Runnable {
             body.append((char) in.read());
         }
 
-        val requestMetadata = RequestUtils.parseRequest(requestStringArr, body.toString());
+        val requestMetadata = RequestUtils.parseRequest(requestStringArr.stream().toArray(String[]::new),
+                                                        body.toString());
 
         val responseObject = new RequestBinder(requestMetadata, handlers).getResponseObject();
         val responseString = RequestUtils.parseResponse(responseObject);

@@ -3,7 +3,6 @@ package com.tuhuynh.httpserver.core;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.AbstractMap.SimpleImmutableEntry;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
@@ -18,14 +17,16 @@ import lombok.var;
 public final class RequestUtils {
     private static final Pattern HEADER_PATTERN = Pattern.compile(": ");
 
-    public static RequestContext parseRequest(final ArrayList<String> request, final String body) {
-        val metaArr = request.get(0).split(" ");
+    public static RequestContext parseRequest(final String[] request, final String body) {
+        val metaArr = request[0].split(" ");
 
         val header = new HashMap<String, String>();
-        for (int i = 1; i < request.size(); i++) {
-            val headerLine = request.get(i);
+        for (int i = 1; i < request.length; i++) {
+            val headerLine = request[i];
             val headerArr = HEADER_PATTERN.split(headerLine);
-            header.put(headerArr[0], headerArr[1]);
+            if (headerArr.length == 2) {
+                header.put(headerArr[0], headerArr[1]);
+            }
         }
 
         val path = metaArr[1].toLowerCase();

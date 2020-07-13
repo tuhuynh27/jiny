@@ -1,12 +1,13 @@
-package com.tuhuynh.httpserver.core;
+package com.tuhuynh.httpserver.experiments;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
+import com.tuhuynh.httpserver.core.RequestBinder.RequestContext;
 import com.tuhuynh.httpserver.core.RequestUtils.RequestMethod;
 
 import lombok.AllArgsConstructor;
@@ -17,11 +18,12 @@ import lombok.val;
 import lombok.var;
 
 @RequiredArgsConstructor
-public final class RequestBinder {
+public final class RequestBinderNIO {
     private final RequestContext requestContext;
     private final ArrayList<HandlerMetadata> handlerMetadata;
+    private CompletableFuture<HttpResponse> isDone = new CompletableFuture<>();
 
-    public HttpResponse getResponseObject() throws IOException {
+    public CompletableFuture<HttpResponse> handlersProcess() throws Exception {
         for (val h : handlerMetadata) {
             val indexOfQuestionMark = requestContext.getPath().indexOf('?');
             var requestPath =
@@ -60,58 +62,37 @@ public final class RequestBinder {
 
             if ((requestContext.getMethod() == h.getMethod() || (h.getMethod() == RequestMethod.ALL))
                 && (requestPath.equals(handlerPath) || requestWithHandlerParamsMatched)) {
-                try {
-                    if (h.handlers.length == 1) {
-                        return h.handlers[0].handleFunc(requestContext);
-                    }
-
-                    // Handle middleware function chain
-                    for (int i = 0; i < h.handlers.length; i++) {
-                        val isLastItem = i == h.handlers.length - 1;
-                        val resultFromPreviousHandler = h.handlers[i].handleFunc(requestContext);
-                        if (!isLastItem && !resultFromPreviousHandler.isAllowNext()) {
-                            return resultFromPreviousHandler;
-                        } else {
-                            if (isLastItem) {
-                                return resultFromPreviousHandler;
-                            } else {
-                                continue;
-                            }
-                        }
-                    }
-                } catch (Exception ex) {
-                    System.out.println(ex.getMessage());
-                    return HttpResponse.of("Internal Server Error").status(500);
-                }
+                val handlerLinkedList = new LinkedList<>(Arrays.asList(h.handlers));
+                doProcess(handlerLinkedList);
             }
         }
 
-        return HttpResponse.of("Not found").status(404);
+        return isDone;
+    }
+
+    private void doProcess(final LinkedList<RequestHandler> handlerLinkedList) throws Exception {
+        if (handlerLinkedList.size() == 1) {
+            handlerLinkedList.removeFirst().handleFunc(requestContext).thenAccept(result -> {
+                isDone.complete(result);
+            });
+        } else {
+            handlerLinkedList.removeFirst().handleFunc(requestContext).thenAccept(result -> {
+                if (result.isAllowNext()) {
+                    try {
+                        doProcess(handlerLinkedList);
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                } else {
+                    isDone.complete(result);
+                }
+            });
+        }
     }
 
     @FunctionalInterface
     public interface RequestHandler {
-        HttpResponse handleFunc(RequestContext requestMetadata) throws Exception;
-    }
-
-    @Getter
-    @Builder
-    public static final class RequestContext {
-        private RequestMethod method;
-        private String path;
-        private HashMap<String, String> header;
-        private String body;
-        private HashMap<String, String> query;
-        private HashMap<String, String> param;
-        private HashMap<String, String> data;
-
-        public void putHandlerData(final String key, final String value) {
-            data.put(key, value);
-        }
-
-        public String getData(final String key) {
-            return data.get(key);
-        }
+        CompletableFuture<HttpResponse> handleFunc(RequestContext requestMetadata) throws Exception;
     }
 
     @Getter
@@ -122,41 +103,4 @@ public final class RequestBinder {
         private String path;
         private RequestHandler[] handlers;
     }
-
-    @Getter
-    public static final class HttpResponse {
-        public static HttpResponse of(final String text) {
-            return new HttpResponse(200, text, true);
-        }
-
-        public static HttpResponse next() { return new HttpResponse(0, "", true); }
-
-        public static HttpResponse reject(final String errorText) {
-            return new HttpResponse(400, errorText, false);
-        }
-
-        public static CompletableFuture<HttpResponse> promise(final CompletableFuture<HttpResponse> completableFuture) {
-            return completableFuture;
-        }
-
-        private int httpStatusCode;
-        private String responseString;
-        private boolean allowNext;
-
-        private HttpResponse(final int httpStatusCode, final String responseString, final boolean allowNext) {
-            this.httpStatusCode = httpStatusCode;
-            this.responseString = responseString;
-            this.allowNext = allowNext;
-        }
-
-        public <T> HttpResponse of(T t) {
-            return new HttpResponse(200, t.toString(), true);
-        }
-
-        public HttpResponse status(final int httpStatusCode) {
-            this.httpStatusCode = httpStatusCode;
-            return this;
-        }
-    }
-
 }
