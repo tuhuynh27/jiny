@@ -68,8 +68,8 @@ public final class LightWeightServer {
 
         // Get handler params, ex: /params/:categoryID/:itemID
         server.get("/params/:categoryID/:itemID", ctx -> {
-            String categoryID = ctx.getHandlerParams().get("categoryID");
-            String itemID = ctx.getHandlerParams().get("itemID");
+            final String categoryID = ctx.getHandlerParams().get("categoryID");
+            final String itemID = ctx.getHandlerParams().get("itemID");
             return HttpResponse.of("Category ID is " + categoryID + ", Item ID is " + itemID);
         });
 
@@ -158,12 +158,15 @@ public final class LightWeightServer {
 
 **Zero dependency**, it just uses the Java core built-in APIs, also `lombok` is used to compile and build the library.
 
-Lines of code: 428
+Lines of code: 687
 ```
-  39 ./src/main/java/com/tuhuynh/httpserver/HTTPServer.java
- 140 ./src/main/java/com/tuhuynh/httpserver/utils/HandlerUtils.java
-  74 ./src/main/java/com/tuhuynh/httpserver/HTTPClient.java
-  61 ./src/main/java/com/tuhuynh/httpserver/handlers/HandlerPipeline.java
- 101 ./src/main/java/com/tuhuynh/httpserver/handlers/HandlerBinder.java
- 428 total
+    84 ./src/main/java/com/tuhuynh/httpserver/experiments/NIOServer.java
+    14 ./src/main/java/com/tuhuynh/httpserver/tests/TestClient.java
+    84 ./src/main/java/com/tuhuynh/httpserver/tests/TestServer.java
+    75 ./src/main/java/com/tuhuynh/httpserver/HTTPServer.java
+   146 ./src/main/java/com/tuhuynh/httpserver/utils/HandlerUtils.java
+    74 ./src/main/java/com/tuhuynh/httpserver/HTTPClient.java
+    61 ./src/main/java/com/tuhuynh/httpserver/handlers/HandlerPipeline.java
+   136 ./src/main/java/com/tuhuynh/httpserver/handlers/HandlerBinder.java
+   687 total
 ```

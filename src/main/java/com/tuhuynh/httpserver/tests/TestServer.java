@@ -42,8 +42,8 @@ public final class TestServer {
 
         // Get handler params, ex: /params/:categoryID/:itemID
         server.get("/params/:categoryID/:itemID", ctx -> {
-            String categoryID = ctx.getHandlerParams().get("categoryID");
-            String itemID = ctx.getHandlerParams().get("itemID");
+            final String categoryID = ctx.getHandlerParams().get("categoryID");
+            final String itemID = ctx.getHandlerParams().get("itemID");
             return HttpResponse.of("Category ID is " + categoryID + ", Item ID is " + itemID);
         });
 
