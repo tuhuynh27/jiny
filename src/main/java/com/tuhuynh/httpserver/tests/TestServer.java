@@ -4,14 +4,15 @@ import java.io.IOException;
 import java.util.Random;
 
 import com.tuhuynh.httpserver.HTTPClient;
-import com.tuhuynh.httpserver.HTTPClient.ResponseObject;
 import com.tuhuynh.httpserver.HTTPServer;
 import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
 import com.tuhuynh.httpserver.core.RequestBinder.RequestHandler;
 
+import lombok.val;
+
 public final class TestServer {
     public static void main(String[] args) throws IOException {
-        final HTTPServer server = HTTPServer.port(8080);
+        val server = HTTPServer.port(8080);
 
         server.use("/", ctx -> HttpResponse.of("Hello World"));
         server.post("/echo", ctx -> HttpResponse.of(ctx.getBody()));
@@ -30,26 +31,26 @@ public final class TestServer {
                    ctx -> HttpResponse.of(Thread.currentThread().getName()));
 
         server.get("/random", ctx -> {
-            final Random rand = new Random();
+            val rand = new Random();
             return HttpResponse.of(String.valueOf(rand.nextInt(100 + 1)));
         });
 
         // Get query params, ex: /query?hello=world
         server.get("/query", ctx -> {
-            final String world = ctx.getQuery().get("hello");
+            val world = ctx.getQuery().get("hello");
             return HttpResponse.of("Hello: " + world);
         });
 
         // Get handler params, ex: /params/:categoryID/:itemID
         server.get("/params/:categoryID/:itemID", ctx -> {
-            final String categoryID = ctx.getParam().get("categoryID");
-            final String itemID = ctx.getParam().get("itemID");
+            val categoryID = ctx.getParam().get("categoryID");
+            val itemID = ctx.getParam().get("itemID");
             return HttpResponse.of("Category ID is " + categoryID + ", Item ID is " + itemID);
         });
 
         // Middleware support: Sample JWT Verify Middleware
         RequestHandler jwtValidator = ctx -> {
-            final String authorizationHeader = ctx.getHeader().get("Authorization");
+            val authorizationHeader = ctx.getHeader().get("Authorization");
             // Check JWT is valid, below is just a sample check
             if (!authorizationHeader.startsWith("Bearer")) {
                 return HttpResponse.reject("Invalid token").status(401);
@@ -57,8 +58,7 @@ public final class TestServer {
             ctx.putHandlerData("username", "tuhuynh");
             return HttpResponse.next();
         };
-        // Then,
-        // Inject middleware to the request function chain
+        // Then, inject middleware to the request function chain like this
         server.get("/protected",
                    jwtValidator, // jwtMiddleware
                    ctx -> HttpResponse.of("Login success, hello: " + ctx.getData("username")));
@@ -66,11 +66,12 @@ public final class TestServer {
         // Perform as a proxy server
         server.get("/meme", ctx -> {
             // Built-in HTTP Client
-            final ResponseObject
-                    meme = HTTPClient.builder()
-                                     .url("https://meme-api.herokuapp.com/gimme").method("GET")
-                                     .build().perform();
-            return HttpResponse.of(meme.getBody());
+            val meme = HTTPClient.builder()
+                                 .url("https://meme-api.herokuapp.com/gimme")
+                                 .method("GET")
+                                 .build().perform();
+            return HttpResponse.of(meme.getBody())
+                               .status(meme.getStatus());
         });
 
         // Handle error
