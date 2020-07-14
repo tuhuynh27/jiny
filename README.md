@@ -176,19 +176,21 @@ public final class LightWeightServer {
 
 Lines of code: 993
 ```
-  61 ./src/main/java/com/tuhuynh/httpserver/core/RequestPipeline.java
- 163 ./src/main/java/com/tuhuynh/httpserver/core/RequestBinder.java
+  52 ./src/main/java/com/tuhuynh/httpserver/core/bio/RequestBinderBIO.java
+  63 ./src/main/java/com/tuhuynh/httpserver/core/bio/RequestPipelineBIO.java
+ 163 ./src/main/java/com/tuhuynh/httpserver/core/RequestBinderBase.java
+  66 ./src/main/java/com/tuhuynh/httpserver/core/nio/RequestBinderNIO.java
+  96 ./src/main/java/com/tuhuynh/httpserver/core/nio/RequestPipelineNIO.java
+   7 ./src/main/java/com/tuhuynh/httpserver/core/nio/ChannelHandlerNIO.java
  126 ./src/main/java/com/tuhuynh/httpserver/core/RequestUtils.java
   14 ./src/main/java/com/tuhuynh/httpserver/tests/TestClient.java
   50 ./src/main/java/com/tuhuynh/httpserver/tests/TestNIOServer.java
+  37 ./src/main/java/com/tuhuynh/httpserver/tests/TestServers.java
   84 ./src/main/java/com/tuhuynh/httpserver/tests/TestServer.java
-  75 ./src/main/java/com/tuhuynh/httpserver/HTTPServer.java
- 133 ./src/main/java/com/tuhuynh/httpserver/NIOHTTPServer.java
- 114 ./src/main/java/com/tuhuynh/httpserver/nio/RequestBinderNIO.java
-   7 ./src/main/java/com/tuhuynh/httpserver/nio/ChannelHandlerNIO.java
-  92 ./src/main/java/com/tuhuynh/httpserver/nio/RequestHandlerNIO.java
+  71 ./src/main/java/com/tuhuynh/httpserver/HTTPServer.java
+ 129 ./src/main/java/com/tuhuynh/httpserver/NIOHTTPServer.java
   74 ./src/main/java/com/tuhuynh/httpserver/HTTPClient.java
- 993 total
+1032 total
 ```
 
 ## Side project
