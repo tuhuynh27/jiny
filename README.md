@@ -8,6 +8,8 @@ I build this for my [LINE Bot webhook server](https://github.com/huynhminhtufu/l
 
 There seems to be this perception that Java in itself is lacking some features that facilitate proper application development (unlike like many feature of [Go](https://golang.org/pkg/net/http/)).
 
+**Experimental: [Non-blocking mode HTTP Server](https://github.com/huynhminhtufu/httpserver/tree/master/src/main/java/com/tuhuynh/httpserver/nio)**
+
 ## Installation
 
 (thanks [Github Packages](https://github.com/huynhminhtufu/httpserver/packages/309436) <3)
@@ -172,17 +174,21 @@ public final class LightWeightServer {
 
 **Zero dependency**, it just uses the Java core built-in APIs, also `lombok` is used to compile and build the library.
 
-Lines of code: 683
+Lines of code: 993
 ```
-  60 ./src/main/java/com/tuhuynh/httpserver/core/RequestPipeline.java
- 157 ./src/main/java/com/tuhuynh/httpserver/core/RequestBinder.java
- 125 ./src/main/java/com/tuhuynh/httpserver/core/RequestUtils.java
-  95 ./src/main/java/com/tuhuynh/httpserver/experiments/NIOServer.java
+  61 ./src/main/java/com/tuhuynh/httpserver/core/RequestPipeline.java
+ 163 ./src/main/java/com/tuhuynh/httpserver/core/RequestBinder.java
+ 126 ./src/main/java/com/tuhuynh/httpserver/core/RequestUtils.java
   14 ./src/main/java/com/tuhuynh/httpserver/tests/TestClient.java
-  83 ./src/main/java/com/tuhuynh/httpserver/tests/TestServer.java
+  50 ./src/main/java/com/tuhuynh/httpserver/tests/TestNIOServer.java
+  84 ./src/main/java/com/tuhuynh/httpserver/tests/TestServer.java
   75 ./src/main/java/com/tuhuynh/httpserver/HTTPServer.java
+ 133 ./src/main/java/com/tuhuynh/httpserver/NIOHTTPServer.java
+ 114 ./src/main/java/com/tuhuynh/httpserver/nio/RequestBinderNIO.java
+   7 ./src/main/java/com/tuhuynh/httpserver/nio/ChannelHandlerNIO.java
+  92 ./src/main/java/com/tuhuynh/httpserver/nio/RequestHandlerNIO.java
   74 ./src/main/java/com/tuhuynh/httpserver/HTTPClient.java
- 683 total
+ 993 total
 ```
 
 ## Side project

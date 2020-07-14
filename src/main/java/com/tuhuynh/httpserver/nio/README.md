@@ -1,10 +1,14 @@
 # Lightweight Java NIO HTTP Server
 
-"Asynchronous" Non-blocking I/O version on `com.tuhuynh.httpserver`
+"Asynchronous" Non-blocking I/O version on `com.tuhuynh.httpserver`, using Java SE's `java.net` & `java.nio` packages.
+
+**Currently, this is in experimental mode**
 
 ## Quick Start
 
 Install [com.tuhuynh.httpserver](https://github.com/huynhminhtufu/httpserver/packages/309436)
+
+This NIO HTTP Server is fully compatible with [HTTPServer's API](https://github.com/huynhminhtufu/httpserver#api-example)
 
 ```java
 public final class MiniServer {
@@ -16,7 +20,7 @@ public final class MiniServer {
 }
 ```
 
-## API Examples (use with CompletableFuture)
+## API Examples (use with `CompletableFuture`)
 
 ```java
 public final class TestNIOServer {
@@ -60,3 +64,5 @@ public final class TestNIOServer {
     }
 }
 ```
+
+But I think it's better to use [async-await](https://github.com/electronicarts/ea-async) to wrap the async code, improve the readability.
