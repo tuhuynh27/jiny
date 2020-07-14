@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import com.tuhuynh.httpserver.core.RequestBinderBase.BaseHandlerMetadata;
-import com.tuhuynh.httpserver.core.RequestBinderBase.RequestHandlerBase;
 import com.tuhuynh.httpserver.core.RequestBinderBase.RequestHandlerNIO;
 import com.tuhuynh.httpserver.core.RequestUtils;
 
@@ -17,7 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.val;
 import lombok.var;
 
-public final class RequestPipelineNIO implements ChannelHandlerNIO, RequestHandlerBase {
+public final class RequestPipelineNIO implements ChannelHandlerNIO {
     private final SocketChannel socketChannel;
     private final Selector selector;
     private final LinkedList<String> messageQueue;
@@ -58,7 +57,7 @@ public final class RequestPipelineNIO implements ChannelHandlerNIO, RequestHandl
         }
 
         val msg = messageQueue.removeFirst();
-        String[] req = { "" };
+        String[] req;
         var body = "";
         val requestParts = msg.split("\n\r");
         if (requestParts.length == 2) {
