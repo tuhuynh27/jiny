@@ -1,7 +1,9 @@
 package com.tuhuynh.httpserver.core;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import com.tuhuynh.httpserver.core.RequestUtils.RequestMethod;
 
@@ -9,10 +11,55 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
+import lombok.var;
 
 @RequiredArgsConstructor
 public class RequestBinderBase {
     protected final RequestContext requestContext;
+
+    protected BinderInitObject binderInit(final BaseHandlerMetadata<?> h) {
+        val indexOfQuestionMark = requestContext.getPath().indexOf('?');
+        var requestPath =
+                indexOfQuestionMark == -1 ? requestContext.getPath() : requestContext.getPath().substring(0,
+                                                                                                          indexOfQuestionMark);
+        // Remove all last '/' from the requestPath
+        while (requestPath.endsWith("/")) {
+            requestPath = requestPath.substring(0, requestPath.length() - 1);
+        }
+
+        val handlerPathOriginal = h.getPath();
+        val handlerPathArrWithHandlerParams = Arrays.stream(handlerPathOriginal.split("/"));
+        val handlerPath = handlerPathArrWithHandlerParams.filter(e -> !e.startsWith(":")).collect(
+                Collectors.joining("/"));
+
+        val numOfHandlerParams = handlerPathOriginal.length() - handlerPathOriginal.replace(":", "")
+                                                                                   .length();
+        val numOfSlashOfRequestPath = requestPath.length() - requestPath.replace("/", "").length();
+        val numOfSlashOfHandlerPath = handlerPathOriginal.length() - handlerPathOriginal.replace("/", "")
+                                                                                        .length();
+
+        val requestWithHandlerParamsMatched = numOfHandlerParams > 0 && requestPath.startsWith(handlerPath)
+                                              && numOfSlashOfRequestPath == numOfSlashOfHandlerPath;
+
+        if (requestWithHandlerParamsMatched) {
+            val elementsOfHandlerPath = handlerPathOriginal.split("/");
+            val elementsOfRequestPath = requestPath.split("/");
+            for (int i = 1; i < elementsOfHandlerPath.length; i++) {
+                if (elementsOfHandlerPath[i].startsWith(":")) {
+                    val handlerParamKey = elementsOfHandlerPath[i].replace(":", "");
+                    val handlerParamValue = elementsOfRequestPath[i];
+                    requestContext.getParam().put(handlerParamKey, handlerParamValue);
+                }
+            }
+        }
+
+        return BinderInitObject.builder()
+                               .requestPath(requestPath)
+                               .handlerPath(handlerPath)
+                               .requestWithHandlerParamsMatched(requestWithHandlerParamsMatched)
+                               .build();
+    }
 
     public interface RequestHandlerBase {
     }
@@ -25,6 +72,14 @@ public class RequestBinderBase {
     @FunctionalInterface
     public interface RequestHandlerNIO extends RequestHandlerBase {
         CompletableFuture<HttpResponse> handleFunc(RequestContext requestMetadata) throws Exception;
+    }
+
+    @Builder
+    @Getter
+    protected static class BinderInitObject {
+        String requestPath;
+        String handlerPath;
+        boolean requestWithHandlerParamsMatched;
     }
 
     @Getter

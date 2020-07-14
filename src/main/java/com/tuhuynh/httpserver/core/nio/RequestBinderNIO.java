@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 import com.tuhuynh.httpserver.core.RequestBinderBase;
 import com.tuhuynh.httpserver.core.RequestUtils.RequestMethod;
@@ -26,43 +25,11 @@ public final class RequestBinderNIO extends RequestBinderBase {
         var isFound = false;
 
         for (val h : handlerMetadata) {
-            val indexOfQuestionMark = requestContext.getPath().indexOf('?');
-            var requestPath =
-                    indexOfQuestionMark == -1 ? requestContext.getPath() : requestContext.getPath().substring(0,
-                                                                                                              indexOfQuestionMark);
-            // Remove all last '/' from the requestPath
-            while (requestPath.endsWith("/")) {
-                requestPath = requestPath.substring(0, requestPath.length() - 1);
-            }
-
-            val handlerPathOriginal = h.getPath();
-            val handlerPathArrWithHandlerParams = Arrays.stream(handlerPathOriginal.split("/"));
-            val handlerPath = handlerPathArrWithHandlerParams.filter(e -> !e.startsWith(":")).collect(
-                    Collectors.joining("/"));
-
-            val numOfHandlerParams = handlerPathOriginal.length() - handlerPathOriginal.replace(":", "")
-                                                                                       .length();
-            val numOfSlashOfRequestPath = requestPath.length() - requestPath.replace("/", "").length();
-            val numOfSlashOfHandlerPath = handlerPathOriginal.length() - handlerPathOriginal.replace("/", "")
-                                                                                            .length();
-
-            val requestWithHandlerParamsMatched = numOfHandlerParams > 0 && requestPath.startsWith(handlerPath)
-                                                  && numOfSlashOfRequestPath == numOfSlashOfHandlerPath;
-
-            if (requestWithHandlerParamsMatched) {
-                val elementsOfHandlerPath = handlerPathOriginal.split("/");
-                val elementsOfRequestPath = requestPath.split("/");
-                for (int i = 1; i < elementsOfHandlerPath.length; i++) {
-                    if (elementsOfHandlerPath[i].startsWith(":")) {
-                        val handlerParamKey = elementsOfHandlerPath[i].replace(":", "");
-                        val handlerParamValue = elementsOfRequestPath[i];
-                        requestContext.getParam().put(handlerParamKey, handlerParamValue);
-                    }
-                }
-            }
+            val binder = binderInit(h);
 
             if ((requestContext.getMethod() == h.getMethod() || (h.getMethod() == RequestMethod.ALL))
-                && (requestPath.equals(handlerPath) || requestWithHandlerParamsMatched)) {
+                && (binder.getRequestPath().equals(binder.getHandlerPath()) || binder
+                    .isRequestWithHandlerParamsMatched())) {
                 val handlerLinkedList = new LinkedList<>(Arrays.asList(h.handlers));
                 resolvePromiseChain(handlerLinkedList);
                 isFound = true;

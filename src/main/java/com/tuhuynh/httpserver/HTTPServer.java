@@ -11,8 +11,8 @@ import java.util.concurrent.Executors;
 import com.tuhuynh.httpserver.core.RequestBinderBase.BIOHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinderBase.BaseHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinderBase.RequestHandlerBIO;
-import com.tuhuynh.httpserver.core.bio.RequestPipelineBIO;
 import com.tuhuynh.httpserver.core.RequestUtils.RequestMethod;
+import com.tuhuynh.httpserver.core.bio.RequestPipelineBIO;
 
 import lombok.val;
 
