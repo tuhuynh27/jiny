@@ -1,26 +1,31 @@
-package com.tuhuynh.httpserver.core;
+package com.tuhuynh.httpserver.core.nio;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import com.tuhuynh.httpserver.core.RequestBinderBase;
 import com.tuhuynh.httpserver.core.RequestUtils.RequestMethod;
 
 import lombok.val;
 import lombok.var;
 
-public final class RequestBinderBIO extends RequestBinder {
-    private final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlerMetadata;
+public final class RequestBinderNIO extends RequestBinderBase {
+    private final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlerMetadata;
+    private CompletableFuture<HttpResponse> isDone = new CompletableFuture<>();
 
-    public RequestBinderBIO(RequestContext requestContext,
-                            ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlerMetadata) {
+    public RequestBinderNIO(RequestContext requestContext,
+                            ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlerMetadata) {
         super(requestContext);
         this.handlerMetadata = handlerMetadata;
     }
 
-    public HttpResponse getResponseObject() throws IOException {
-        for (var h : handlerMetadata) {
+    public CompletableFuture<HttpResponse> getResponseObject() throws Exception {
+        var isFound = false;
+
+        for (val h : handlerMetadata) {
             val indexOfQuestionMark = requestContext.getPath().indexOf('?');
             var requestPath =
                     indexOfQuestionMark == -1 ? requestContext.getPath() : requestContext.getPath().substring(0,
@@ -58,28 +63,37 @@ public final class RequestBinderBIO extends RequestBinder {
 
             if ((requestContext.getMethod() == h.getMethod() || (h.getMethod() == RequestMethod.ALL))
                 && (requestPath.equals(handlerPath) || requestWithHandlerParamsMatched)) {
-                try {
-                    // Handle middleware function chain
-                    for (int i = 0; i < h.handlers.length; i++) {
-                        val isLastItem = i == h.handlers.length - 1;
-                        val resultFromPreviousHandler = h.handlers[i].handleFunc(requestContext);
-                        if (!isLastItem && !resultFromPreviousHandler.isAllowNext()) {
-                            return resultFromPreviousHandler;
-                        } else {
-                            if (isLastItem) {
-                                return resultFromPreviousHandler;
-                            } else {
-                                continue;
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                    return HttpResponse.of("Internal Server Error").status(500);
-                }
+                val handlerLinkedList = new LinkedList<>(Arrays.asList(h.handlers));
+                resolvePromiseChain(handlerLinkedList);
+                isFound = true;
+                break;
             }
         }
 
-        return HttpResponse.of("Not found").status(404);
+        if (!isFound) {
+            isDone.complete(HttpResponse.of("Not found").status(404));
+        }
+
+        return isDone;
+    }
+
+    private void resolvePromiseChain(final LinkedList<RequestHandlerNIO> handlerQueue) throws Exception {
+        if (handlerQueue.size() == 1) {
+            handlerQueue.removeFirst().handleFunc(requestContext).thenAccept(result -> {
+                isDone.complete(result);
+            });
+        } else {
+            handlerQueue.removeFirst().handleFunc(requestContext).thenAccept(result -> {
+                if (result.isAllowNext()) {
+                    try {
+                        resolvePromiseChain(handlerQueue);
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                } else {
+                    isDone.complete(result);
+                }
+            });
+        }
     }
 }

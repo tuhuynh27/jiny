@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import com.tuhuynh.httpserver.core.ChannelHandlerNIO;
-import com.tuhuynh.httpserver.core.RequestBinder;
-import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
-import com.tuhuynh.httpserver.core.RequestBinder.NIOHandlerMetadata;
-import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerNIO;
-import com.tuhuynh.httpserver.core.RequestPipelineNIO;
+import com.tuhuynh.httpserver.core.nio.ChannelHandlerNIO;
+import com.tuhuynh.httpserver.core.RequestBinderBase;
+import com.tuhuynh.httpserver.core.RequestBinderBase.BaseHandlerMetadata;
+import com.tuhuynh.httpserver.core.RequestBinderBase.NIOHandlerMetadata;
+import com.tuhuynh.httpserver.core.RequestBinderBase.RequestHandlerNIO;
+import com.tuhuynh.httpserver.core.nio.RequestPipelineNIO;
 import com.tuhuynh.httpserver.core.RequestUtils.RequestMethod;
 
 import lombok.RequiredArgsConstructor;
@@ -114,7 +114,7 @@ public final class NIOHTTPServer implements Runnable {
     private static class ServerAcceptor implements ChannelHandlerNIO {
         private final ServerSocketChannel serverSocket;
         private final Selector selector;
-        private final ArrayList<BaseHandlerMetadata<RequestBinder.RequestHandlerNIO>> handlers;
+        private final ArrayList<BaseHandlerMetadata<RequestBinderBase.RequestHandlerNIO>> handlers;
 
         @Override
         public void read() throws Exception {

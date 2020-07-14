@@ -1,4 +1,4 @@
-package com.tuhuynh.httpserver.core;
+package com.tuhuynh.httpserver.core.bio;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,8 +7,9 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
-import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerBIO;
+import com.tuhuynh.httpserver.core.RequestBinderBase.BaseHandlerMetadata;
+import com.tuhuynh.httpserver.core.RequestBinderBase.RequestHandlerBIO;
+import com.tuhuynh.httpserver.core.RequestUtils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;

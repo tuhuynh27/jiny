@@ -11,7 +11,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class RequestBinder {
+public class RequestBinderBase {
     protected final RequestContext requestContext;
 
     public interface RequestHandlerBase {
@@ -51,9 +51,9 @@ public class RequestBinder {
     @RequiredArgsConstructor
     @Getter
     public abstract static class BaseHandlerMetadata<T extends RequestHandlerBase> {
-        protected RequestMethod method;
-        protected String path;
-        protected T[] handlers;
+        public RequestMethod method;
+        public String path;
+        public T[] handlers;
     }
 
     @Getter

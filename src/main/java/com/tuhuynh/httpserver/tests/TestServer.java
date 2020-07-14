@@ -5,8 +5,8 @@ import java.util.Random;
 
 import com.tuhuynh.httpserver.HTTPClient;
 import com.tuhuynh.httpserver.HTTPServer;
-import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
-import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerBIO;
+import com.tuhuynh.httpserver.core.RequestBinderBase.HttpResponse;
+import com.tuhuynh.httpserver.core.RequestBinderBase.RequestHandlerBIO;
 
 import lombok.val;
 

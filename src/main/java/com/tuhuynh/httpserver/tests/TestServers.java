@@ -5,7 +5,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.tuhuynh.httpserver.HTTPServer;
 import com.tuhuynh.httpserver.NIOHTTPServer;
-import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
+import com.tuhuynh.httpserver.core.RequestBinderBase.HttpResponse;
 
 import lombok.val;
 

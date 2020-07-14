@@ -1,4 +1,4 @@
-package com.tuhuynh.httpserver.core;
+package com.tuhuynh.httpserver.core.nio;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -8,8 +8,10 @@ import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
-import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerBase;
+import com.tuhuynh.httpserver.core.RequestBinderBase.BaseHandlerMetadata;
+import com.tuhuynh.httpserver.core.RequestBinderBase.RequestHandlerBase;
+import com.tuhuynh.httpserver.core.RequestBinderBase.RequestHandlerNIO;
+import com.tuhuynh.httpserver.core.RequestUtils;
 
 import lombok.NoArgsConstructor;
 import lombok.val;
@@ -19,10 +21,10 @@ public final class RequestPipelineNIO implements ChannelHandlerNIO, RequestHandl
     private final SocketChannel socketChannel;
     private final Selector selector;
     private final LinkedList<String> messageQueue;
-    private final ArrayList<BaseHandlerMetadata<RequestBinder.RequestHandlerNIO>> handlers;
+    private final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlers;
 
     public RequestPipelineNIO(final SocketChannel socketChannel, final Selector selector,
-                              final ArrayList<BaseHandlerMetadata<RequestBinder.RequestHandlerNIO>> handlers)
+                              final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlers)
             throws IOException {
         this.socketChannel = socketChannel;
         this.selector = selector;
@@ -81,7 +83,7 @@ public final class RequestPipelineNIO implements ChannelHandlerNIO, RequestHandl
     }
 
     @NoArgsConstructor
-    static final class MessageCodec {
+    private static final class MessageCodec {
         static ByteBuffer encode(final String msg) {
             return ByteBuffer.wrap(msg.getBytes());
         }
