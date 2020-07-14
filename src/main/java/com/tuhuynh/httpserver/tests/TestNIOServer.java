@@ -36,7 +36,7 @@ public final class TestNIOServer {
                 completableFuture.complete(HttpResponse.of("Work has done, current thread is: " + thread));
             });
 
-            return HttpResponse.promise(completableFuture);
+            return HttpResponse.of(completableFuture);
         });
 
         // This request will block the main thread (event loop)

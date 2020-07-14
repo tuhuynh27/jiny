@@ -61,10 +61,6 @@ public final class RequestBinder {
             if ((requestContext.getMethod() == h.getMethod() || (h.getMethod() == RequestMethod.ALL))
                 && (requestPath.equals(handlerPath) || requestWithHandlerParamsMatched)) {
                 try {
-                    if (h.handlers.length == 1) {
-                        return h.handlers[0].handleFunc(requestContext);
-                    }
-
                     // Handle middleware function chain
                     for (int i = 0; i < h.handlers.length; i++) {
                         val isLastItem = i == h.handlers.length - 1;
@@ -125,19 +121,18 @@ public final class RequestBinder {
 
     @Getter
     public static final class HttpResponse {
-        public static HttpResponse of(final String text) {
-            return new HttpResponse(200, text, true);
-        }
-
         public static HttpResponse next() { return new HttpResponse(0, "", true); }
 
         public static HttpResponse reject(final String errorText) {
             return new HttpResponse(400, errorText, false);
         }
 
-        public static CompletableFuture<HttpResponse> promise(
-                final CompletableFuture<HttpResponse> completableFuture) {
+        public static CompletableFuture<HttpResponse> of(final CompletableFuture<HttpResponse> completableFuture) {
             return completableFuture;
+        }
+
+        public static <T> HttpResponse of(final T t) {
+            return new HttpResponse(200, t.toString(), true);
         }
 
         private int httpStatusCode;
@@ -148,10 +143,6 @@ public final class RequestBinder {
             this.httpStatusCode = httpStatusCode;
             this.responseString = responseString;
             this.allowNext = allowNext;
-        }
-
-        public <T> HttpResponse of(T t) {
-            return new HttpResponse(200, t.toString(), true);
         }
 
         public HttpResponse status(final int httpStatusCode) {

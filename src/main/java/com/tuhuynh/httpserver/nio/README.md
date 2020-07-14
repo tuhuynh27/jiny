@@ -46,12 +46,12 @@ public final class TestNIOServer {
                 } catch (InterruptedException e) {
                     System.out.println(e.getMessage());
                 }
-
+__
                 val thread = Thread.currentThread().getName();
                 completableFuture.complete(HttpResponse.of("Work has done, current thread is: " + thread));
             });
 
-            return HttpResponse.promise(completableFuture);
+            return HttpResponse.of(completableFuture);
         });
 
         // This request will block the main thread (event loop)
