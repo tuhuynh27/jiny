@@ -46,7 +46,7 @@ public final class TestNIOServer {
                 } catch (InterruptedException e) {
                     System.out.println(e.getMessage());
                 }
-__
+
                 val thread = Thread.currentThread().getName();
                 completableFuture.complete(HttpResponse.of("Work has done, current thread is: " + thread));
             });
@@ -56,9 +56,19 @@ __
 
         // This request will block the main thread (event loop)
         server.use("/block", ctx -> {
-            Thread.sleep(3000);
+            Thread.sleep(10 * 1000);
             return CompletableFuture.completedFuture(HttpResponse.of("Hello World"));
         });
+
+        // Middleware
+        server.get("/protected",ctx -> {
+            val authorizationHeader = ctx.getHeader().get("Authorization");
+            if (!authorizationHeader.startsWith("Bearer ")) {
+                return CompletableFuture.completedFuture(HttpResponse.reject("Invalid token").status(401));
+            }
+            ctx.putHandlerData("username", "tuhuynh");
+            return CompletableFuture.completedFuture(HttpResponse.next());
+        },  ctx -> CompletableFuture.completedFuture(HttpResponse.of("Login success, hello: " + ctx.getData("username"))));
 
         server.start();
     }
