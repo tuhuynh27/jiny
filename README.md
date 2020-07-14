@@ -185,21 +185,21 @@ public final class LightWeightServer {
 
 Lines of code: 1052
 ```
-    52 ./src/main/java/com/tuhuynh/httpserver/core/bio/RequestBinderBIO.java
-    63 ./src/main/java/com/tuhuynh/httpserver/core/bio/RequestPipelineBIO.java
-   175 ./src/main/java/com/tuhuynh/httpserver/core/RequestBinderBase.java
-    66 ./src/main/java/com/tuhuynh/httpserver/core/nio/RequestBinderNIO.java
-    95 ./src/main/java/com/tuhuynh/httpserver/core/nio/RequestPipelineNIO.java
-     7 ./src/main/java/com/tuhuynh/httpserver/core/nio/ChannelHandlerNIO.java
-   126 ./src/main/java/com/tuhuynh/httpserver/core/RequestUtils.java
-    14 ./src/main/java/com/tuhuynh/httpserver/tests/TestClient.java
-    59 ./src/main/java/com/tuhuynh/httpserver/tests/TestNIOServer.java
-    37 ./src/main/java/com/tuhuynh/httpserver/tests/TestServers.java
-    84 ./src/main/java/com/tuhuynh/httpserver/tests/TestServer.java
-    71 ./src/main/java/com/tuhuynh/httpserver/HTTPServer.java
-   129 ./src/main/java/com/tuhuynh/httpserver/NIOHTTPServer.java
-    74 ./src/main/java/com/tuhuynh/httpserver/HTTPClient.java
-  1052 total
+  62 ./src/main/java/com/tuhuynh/httpserver/core/bio/RequestBinderBIO.java
+  64 ./src/main/java/com/tuhuynh/httpserver/core/bio/RequestPipelineBIO.java
+ 189 ./src/main/java/com/tuhuynh/httpserver/core/RequestBinderBase.java
+  74 ./src/main/java/com/tuhuynh/httpserver/core/nio/RequestBinderNIO.java
+  35 ./src/main/java/com/tuhuynh/httpserver/core/nio/EventLoopThreadFactory.java
+ 112 ./src/main/java/com/tuhuynh/httpserver/core/nio/RequestPipelineNIO.java
+  29 ./src/main/java/com/tuhuynh/httpserver/core/nio/AsyncHelper.java
+ 130 ./src/main/java/com/tuhuynh/httpserver/core/RequestUtils.java
+  14 ./src/main/java/com/tuhuynh/httpserver/tests/TestClient.java
+  59 ./src/main/java/com/tuhuynh/httpserver/tests/TestNIOServer.java
+  93 ./src/main/java/com/tuhuynh/httpserver/tests/TestServer.java
+  79 ./src/main/java/com/tuhuynh/httpserver/HTTPServer.java
+  93 ./src/main/java/com/tuhuynh/httpserver/NIOHTTPServer.java
+  74 ./src/main/java/com/tuhuynh/httpserver/HTTPClient.java
+1107 total
 ```
 
 ## Side project

@@ -12,6 +12,7 @@ public final class AsyncHelper {
         CompletableFuture<HttpResponse> completableFuture = new CompletableFuture<>();
         return new AsyncHelper(completableFuture);
     }
+
     CompletableFuture<HttpResponse> promise;
 
     private AsyncHelper(final CompletableFuture<HttpResponse> promise) {

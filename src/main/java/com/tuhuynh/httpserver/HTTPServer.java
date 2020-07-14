@@ -36,6 +36,7 @@ public final class HTTPServer {
         val newHandlers = new BIOHandlerMetadata(method, path, handlers);
         this.handlers.add(newHandlers);
     }
+
     public void use(final RequestHandlerBIO... handlers) {
         middlewares.addAll(Arrays.stream(handlers)
                                  .collect(Collectors.toCollection(ArrayList::new)));

@@ -2,64 +2,71 @@ package com.tuhuynh.httpserver.core.nio;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.SocketChannel;
+import java.nio.channels.AsynchronousSocketChannel;
+import java.nio.channels.CompletionHandler;
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.concurrent.CompletableFuture;
 
 import com.tuhuynh.httpserver.core.RequestBinderBase.BaseHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinderBase.RequestHandlerNIO;
 import com.tuhuynh.httpserver.core.RequestUtils;
 
 import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.val;
 import lombok.var;
 
-public final class RequestPipelineNIO implements ChannelHandlerNIO {
-    private final SocketChannel socketChannel;
-    private final Selector selector;
-    private final LinkedList<String> messageQueue;
+public class RequestPipelineNIO {
+    private final AsynchronousSocketChannel clientSocketChannel;
+    private final ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
     private final ArrayList<RequestHandlerNIO> middlewares;
     private final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlers;
 
-    public RequestPipelineNIO(final SocketChannel socketChannel, final Selector selector,
+    public RequestPipelineNIO(final AsynchronousSocketChannel clientSocketChannel,
                               final ArrayList<RequestHandlerNIO> middlewares,
                               final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlers)
             throws IOException {
-        this.socketChannel = socketChannel;
-        this.selector = selector;
+        this.clientSocketChannel = clientSocketChannel;
         this.middlewares = middlewares;
         this.handlers = handlers;
-
-        messageQueue = new LinkedList<>();
-
-        socketChannel.configureBlocking(false);
-        socketChannel.register(selector, SelectionKey.OP_READ).attach(this);
-
-        selector.wakeup();
     }
 
-    @Override
-    public void read() throws Exception {
-        val buffer = ByteBuffer.allocate(1024);
-        socketChannel.read(buffer);
-
-        val msg = MessageCodec.decode(buffer);
-        messageQueue.addLast(msg);
-
-        socketChannel.register(selector, SelectionKey.OP_WRITE).attach(this);
-        selector.wakeup();
-    }
-
-    @Override
-    public void write() throws Exception {
-        if (messageQueue.isEmpty()) {
-            socketChannel.register(selector, SelectionKey.OP_READ).attach(this);
-            return;
+    public void run() throws Exception {
+        if (clientSocketChannel != null && clientSocketChannel.isOpen()) {
+            read().thenAccept(msg -> {
+                try {
+                    write(msg);
+                } catch (Exception e) {
+                    e.getStackTrace();
+                }
+            });
+            byteBuffer.clear();
+        } else {
+            System.out.println("DCM");
         }
+    }
 
-        val msg = messageQueue.removeFirst();
+    private CompletableFuture<String> read() {
+        CompletableFuture<String> promise = new CompletableFuture<>();
+
+        clientSocketChannel.read(byteBuffer, null, new CompletionHandler<Integer, Object>() {
+            @Override
+            public void completed(Integer result, Object attachment) {
+                val msg = MessageCodec.decode(byteBuffer);
+                byteBuffer.flip();
+                promise.complete(msg);
+            }
+
+            @Override
+            public void failed(Throwable exc, Object attachment) {
+                System.out.println(exc.getMessage());
+            }
+        });
+
+        return promise;
+    }
+
+    private void write(final String msg) throws Exception {
         String[] req;
         var body = "";
         val requestParts = msg.split("\n\r");
@@ -68,30 +75,37 @@ public final class RequestPipelineNIO implements ChannelHandlerNIO {
             body = requestParts.length == 2 ? requestParts[1].trim() : "";
 
             val requestMetadata = RequestUtils.parseRequest(req, body);
-            val responseObject = new RequestBinderNIO(requestMetadata, middlewares, handlers).getResponseObject();
+            val responseObject = new RequestBinderNIO(requestMetadata, middlewares, handlers)
+                    .getResponseObject();
 
             responseObject.thenAccept(responseObjectReturned -> {
                 val responseString = RequestUtils.parseResponse(responseObjectReturned);
 
-                try {
-                    socketChannel.write(MessageCodec.encode(responseString));
-                    socketChannel.close();
-                } catch (IOException e) {
-                    System.out.println(e.getMessage());
-                }
+                clientSocketChannel.write(MessageCodec.encode(responseString), null,
+                                          new CompletionHandler<Integer, Object>() {
+                                              @SneakyThrows
+                                              @Override
+                                              public void completed(Integer result, Object attachment) {
+                                                  clientSocketChannel.close();
+                                              }
+
+                                              @SneakyThrows
+                                              @Override
+                                              public void failed(Throwable exc, Object attachment) {
+                                                  System.out.println(exc.getMessage());
+                                              }
+                                          });
             });
-        } else {
-            socketChannel.close();
         }
     }
 
     @NoArgsConstructor
-    private static final class MessageCodec {
-        static ByteBuffer encode(final String msg) {
+    public static final class MessageCodec {
+        public static ByteBuffer encode(final String msg) {
             return ByteBuffer.wrap(msg.getBytes());
         }
 
-        static String decode(final ByteBuffer buffer) {
+        public static String decode(final ByteBuffer buffer) {
             return new String(buffer.array(), buffer.arrayOffset(), buffer.remaining());
         }
     }

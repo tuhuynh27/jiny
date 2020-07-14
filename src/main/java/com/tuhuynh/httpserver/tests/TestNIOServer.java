@@ -10,15 +10,8 @@ import lombok.val;
 
 public final class TestNIOServer {
     public static void main(String[] args) throws Exception {
-        val workerPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        val workerPool = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() * 2);
         val server = NIOHTTPServer.port(1234);
-
-        // Global middleware
-        server.use(ctx -> {
-            System.out.println("This is a global middleware");
-
-            return HttpResponse.nextAsync();
-        });
 
         server.use("/", ctx -> HttpResponse.ofAsync("Hello World"));
 

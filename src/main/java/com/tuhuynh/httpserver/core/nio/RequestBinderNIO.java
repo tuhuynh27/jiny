@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.tuhuynh.httpserver.core.RequestBinderBase;
 import com.tuhuynh.httpserver.core.RequestUtils.RequestMethod;
@@ -33,8 +35,10 @@ public final class RequestBinderNIO extends RequestBinderBase {
             if ((requestContext.getMethod() == h.getMethod() || (h.getMethod() == RequestMethod.ALL))
                 && (binder.getRequestPath().equals(binder.getHandlerPath()) || binder
                     .isRequestWithHandlerParamsMatched())) {
-                middlewares.addAll(Arrays.asList(h.handlers));
-                val handlerLinkedList = new LinkedList<>(middlewares);
+                val handlers = Arrays.asList(h.handlers);
+                val handlersAndMiddlewares = Stream.concat(middlewares.stream(), handlers.stream()).collect(
+                        Collectors.toList());
+                val handlerLinkedList = new LinkedList<>(handlersAndMiddlewares);
                 resolvePromiseChain(handlerLinkedList);
                 isFound = true;
                 break;

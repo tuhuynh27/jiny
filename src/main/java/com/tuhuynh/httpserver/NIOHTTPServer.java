@@ -2,52 +2,37 @@ package com.tuhuynh.httpserver;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.AsynchronousChannelGroup;
+import java.nio.channels.AsynchronousServerSocketChannel;
+import java.nio.channels.AsynchronousSocketChannel;
+import java.nio.channels.CompletionHandler;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.stream.Collector;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
-import com.tuhuynh.httpserver.core.RequestBinderBase;
 import com.tuhuynh.httpserver.core.RequestBinderBase.BaseHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinderBase.NIOHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinderBase.RequestHandlerNIO;
 import com.tuhuynh.httpserver.core.RequestUtils.RequestMethod;
-import com.tuhuynh.httpserver.core.nio.ChannelHandlerNIO;
+import com.tuhuynh.httpserver.core.nio.EventLoopThreadFactory;
 import com.tuhuynh.httpserver.core.nio.RequestPipelineNIO;
 
-import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.val;
 
-public final class NIOHTTPServer implements Runnable {
+public final class NIOHTTPServer {
     public static NIOHTTPServer port(final int serverPort) {
         return new NIOHTTPServer(serverPort);
     }
 
     private final int serverPort;
-    private Selector selector;
     private ArrayList<RequestHandlerNIO> middlewares = new ArrayList<>();
     private ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlers = new ArrayList<>();
 
     private NIOHTTPServer(final int serverPort) {
         this.serverPort = serverPort;
-    }
-
-    private static void dispatch(final SelectionKey selectionKey) {
-        val handler = (ChannelHandlerNIO) selectionKey.attachment();
-        try {
-            if (selectionKey.isReadable() || selectionKey.isAcceptable()) {
-                handler.read();
-            } else if (selectionKey.isWritable()) {
-                handler.write();
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
     }
 
     public void addHandler(final RequestMethod method, final String path,
@@ -58,7 +43,7 @@ public final class NIOHTTPServer implements Runnable {
 
     public void use(final RequestHandlerNIO... handlers) {
         middlewares.addAll(Arrays.stream(handlers)
-                             .collect(Collectors.toCollection(ArrayList::new)));
+                                 .collect(Collectors.toCollection(ArrayList::new)));
     }
 
     public void use(final String path, final RequestHandlerNIO... handlers) {
@@ -86,54 +71,23 @@ public final class NIOHTTPServer implements Runnable {
         this.handlers.add(newHandlers);
     }
 
-    public void start() throws IOException {
-        selector = Selector.open();
-        Executor eventLoop = Executors.newSingleThreadExecutor(runnable -> {
-            val thread = new Thread(runnable);
-            thread.setName("NIOEventLoop");
-            return thread;
-        });
-        ServerSocketChannel serverSocket = ServerSocketChannel.open();
-        serverSocket.bind(new InetSocketAddress(serverPort));
-        serverSocket.configureBlocking(false);
-        serverSocket.register(selector, SelectionKey.OP_ACCEPT).attach(
-                new ServerAcceptor(serverSocket, selector, middlewares, handlers));
-        System.out.println("Started NIO HTTP Server on port " + serverPort);
-        eventLoop.execute(this);
-    }
-
-    @Override
-    public void run() {
-        for (; ; ) {
-            try {
-                if (selector.select(100L) == 0) {
-                    continue;
-                }
-
-                val selectionKeys = selector.selectedKeys();
-                selectionKeys.forEach(NIOHTTPServer::dispatch);
-                selectionKeys.clear();
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
+    public void start() throws IOException, InterruptedException, ExecutionException, TimeoutException {
+        val group = AsynchronousChannelGroup.withFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2,
+                                                                 new EventLoopThreadFactory("event-loop"));
+        val serverSocketChannel = AsynchronousServerSocketChannel.open(group);
+        serverSocketChannel.bind(new InetSocketAddress(serverPort));
+        serverSocketChannel.accept(null, new CompletionHandler<AsynchronousSocketChannel, Object>() {
+            @SneakyThrows
+            @Override
+            public void completed(AsynchronousSocketChannel clientSocketChannel, Object attachment) {
+                serverSocketChannel.accept(null, this);
+                new RequestPipelineNIO(clientSocketChannel, middlewares, handlers).run();
             }
-        }
-    }
 
-    @RequiredArgsConstructor
-    private static class ServerAcceptor implements ChannelHandlerNIO {
-        private final ServerSocketChannel serverSocket;
-        private final Selector selector;
-        private final ArrayList<RequestBinderBase.RequestHandlerNIO> middlewares;
-        private final ArrayList<BaseHandlerMetadata<RequestBinderBase.RequestHandlerNIO>> handlers;
-
-        @Override
-        public void read() throws Exception {
-            new RequestPipelineNIO(serverSocket.accept(), selector, middlewares, handlers);
-        }
-
-        @Override
-        public void write() throws Exception {
-            throw new UnsupportedOperationException();
-        }
+            @Override
+            public void failed(Throwable exc, Object attachment) {
+                System.out.println(exc.getMessage());
+            }
+        });
     }
 }

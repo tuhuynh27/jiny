@@ -3,6 +3,8 @@ package com.tuhuynh.httpserver.core.bio;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.tuhuynh.httpserver.core.RequestBinderBase;
 import com.tuhuynh.httpserver.core.RequestUtils.RequestMethod;
@@ -31,10 +33,13 @@ public final class RequestBinderBIO extends RequestBinderBase {
                     .isRequestWithHandlerParamsMatched())) {
                 try {
                     // Handle middleware function chain
-                    middlewares.addAll(Arrays.asList(h.handlers));
-                    for (int i = 0; i < middlewares.size(); i++) {
-                        val isLastItem = i == middlewares.size()- 1;
-                        val resultFromPreviousHandler = middlewares.get(i).handleFunc(requestContext);
+                    val handlers = Arrays.asList(h.handlers);
+                    val handlersAndMiddlewares = Stream.concat(middlewares.stream(), handlers.stream()).collect(
+                            Collectors.toList());
+                    for (int i = 0; i < handlersAndMiddlewares.size(); i++) {
+                        val isLastItem = i == handlersAndMiddlewares.size() - 1;
+                        val resultFromPreviousHandler = handlersAndMiddlewares.get(i).handleFunc(
+                                requestContext);
                         if (!isLastItem && !resultFromPreviousHandler.isAllowNext()) {
                             return resultFromPreviousHandler;
                         } else {
