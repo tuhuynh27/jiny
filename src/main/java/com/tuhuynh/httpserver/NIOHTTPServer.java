@@ -9,10 +9,12 @@ import java.util.ArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import com.tuhuynh.httpserver.core.ChannelHandlerNIO;
 import com.tuhuynh.httpserver.core.RequestBinder;
 import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinder.NIOHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerNIO;
+import com.tuhuynh.httpserver.core.RequestPipelineNIO;
 import com.tuhuynh.httpserver.core.RequestUtils.RequestMethod;
 
 import lombok.RequiredArgsConstructor;

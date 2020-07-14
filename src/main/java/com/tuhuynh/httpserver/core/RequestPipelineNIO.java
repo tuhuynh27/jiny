@@ -1,4 +1,4 @@
-package com.tuhuynh.httpserver;
+package com.tuhuynh.httpserver.core;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -8,11 +8,8 @@ import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import com.tuhuynh.httpserver.core.RequestBinder;
 import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerBase;
-import com.tuhuynh.httpserver.core.RequestBinderNIO;
-import com.tuhuynh.httpserver.core.RequestUtils;
 
 import lombok.NoArgsConstructor;
 import lombok.val;
