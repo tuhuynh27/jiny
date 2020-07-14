@@ -18,30 +18,17 @@ import com.tuhuynh.httpserver.nio.RequestHandlerNIO;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 
-@RequiredArgsConstructor
 public final class NIOHTTPServer implements Runnable {
-    public static NIOHTTPServer port(final int serverPort) throws IOException {
-        val reactor = new NIOHTTPServer();
-        reactor.serverSocket.bind(new InetSocketAddress(serverPort));
-        return reactor;
+    public static NIOHTTPServer port(final int serverPort) {
+        return new NIOHTTPServer(serverPort);
     }
 
-    private final Selector selector;
-    private final Executor eventLoop;
-    private final ServerSocketChannel serverSocket;
+    private final int serverPort;
+    private Selector selector;
     private ArrayList<HandlerMetadata> handlers = new ArrayList<>();
 
-    private NIOHTTPServer() throws IOException {
-        selector = Selector.open();
-        eventLoop = Executors.newSingleThreadExecutor(runnable -> {
-            val thread = new Thread(runnable);
-            thread.setName("NIOEventLoop");
-            return thread;
-        });
-        serverSocket = ServerSocketChannel.open();
-        serverSocket.configureBlocking(false);
-        serverSocket.register(selector, SelectionKey.OP_ACCEPT).attach(
-                new ServerAcceptor(serverSocket, selector, handlers));
+    private NIOHTTPServer(final int serverPort) {
+        this.serverPort = serverPort;
     }
 
     private static void dispatch(final SelectionKey selectionKey) {
@@ -93,7 +80,19 @@ public final class NIOHTTPServer implements Runnable {
         this.handlers.add(newHandlers);
     }
 
-    public void start() {
+    public void start() throws IOException {
+        selector = Selector.open();
+        Executor eventLoop = Executors.newSingleThreadExecutor(runnable -> {
+            val thread = new Thread(runnable);
+            thread.setName("NIOEventLoop");
+            return thread;
+        });
+        ServerSocketChannel serverSocket = ServerSocketChannel.open();
+        serverSocket.bind(new InetSocketAddress(serverPort));
+        serverSocket.configureBlocking(false);
+        serverSocket.register(selector, SelectionKey.OP_ACCEPT).attach(
+                new ServerAcceptor(serverSocket, selector, handlers));
+        System.out.println("Started NIO HTTP Server on port " + serverPort);
         eventLoop.execute(this);
     }
 

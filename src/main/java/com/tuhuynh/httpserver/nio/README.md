@@ -8,7 +8,7 @@
 
 Install [com.tuhuynh.httpserver](https://github.com/huynhminhtufu/httpserver/packages/309436)
 
-This NIO HTTP Server is fully compatible with [HTTPServer's API](https://github.com/huynhminhtufu/httpserver#api-example)
+This NIO HTTP Server is fully compatible with [HTTPServer's API](https://github.com/huynhminhtufu/httpserver#api-examples)
 
 ```java
 public final class MiniServer {
