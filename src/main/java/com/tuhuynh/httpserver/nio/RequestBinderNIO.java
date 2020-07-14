@@ -23,7 +23,7 @@ public final class RequestBinderNIO {
     private final ArrayList<HandlerMetadata> handlerMetadata;
     private CompletableFuture<HttpResponse> isDone = new CompletableFuture<>();
 
-    public CompletableFuture<HttpResponse> handlersProcess() throws Exception {
+    public CompletableFuture<HttpResponse> getResponseObject() throws Exception {
         var isFound = false;
 
         for (val h : handlerMetadata) {
@@ -65,7 +65,7 @@ public final class RequestBinderNIO {
             if ((requestContext.getMethod() == h.getMethod() || (h.getMethod() == RequestMethod.ALL))
                 && (requestPath.equals(handlerPath) || requestWithHandlerParamsMatched)) {
                 val handlerLinkedList = new LinkedList<>(Arrays.asList(h.handlers));
-                doProcess(handlerLinkedList);
+                resolvePromiseChain(handlerLinkedList);
                 isFound = true;
                 break;
             }
@@ -78,16 +78,16 @@ public final class RequestBinderNIO {
         return isDone;
     }
 
-    private void doProcess(final LinkedList<RequestHandler> handlerLinkedList) throws Exception {
-        if (handlerLinkedList.size() == 1) {
-            handlerLinkedList.removeFirst().handleFunc(requestContext).thenAccept(result -> {
+    private void resolvePromiseChain(final LinkedList<RequestHandler> handlerQueue) throws Exception {
+        if (handlerQueue.size() == 1) {
+            handlerQueue.removeFirst().handleFunc(requestContext).thenAccept(result -> {
                 isDone.complete(result);
             });
         } else {
-            handlerLinkedList.removeFirst().handleFunc(requestContext).thenAccept(result -> {
+            handlerQueue.removeFirst().handleFunc(requestContext).thenAccept(result -> {
                 if (result.isAllowNext()) {
                     try {
-                        doProcess(handlerLinkedList);
+                        resolvePromiseChain(handlerQueue);
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
                     }

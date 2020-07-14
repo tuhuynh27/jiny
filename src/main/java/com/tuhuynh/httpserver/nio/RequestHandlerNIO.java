@@ -65,7 +65,7 @@ public final class RequestHandlerNIO implements ChannelHandlerNIO {
 
         val requestMetadata = RequestUtils.parseRequest(msgList, body);
 
-        val responseObject = new RequestBinderNIO(requestMetadata, handlers).handlersProcess();
+        val responseObject = new RequestBinderNIO(requestMetadata, handlers).getResponseObject();
 
         responseObject.thenAccept(responseObjectReturned -> {
             val responseString = RequestUtils.parseResponse(responseObjectReturned);

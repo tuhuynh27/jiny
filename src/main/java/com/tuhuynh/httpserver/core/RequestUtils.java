@@ -110,8 +110,8 @@ public final class RequestUtils {
                     URLDecoder.decode(key, "UTF-8"),
                     URLDecoder.decode(value, "UTF-8")
             );
-        } catch (UnsupportedEncodingException ex) {
-            System.out.println(ex.getMessage());
+        } catch (UnsupportedEncodingException e) {
+            System.out.println(e.getMessage());
             return new SimpleImmutableEntry<>("", "");
         }
     }

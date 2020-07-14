@@ -79,8 +79,8 @@ public final class RequestBinder {
                             }
                         }
                     }
-                } catch (Exception ex) {
-                    System.out.println(ex.getMessage());
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
                     return HttpResponse.of("Internal Server Error").status(500);
                 }
             }
@@ -135,7 +135,8 @@ public final class RequestBinder {
             return new HttpResponse(400, errorText, false);
         }
 
-        public static CompletableFuture<HttpResponse> promise(final CompletableFuture<HttpResponse> completableFuture) {
+        public static CompletableFuture<HttpResponse> promise(
+                final CompletableFuture<HttpResponse> completableFuture) {
             return completableFuture;
         }
 

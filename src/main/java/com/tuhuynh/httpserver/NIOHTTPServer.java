@@ -25,6 +25,7 @@ public final class NIOHTTPServer implements Runnable {
         reactor.serverSocket.bind(new InetSocketAddress(serverPort));
         return reactor;
     }
+
     private final Selector selector;
     private final Executor eventLoop;
     private final ServerSocketChannel serverSocket;
@@ -51,8 +52,8 @@ public final class NIOHTTPServer implements Runnable {
             } else if (selectionKey.isWritable()) {
                 handler.write();
             }
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -100,15 +101,15 @@ public final class NIOHTTPServer implements Runnable {
     public void run() {
         for (; ; ) {
             try {
-                if (selector.select() == 0) {
+                if (selector.select(100L) == 0) {
                     continue;
                 }
 
                 val selectionKeys = selector.selectedKeys();
                 selectionKeys.forEach(NIOHTTPServer::dispatch);
                 selectionKeys.clear();
-            } catch (IOException ex) {
-                System.out.println(ex.getMessage());
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
             }
         }
     }

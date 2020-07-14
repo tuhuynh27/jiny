@@ -12,7 +12,7 @@ import lombok.val;
 
 public final class TestServer {
     public static void main(String[] args) throws IOException {
-        val server = HTTPServer.port(8080);
+        val server = HTTPServer.port(1234);
 
         server.use("/", ctx -> HttpResponse.of("Hello World"));
         server.post("/echo", ctx -> HttpResponse.of(ctx.getBody()));
