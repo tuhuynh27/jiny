@@ -58,28 +58,29 @@ public final class RequestPipelineNIO implements ChannelHandlerNIO, RequestHandl
         }
 
         val msg = messageQueue.removeFirst();
-        val msgList = msg.split("\n");
-
+        String[] req = { "" };
         var body = "";
         val requestParts = msg.split("\n\r");
         if (requestParts.length == 2) {
+            req = requestParts[0].trim().split("\n");
             body = requestParts[1].trim();
+
+            val requestMetadata = RequestUtils.parseRequest(req, body);
+            val responseObject = new RequestBinderNIO(requestMetadata, handlers).getResponseObject();
+
+            responseObject.thenAccept(responseObjectReturned -> {
+                val responseString = RequestUtils.parseResponse(responseObjectReturned);
+
+                try {
+                    socketChannel.write(MessageCodec.encode(responseString));
+                    socketChannel.close();
+                } catch (IOException e) {
+                    System.out.println(e.getMessage());
+                }
+            });
+        } else {
+            socketChannel.close();
         }
-
-        val requestMetadata = RequestUtils.parseRequest(msgList, body);
-
-        val responseObject = new RequestBinderNIO(requestMetadata, handlers).getResponseObject();
-
-        responseObject.thenAccept(responseObjectReturned -> {
-            val responseString = RequestUtils.parseResponse(responseObjectReturned);
-
-            try {
-                socketChannel.write(MessageCodec.encode(responseString));
-                socketChannel.close();
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
-            }
-        });
     }
 
     @NoArgsConstructor

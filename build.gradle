@@ -38,7 +38,7 @@ dependencies {
 }
 
 ext {
-    javaMainClass = 'com.tuhuynh.httpserver.tests.TestServer'
+    javaMainClass = 'com.tuhuynh.httpserver.tests.TestNIOServer'
 }
 
 application {

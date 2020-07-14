@@ -8,7 +8,7 @@ I build this for my [LINE Bot webhook server](https://github.com/huynhminhtufu/l
 
 There seems to be this perception that Java in itself is lacking some features that facilitate proper application development (unlike like many feature of [Go](https://golang.org/pkg/net/http/)).
 
-**Experimental: [Non-blocking mode HTTP Server](https://github.com/huynhminhtufu/httpserver/tree/master/src/main/java/com/tuhuynh/httpserver/nio)**
+**Experimental: [Non-blocking mode HTTP Server](https://github.com/huynhminhtufu/httpserver/tree/master/src/main/java/com/tuhuynh/httpserver/core/nio)**
 
 ## Installation
 
