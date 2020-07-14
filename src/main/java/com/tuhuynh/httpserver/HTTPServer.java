@@ -5,8 +5,10 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import com.tuhuynh.httpserver.core.RequestBinderBase.BIOHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinderBase.BaseHandlerMetadata;
@@ -23,6 +25,7 @@ public final class HTTPServer {
 
     private final int serverPort;
     private final Executor executor = Executors.newCachedThreadPool();
+    private ArrayList<RequestHandlerBIO> middlewares = new ArrayList<>();
     private ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlers = new ArrayList<>();
 
     private HTTPServer(final int serverPort) {
@@ -32,6 +35,10 @@ public final class HTTPServer {
     public void addHandler(final RequestMethod method, final String path, final RequestHandlerBIO... handlers) {
         val newHandlers = new BIOHandlerMetadata(method, path, handlers);
         this.handlers.add(newHandlers);
+    }
+    public void use(final RequestHandlerBIO... handlers) {
+        middlewares.addAll(Arrays.stream(handlers)
+                                 .collect(Collectors.toCollection(ArrayList::new)));
     }
 
     public void use(final String path, final RequestHandlerBIO... handlers) {
@@ -65,7 +72,7 @@ public final class HTTPServer {
         System.out.println("Started HTTP Server on port " + serverPort);
         for (; ; ) {
             val socket = serverSocket.accept();
-            executor.execute(new RequestPipelineBIO(socket, handlers));
+            executor.execute(new RequestPipelineBIO(socket, middlewares, handlers));
         }
     }
 }

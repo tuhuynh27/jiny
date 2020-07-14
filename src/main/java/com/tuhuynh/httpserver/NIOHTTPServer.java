@@ -6,8 +6,11 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import com.tuhuynh.httpserver.core.RequestBinderBase;
 import com.tuhuynh.httpserver.core.RequestBinderBase.BaseHandlerMetadata;
@@ -27,6 +30,7 @@ public final class NIOHTTPServer implements Runnable {
 
     private final int serverPort;
     private Selector selector;
+    private ArrayList<RequestHandlerNIO> middlewares = new ArrayList<>();
     private ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlers = new ArrayList<>();
 
     private NIOHTTPServer(final int serverPort) {
@@ -50,6 +54,11 @@ public final class NIOHTTPServer implements Runnable {
                            final RequestHandlerNIO... handlers) {
         val newHandlers = new NIOHandlerMetadata(method, path, handlers);
         this.handlers.add(newHandlers);
+    }
+
+    public void use(final RequestHandlerNIO... handlers) {
+        middlewares.addAll(Arrays.stream(handlers)
+                             .collect(Collectors.toCollection(ArrayList::new)));
     }
 
     public void use(final String path, final RequestHandlerNIO... handlers) {
@@ -88,7 +97,7 @@ public final class NIOHTTPServer implements Runnable {
         serverSocket.bind(new InetSocketAddress(serverPort));
         serverSocket.configureBlocking(false);
         serverSocket.register(selector, SelectionKey.OP_ACCEPT).attach(
-                new ServerAcceptor(serverSocket, selector, handlers));
+                new ServerAcceptor(serverSocket, selector, middlewares, handlers));
         System.out.println("Started NIO HTTP Server on port " + serverPort);
         eventLoop.execute(this);
     }
@@ -114,11 +123,12 @@ public final class NIOHTTPServer implements Runnable {
     private static class ServerAcceptor implements ChannelHandlerNIO {
         private final ServerSocketChannel serverSocket;
         private final Selector selector;
+        private final ArrayList<RequestBinderBase.RequestHandlerNIO> middlewares;
         private final ArrayList<BaseHandlerMetadata<RequestBinderBase.RequestHandlerNIO>> handlers;
 
         @Override
         public void read() throws Exception {
-            new RequestPipelineNIO(serverSocket.accept(), selector, handlers);
+            new RequestPipelineNIO(serverSocket.accept(), selector, middlewares, handlers);
         }
 
         @Override

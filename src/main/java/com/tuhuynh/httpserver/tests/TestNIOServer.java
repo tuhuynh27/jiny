@@ -13,6 +13,13 @@ public final class TestNIOServer {
         val workerPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         val server = NIOHTTPServer.port(1234);
 
+        // Global middleware
+        server.use(ctx -> {
+            System.out.println("This is a global middleware");
+
+            return HttpResponse.nextAsync();
+        });
+
         server.use("/", ctx -> HttpResponse.ofAsync("Hello World"));
 
         server.get("/thread", ctx -> HttpResponse.ofAsync(Thread.currentThread().getName()));

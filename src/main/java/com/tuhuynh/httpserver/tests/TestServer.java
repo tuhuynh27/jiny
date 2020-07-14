@@ -63,6 +63,15 @@ public final class TestServer {
                    jwtValidator, // jwtMiddleware
                    ctx -> HttpResponse.of("Login success, hello: " + ctx.getData("username")));
 
+        // Global middleware
+        server.use(ctx -> {
+            if (!"application/json".equals(ctx.getHeader().get("content-type").toLowerCase())) {
+                return HttpResponse.reject("Only support RESTful API").status(403);
+            }
+
+            return HttpResponse.next();
+        });
+
         // Perform as a proxy server
         server.get("/meme", ctx -> {
             // Built-in HTTP Client

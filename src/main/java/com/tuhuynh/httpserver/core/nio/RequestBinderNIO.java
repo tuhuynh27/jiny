@@ -12,12 +12,15 @@ import lombok.val;
 import lombok.var;
 
 public final class RequestBinderNIO extends RequestBinderBase {
+    private final ArrayList<RequestHandlerNIO> middlewares;
     private final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlerMetadata;
     private CompletableFuture<HttpResponse> isDone = new CompletableFuture<>();
 
     public RequestBinderNIO(RequestContext requestContext,
-                            ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlerMetadata) {
+                            final ArrayList<RequestHandlerNIO> middlewares,
+                            final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlerMetadata) {
         super(requestContext);
+        this.middlewares = middlewares;
         this.handlerMetadata = handlerMetadata;
     }
 
@@ -30,7 +33,8 @@ public final class RequestBinderNIO extends RequestBinderBase {
             if ((requestContext.getMethod() == h.getMethod() || (h.getMethod() == RequestMethod.ALL))
                 && (binder.getRequestPath().equals(binder.getHandlerPath()) || binder
                     .isRequestWithHandlerParamsMatched())) {
-                val handlerLinkedList = new LinkedList<>(Arrays.asList(h.handlers));
+                middlewares.addAll(Arrays.asList(h.handlers));
+                val handlerLinkedList = new LinkedList<>(middlewares);
                 resolvePromiseChain(handlerLinkedList);
                 isFound = true;
                 break;

@@ -20,13 +20,16 @@ public final class RequestPipelineNIO implements ChannelHandlerNIO {
     private final SocketChannel socketChannel;
     private final Selector selector;
     private final LinkedList<String> messageQueue;
+    private final ArrayList<RequestHandlerNIO> middlewares;
     private final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlers;
 
     public RequestPipelineNIO(final SocketChannel socketChannel, final Selector selector,
+                              final ArrayList<RequestHandlerNIO> middlewares,
                               final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlers)
             throws IOException {
         this.socketChannel = socketChannel;
         this.selector = selector;
+        this.middlewares = middlewares;
         this.handlers = handlers;
 
         messageQueue = new LinkedList<>();
@@ -65,7 +68,7 @@ public final class RequestPipelineNIO implements ChannelHandlerNIO {
             body = requestParts.length == 2 ? requestParts[1].trim() : "";
 
             val requestMetadata = RequestUtils.parseRequest(req, body);
-            val responseObject = new RequestBinderNIO(requestMetadata, handlers).getResponseObject();
+            val responseObject = new RequestBinderNIO(requestMetadata, middlewares, handlers).getResponseObject();
 
             responseObject.thenAccept(responseObjectReturned -> {
                 val responseString = RequestUtils.parseResponse(responseObjectReturned);

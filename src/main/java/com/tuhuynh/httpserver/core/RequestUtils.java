@@ -25,7 +25,11 @@ public final class RequestUtils {
             val headerLine = request[i];
             val headerArr = HEADER_PATTERN.split(headerLine);
             if (headerArr.length == 2) {
-                header.put(headerArr[0], headerArr[1]);
+                val headerKey = headerArr[0];
+                val headerValue = headerArr[1];
+                if (headerKey != null && headerValue != null) {
+                    header.put(headerKey.toLowerCase(), headerValue);
+                }
             }
         }
 

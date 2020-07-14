@@ -18,6 +18,7 @@ import lombok.val;
 @RequiredArgsConstructor
 public final class RequestPipelineBIO implements Runnable {
     private final Socket socket;
+    private final ArrayList<RequestHandlerBIO> middlewares;
     private final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlers;
     private BufferedReader in;
     private PrintWriter out;
@@ -50,7 +51,7 @@ public final class RequestPipelineBIO implements Runnable {
         val requestMetadata = RequestUtils.parseRequest(requestStringArr.stream().toArray(String[]::new),
                                                         body.toString());
 
-        val responseObject = new RequestBinderBIO(requestMetadata, handlers).getResponseObject();
+        val responseObject = new RequestBinderBIO(requestMetadata, middlewares, handlers).getResponseObject();
         val responseString = RequestUtils.parseResponse(responseObject);
 
         out.write(responseString);

@@ -86,7 +86,7 @@ public final class LightWeightServer {
         });
 
         // Middleware support: Sample JWT Verify Middleware
-        RequestHandler jwtValidator = ctx -> {
+        RequestHandlerBIO jwtValidator = ctx -> {
             val authorizationHeader = ctx.getHeader().get("Authorization");
             // Check JWT is valid, below is just a sample check
             if (!authorizationHeader.startsWith("Bearer")) {
@@ -99,6 +99,15 @@ public final class LightWeightServer {
         server.get("/protected",
                    jwtValidator, // jwtMiddleware
                    ctx -> HttpResponse.of("Login success, hello: " + ctx.getData("username")));
+
+        // Global middleware
+        server.use(ctx -> {
+            if (!"application/json".equals(ctx.getHeader().get("content-type").toLowerCase())) {
+                return HttpResponse.reject("Only support RESTful API").status(403);
+            }
+
+            return HttpResponse.next();
+        });
 
         // Perform as a proxy server
         server.get("/meme", ctx -> {
