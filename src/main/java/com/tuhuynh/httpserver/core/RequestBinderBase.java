@@ -131,13 +131,25 @@ public class RequestBinderBase {
     public static final class HttpResponse {
         public static HttpResponse next() { return new HttpResponse(0, "", true); }
 
+        public static CompletableFuture<HttpResponse> nextAsync() {
+            return CompletableFuture.completedFuture(new HttpResponse(0, "", true));
+        }
+
         public static HttpResponse reject(final String errorText) {
             return new HttpResponse(400, errorText, false);
+        }
+
+        public static CompletableFuture<HttpResponse> rejectAsync(final String errorText, final int httpStatusCode) {
+            return CompletableFuture.completedFuture(new HttpResponse(httpStatusCode, errorText, false));
         }
 
         public static CompletableFuture<HttpResponse> of(
                 final CompletableFuture<HttpResponse> completableFuture) {
             return completableFuture;
+        }
+
+        public static <T> CompletableFuture<HttpResponse> ofAsync(final T t) {
+            return CompletableFuture.completedFuture(of(t));
         }
 
         public static <T> HttpResponse of(final T t) {

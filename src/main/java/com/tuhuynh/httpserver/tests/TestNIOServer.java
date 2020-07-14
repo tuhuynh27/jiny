@@ -13,10 +13,9 @@ public final class TestNIOServer {
         val workerPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         val server = NIOHTTPServer.port(1234);
 
-        server.use("/", ctx -> CompletableFuture.completedFuture(HttpResponse.of("Hello World")));
+        server.use("/", ctx -> HttpResponse.ofAsync("Hello World"));
 
-        server.get("/thread", ctx -> CompletableFuture
-                .completedFuture(HttpResponse.of(Thread.currentThread().getName())));
+        server.get("/thread", ctx -> HttpResponse.ofAsync(Thread.currentThread().getName()));
 
         // This request will not block the main thread (event loop)
         server.get("/sleep", ctx -> {
@@ -42,18 +41,18 @@ public final class TestNIOServer {
         // This request will block the main thread (event loop)
         server.use("/block", ctx -> {
             Thread.sleep(10 * 1000);
-            return CompletableFuture.completedFuture(HttpResponse.of("Hello World"));
+            return HttpResponse.ofAsync("Block the event loop!");
         });
 
         // Middleware
-        server.get("/protected",ctx -> {
+        server.get("/protected", ctx -> {
             val authorizationHeader = ctx.getHeader().get("Authorization");
             if (!authorizationHeader.startsWith("Bearer ")) {
-                return CompletableFuture.completedFuture(HttpResponse.reject("Invalid token").status(401));
+                return HttpResponse.rejectAsync("InvalidToken", 401);
             }
             ctx.putHandlerData("username", "tuhuynh");
-            return CompletableFuture.completedFuture(HttpResponse.next());
-        },  ctx -> CompletableFuture.completedFuture(HttpResponse.of("Login success, hello: " + ctx.getData("username"))));
+            return HttpResponse.nextAsync();
+        }, ctx -> HttpResponse.ofAsync("Login success, hello: " + ctx.getData("username")));
 
         server.start();
     }

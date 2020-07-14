@@ -174,23 +174,23 @@ public final class LightWeightServer {
 
 **Zero dependency**, it just uses the Java core built-in APIs, also `lombok` is used to compile and build the library.
 
-Lines of code: 993
+Lines of code: 1052
 ```
-  52 ./src/main/java/com/tuhuynh/httpserver/core/bio/RequestBinderBIO.java
-  63 ./src/main/java/com/tuhuynh/httpserver/core/bio/RequestPipelineBIO.java
- 163 ./src/main/java/com/tuhuynh/httpserver/core/RequestBinderBase.java
-  66 ./src/main/java/com/tuhuynh/httpserver/core/nio/RequestBinderNIO.java
-  96 ./src/main/java/com/tuhuynh/httpserver/core/nio/RequestPipelineNIO.java
-   7 ./src/main/java/com/tuhuynh/httpserver/core/nio/ChannelHandlerNIO.java
- 126 ./src/main/java/com/tuhuynh/httpserver/core/RequestUtils.java
-  14 ./src/main/java/com/tuhuynh/httpserver/tests/TestClient.java
-  50 ./src/main/java/com/tuhuynh/httpserver/tests/TestNIOServer.java
-  37 ./src/main/java/com/tuhuynh/httpserver/tests/TestServers.java
-  84 ./src/main/java/com/tuhuynh/httpserver/tests/TestServer.java
-  71 ./src/main/java/com/tuhuynh/httpserver/HTTPServer.java
- 129 ./src/main/java/com/tuhuynh/httpserver/NIOHTTPServer.java
-  74 ./src/main/java/com/tuhuynh/httpserver/HTTPClient.java
-1032 total
+    52 ./src/main/java/com/tuhuynh/httpserver/core/bio/RequestBinderBIO.java
+    63 ./src/main/java/com/tuhuynh/httpserver/core/bio/RequestPipelineBIO.java
+   175 ./src/main/java/com/tuhuynh/httpserver/core/RequestBinderBase.java
+    66 ./src/main/java/com/tuhuynh/httpserver/core/nio/RequestBinderNIO.java
+    95 ./src/main/java/com/tuhuynh/httpserver/core/nio/RequestPipelineNIO.java
+     7 ./src/main/java/com/tuhuynh/httpserver/core/nio/ChannelHandlerNIO.java
+   126 ./src/main/java/com/tuhuynh/httpserver/core/RequestUtils.java
+    14 ./src/main/java/com/tuhuynh/httpserver/tests/TestClient.java
+    59 ./src/main/java/com/tuhuynh/httpserver/tests/TestNIOServer.java
+    37 ./src/main/java/com/tuhuynh/httpserver/tests/TestServers.java
+    84 ./src/main/java/com/tuhuynh/httpserver/tests/TestServer.java
+    71 ./src/main/java/com/tuhuynh/httpserver/HTTPServer.java
+   129 ./src/main/java/com/tuhuynh/httpserver/NIOHTTPServer.java
+    74 ./src/main/java/com/tuhuynh/httpserver/HTTPClient.java
+  1052 total
 ```
 
 ## Side project
