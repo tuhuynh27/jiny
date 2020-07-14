@@ -139,7 +139,8 @@ public class RequestBinderBase {
             return new HttpResponse(400, errorText, false);
         }
 
-        public static CompletableFuture<HttpResponse> rejectAsync(final String errorText, final int httpStatusCode) {
+        public static CompletableFuture<HttpResponse> rejectAsync(final String errorText,
+                                                                  final int httpStatusCode) {
             return CompletableFuture.completedFuture(new HttpResponse(httpStatusCode, errorText, false));
         }
 
@@ -154,6 +155,10 @@ public class RequestBinderBase {
 
         public static <T> HttpResponse of(final T t) {
             return new HttpResponse(200, t.toString(), true);
+        }
+
+        public static CompletableFuture<HttpResponse> createPromise() {
+            return new CompletableFuture<>();
         }
 
         private int httpStatusCode;
@@ -172,4 +177,13 @@ public class RequestBinderBase {
         }
     }
 
+    @RequiredArgsConstructor
+    @Getter
+    public class Async {
+        CompletableFuture<HttpResponse> promise;
+
+        void submit(final String text) {
+            promise.complete(HttpResponse.of(text));
+        }
+    }
 }

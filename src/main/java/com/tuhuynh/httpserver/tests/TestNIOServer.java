@@ -1,10 +1,10 @@
 package com.tuhuynh.httpserver.tests;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 
 import com.tuhuynh.httpserver.NIOHTTPServer;
 import com.tuhuynh.httpserver.core.RequestBinderBase.HttpResponse;
+import com.tuhuynh.httpserver.core.nio.AsyncHelper;
 
 import lombok.val;
 
@@ -19,7 +19,7 @@ public final class TestNIOServer {
 
         // This request will not block the main thread (event loop)
         server.get("/sleep", ctx -> {
-            CompletableFuture<HttpResponse> completableFuture = new CompletableFuture<>();
+            val async = AsyncHelper.make();
 
             workerPool.submit(() -> {
                 try {
@@ -32,10 +32,10 @@ public final class TestNIOServer {
                 }
 
                 val thread = Thread.currentThread().getName();
-                completableFuture.complete(HttpResponse.of("Work has done, current thread is: " + thread));
+                async.resolve("Work has done, current thread is: " + thread);
             });
 
-            return HttpResponse.of(completableFuture);
+            return async.submit();
         });
 
         // This request will block the main thread (event loop)

@@ -60,9 +60,9 @@ public final class RequestPipelineNIO implements ChannelHandlerNIO {
         String[] req;
         var body = "";
         val requestParts = msg.split("\n\r");
-        if (requestParts.length == 2) {
+        if (requestParts.length > 0) {
             req = requestParts[0].trim().split("\n");
-            body = requestParts[1].trim();
+            body = requestParts.length == 2 ? requestParts[1].trim() : "";
 
             val requestMetadata = RequestUtils.parseRequest(req, body);
             val responseObject = new RequestBinderNIO(requestMetadata, handlers).getResponseObject();
