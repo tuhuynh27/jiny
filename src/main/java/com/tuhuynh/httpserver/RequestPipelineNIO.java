@@ -1,4 +1,4 @@
-package com.tuhuynh.httpserver.nio;
+package com.tuhuynh.httpserver;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -8,21 +8,25 @@ import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import com.tuhuynh.httpserver.core.RequestBinder;
+import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
+import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerBase;
+import com.tuhuynh.httpserver.core.RequestBinderNIO;
 import com.tuhuynh.httpserver.core.RequestUtils;
-import com.tuhuynh.httpserver.nio.RequestBinderNIO.HandlerMetadata;
 
 import lombok.NoArgsConstructor;
 import lombok.val;
 import lombok.var;
 
-public final class RequestHandlerNIO implements ChannelHandlerNIO {
+public final class RequestPipelineNIO implements ChannelHandlerNIO, RequestHandlerBase {
     private final SocketChannel socketChannel;
     private final Selector selector;
     private final LinkedList<String> messageQueue;
-    private final ArrayList<HandlerMetadata> handlers;
+    private final ArrayList<BaseHandlerMetadata<RequestBinder.RequestHandlerNIO>> handlers;
 
-    public RequestHandlerNIO(final SocketChannel socketChannel, final Selector selector,
-                             final ArrayList<HandlerMetadata> handlers) throws IOException {
+    public RequestPipelineNIO(final SocketChannel socketChannel, final Selector selector,
+                              final ArrayList<BaseHandlerMetadata<RequestBinder.RequestHandlerNIO>> handlers)
+            throws IOException {
         this.socketChannel = socketChannel;
         this.selector = selector;
         this.handlers = handlers;

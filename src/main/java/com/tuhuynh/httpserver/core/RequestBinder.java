@@ -1,11 +1,7 @@
 package com.tuhuynh.httpserver.core;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 import com.tuhuynh.httpserver.core.RequestUtils.RequestMethod;
 
@@ -13,81 +9,22 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
-import lombok.var;
 
 @RequiredArgsConstructor
-public final class RequestBinder {
-    private final RequestContext requestContext;
-    private final ArrayList<HandlerMetadata> handlerMetadata;
+public class RequestBinder {
+    protected final RequestContext requestContext;
 
-    public HttpResponse getResponseObject() throws IOException {
-        for (val h : handlerMetadata) {
-            val indexOfQuestionMark = requestContext.getPath().indexOf('?');
-            var requestPath =
-                    indexOfQuestionMark == -1 ? requestContext.getPath() : requestContext.getPath().substring(0,
-                                                                                                              indexOfQuestionMark);
-            // Remove all last '/' from the requestPath
-            while (requestPath.endsWith("/")) {
-                requestPath = requestPath.substring(0, requestPath.length() - 1);
-            }
-
-            val handlerPathOriginal = h.getPath();
-            val handlerPathArrWithHandlerParams = Arrays.stream(handlerPathOriginal.split("/"));
-            val handlerPath = handlerPathArrWithHandlerParams.filter(e -> !e.startsWith(":")).collect(
-                    Collectors.joining("/"));
-
-            val numOfHandlerParams = handlerPathOriginal.length() - handlerPathOriginal.replace(":", "")
-                                                                                       .length();
-            val numOfSlashOfRequestPath = requestPath.length() - requestPath.replace("/", "").length();
-            val numOfSlashOfHandlerPath = handlerPathOriginal.length() - handlerPathOriginal.replace("/", "")
-                                                                                            .length();
-
-            val requestWithHandlerParamsMatched = numOfHandlerParams > 0 && requestPath.startsWith(handlerPath)
-                                                  && numOfSlashOfRequestPath == numOfSlashOfHandlerPath;
-
-            if (requestWithHandlerParamsMatched) {
-                val elementsOfHandlerPath = handlerPathOriginal.split("/");
-                val elementsOfRequestPath = requestPath.split("/");
-                for (int i = 1; i < elementsOfHandlerPath.length; i++) {
-                    if (elementsOfHandlerPath[i].startsWith(":")) {
-                        val handlerParamKey = elementsOfHandlerPath[i].replace(":", "");
-                        val handlerParamValue = elementsOfRequestPath[i];
-                        requestContext.getParam().put(handlerParamKey, handlerParamValue);
-                    }
-                }
-            }
-
-            if ((requestContext.getMethod() == h.getMethod() || (h.getMethod() == RequestMethod.ALL))
-                && (requestPath.equals(handlerPath) || requestWithHandlerParamsMatched)) {
-                try {
-                    // Handle middleware function chain
-                    for (int i = 0; i < h.handlers.length; i++) {
-                        val isLastItem = i == h.handlers.length - 1;
-                        val resultFromPreviousHandler = h.handlers[i].handleFunc(requestContext);
-                        if (!isLastItem && !resultFromPreviousHandler.isAllowNext()) {
-                            return resultFromPreviousHandler;
-                        } else {
-                            if (isLastItem) {
-                                return resultFromPreviousHandler;
-                            } else {
-                                continue;
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                    return HttpResponse.of("Internal Server Error").status(500);
-                }
-            }
-        }
-
-        return HttpResponse.of("Not found").status(404);
+    public interface RequestHandlerBase {
     }
 
     @FunctionalInterface
-    public interface RequestHandler {
+    public interface RequestHandlerBIO extends RequestHandlerBase {
         HttpResponse handleFunc(RequestContext requestMetadata) throws Exception;
+    }
+
+    @FunctionalInterface
+    public interface RequestHandlerNIO extends RequestHandlerBase {
+        CompletableFuture<HttpResponse> handleFunc(RequestContext requestMetadata) throws Exception;
     }
 
     @Getter
@@ -110,13 +47,29 @@ public final class RequestBinder {
         }
     }
 
-    @Getter
-    @Builder
     @AllArgsConstructor
-    public static final class HandlerMetadata {
-        private RequestMethod method;
-        private String path;
-        private RequestHandler[] handlers;
+    @RequiredArgsConstructor
+    @Getter
+    public abstract static class BaseHandlerMetadata<T extends RequestHandlerBase> {
+        protected RequestMethod method;
+        protected String path;
+        protected T[] handlers;
+    }
+
+    @Getter
+    public static class BIOHandlerMetadata extends BaseHandlerMetadata<RequestHandlerBIO> {
+        public BIOHandlerMetadata(final RequestMethod method, final String path,
+                                  final RequestHandlerBIO[] handlers) {
+            super(method, path, handlers);
+        }
+    }
+
+    @Getter
+    public static class NIOHandlerMetadata extends BaseHandlerMetadata<RequestHandlerNIO> {
+        public NIOHandlerMetadata(final RequestMethod method, final String path,
+                                  final RequestHandlerNIO[] handlers) {
+            super(method, path, handlers);
+        }
     }
 
     @Getter
@@ -127,7 +80,8 @@ public final class RequestBinder {
             return new HttpResponse(400, errorText, false);
         }
 
-        public static CompletableFuture<HttpResponse> of(final CompletableFuture<HttpResponse> completableFuture) {
+        public static CompletableFuture<HttpResponse> of(
+                final CompletableFuture<HttpResponse> completableFuture) {
             return completableFuture;
         }
 

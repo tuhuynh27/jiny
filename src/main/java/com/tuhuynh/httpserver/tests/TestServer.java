@@ -6,7 +6,7 @@ import java.util.Random;
 import com.tuhuynh.httpserver.HTTPClient;
 import com.tuhuynh.httpserver.HTTPServer;
 import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
-import com.tuhuynh.httpserver.core.RequestBinder.RequestHandler;
+import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerBIO;
 
 import lombok.val;
 
@@ -49,7 +49,7 @@ public final class TestServer {
         });
 
         // Middleware support: Sample JWT Verify Middleware
-        RequestHandler jwtValidator = ctx -> {
+        RequestHandlerBIO jwtValidator = ctx -> {
             val authorizationHeader = ctx.getHeader().get("Authorization");
             // Check JWT is valid, below is just a sample check
             if (!authorizationHeader.startsWith("Bearer")) {

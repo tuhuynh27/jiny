@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import com.tuhuynh.httpserver.core.RequestBinder;
+import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
+import com.tuhuynh.httpserver.core.RequestBinder.NIOHandlerMetadata;
+import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerNIO;
 import com.tuhuynh.httpserver.core.RequestUtils.RequestMethod;
-import com.tuhuynh.httpserver.nio.ChannelHandlerNIO;
-import com.tuhuynh.httpserver.nio.RequestBinderNIO.HandlerMetadata;
-import com.tuhuynh.httpserver.nio.RequestBinderNIO.RequestHandler;
-import com.tuhuynh.httpserver.nio.RequestHandlerNIO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -25,7 +25,7 @@ public final class NIOHTTPServer implements Runnable {
 
     private final int serverPort;
     private Selector selector;
-    private ArrayList<HandlerMetadata> handlers = new ArrayList<>();
+    private ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlers = new ArrayList<>();
 
     private NIOHTTPServer(final int serverPort) {
         this.serverPort = serverPort;
@@ -45,38 +45,33 @@ public final class NIOHTTPServer implements Runnable {
     }
 
     public void addHandler(final RequestMethod method, final String path,
-                           final RequestHandler... handlers) {
-        val newHandlers = HandlerMetadata.builder().method(method).path(path).handlers(handlers).build();
+                           final RequestHandlerNIO... handlers) {
+        val newHandlers = new NIOHandlerMetadata(method, path, handlers);
         this.handlers.add(newHandlers);
     }
 
-    public void use(final String path, final RequestHandler... handlers) {
-        val newHandlers = HandlerMetadata.builder().method(RequestMethod.ALL).path(path).handlers(handlers)
-                                         .build();
+    public void use(final String path, final RequestHandlerNIO... handlers) {
+        val newHandlers = new NIOHandlerMetadata(RequestMethod.ALL, path, handlers);
         this.handlers.add(newHandlers);
     }
 
-    public void get(final String path, final RequestHandler... handlers) {
-        val newHandlers = HandlerMetadata.builder().method(RequestMethod.GET).path(path).handlers(handlers)
-                                         .build();
+    public void get(final String path, final RequestHandlerNIO... handlers) {
+        val newHandlers = new NIOHandlerMetadata(RequestMethod.GET, path, handlers);
         this.handlers.add(newHandlers);
     }
 
-    public void post(final String path, final RequestHandler... handlers) {
-        val newHandlers = HandlerMetadata.builder().method(RequestMethod.POST).path(path).handlers(handlers)
-                                         .build();
+    public void post(final String path, final RequestHandlerNIO... handlers) {
+        val newHandlers = new NIOHandlerMetadata(RequestMethod.POST, path, handlers);
         this.handlers.add(newHandlers);
     }
 
-    public void put(final String path, final RequestHandler... handlers) {
-        val newHandlers = HandlerMetadata.builder().method(RequestMethod.PUT).path(path).handlers(handlers)
-                                         .build();
+    public void put(final String path, final RequestHandlerNIO... handlers) {
+        val newHandlers = new NIOHandlerMetadata(RequestMethod.PUT, path, handlers);
         this.handlers.add(newHandlers);
     }
 
-    public void delete(final String path, final RequestHandler... handlers) {
-        val newHandlers = HandlerMetadata.builder().method(RequestMethod.DELETE).path(path).handlers(handlers)
-                                         .build();
+    public void delete(final String path, final RequestHandlerNIO... handlers) {
+        val newHandlers = new NIOHandlerMetadata(RequestMethod.DELETE, path, handlers);
         this.handlers.add(newHandlers);
     }
 
@@ -117,11 +112,11 @@ public final class NIOHTTPServer implements Runnable {
     private static class ServerAcceptor implements ChannelHandlerNIO {
         private final ServerSocketChannel serverSocket;
         private final Selector selector;
-        private final ArrayList<HandlerMetadata> handlers;
+        private final ArrayList<BaseHandlerMetadata<RequestBinder.RequestHandlerNIO>> handlers;
 
         @Override
         public void read() throws Exception {
-            new RequestHandlerNIO(serverSocket.accept(), selector, handlers);
+            new RequestPipelineNIO(serverSocket.accept(), selector, handlers);
         }
 
         @Override

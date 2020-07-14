@@ -1,4 +1,4 @@
-package com.tuhuynh.httpserver.nio;
+package com.tuhuynh.httpserver.core;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,22 +6,20 @@ import java.util.LinkedList;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
-import com.tuhuynh.httpserver.core.RequestBinder.RequestContext;
 import com.tuhuynh.httpserver.core.RequestUtils.RequestMethod;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.val;
 import lombok.var;
 
-@RequiredArgsConstructor
-public final class RequestBinderNIO {
-    private final RequestContext requestContext;
-    private final ArrayList<HandlerMetadata> handlerMetadata;
+public final class RequestBinderNIO extends RequestBinder {
+    private final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlerMetadata;
     private CompletableFuture<HttpResponse> isDone = new CompletableFuture<>();
+
+    public RequestBinderNIO(RequestContext requestContext,
+                            ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlerMetadata) {
+        super(requestContext);
+        this.handlerMetadata = handlerMetadata;
+    }
 
     public CompletableFuture<HttpResponse> getResponseObject() throws Exception {
         var isFound = false;
@@ -78,7 +76,7 @@ public final class RequestBinderNIO {
         return isDone;
     }
 
-    private void resolvePromiseChain(final LinkedList<RequestHandler> handlerQueue) throws Exception {
+    private void resolvePromiseChain(final LinkedList<RequestHandlerNIO> handlerQueue) throws Exception {
         if (handlerQueue.size() == 1) {
             handlerQueue.removeFirst().handleFunc(requestContext).thenAccept(result -> {
                 isDone.complete(result);
@@ -96,19 +94,5 @@ public final class RequestBinderNIO {
                 }
             });
         }
-    }
-
-    @FunctionalInterface
-    public interface RequestHandler {
-        CompletableFuture<HttpResponse> handleFunc(RequestContext requestMetadata) throws Exception;
-    }
-
-    @Getter
-    @Builder
-    @AllArgsConstructor
-    public static final class HandlerMetadata {
-        private RequestMethod method;
-        private String path;
-        private RequestHandler[] handlers;
     }
 }

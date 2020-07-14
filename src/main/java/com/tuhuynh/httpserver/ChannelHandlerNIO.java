@@ -1,4 +1,4 @@
-package com.tuhuynh.httpserver.nio;
+package com.tuhuynh.httpserver;
 
 public interface ChannelHandlerNIO {
     void read() throws Exception;

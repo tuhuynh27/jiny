@@ -7,16 +7,17 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import com.tuhuynh.httpserver.core.RequestBinder.HandlerMetadata;
+import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
+import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerBIO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.val;
 
 @RequiredArgsConstructor
-public final class RequestPipeline implements Runnable {
+public final class RequestPipelineBIO implements Runnable {
     private final Socket socket;
-    private final ArrayList<HandlerMetadata> handlers;
+    private final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlers;
     private BufferedReader in;
     private PrintWriter out;
 
@@ -48,7 +49,7 @@ public final class RequestPipeline implements Runnable {
         val requestMetadata = RequestUtils.parseRequest(requestStringArr.stream().toArray(String[]::new),
                                                         body.toString());
 
-        val responseObject = new RequestBinder(requestMetadata, handlers).getResponseObject();
+        val responseObject = new RequestBinderBIO(requestMetadata, handlers).getResponseObject();
         val responseString = RequestUtils.parseResponse(responseObject);
 
         out.write(responseString);

@@ -8,9 +8,10 @@ import java.util.ArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import com.tuhuynh.httpserver.core.RequestBinder.HandlerMetadata;
-import com.tuhuynh.httpserver.core.RequestBinder.RequestHandler;
-import com.tuhuynh.httpserver.core.RequestPipeline;
+import com.tuhuynh.httpserver.core.RequestBinder.BIOHandlerMetadata;
+import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
+import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerBIO;
+import com.tuhuynh.httpserver.core.RequestPipelineBIO;
 import com.tuhuynh.httpserver.core.RequestUtils.RequestMethod;
 
 import lombok.val;
@@ -22,44 +23,39 @@ public final class HTTPServer {
 
     private final int serverPort;
     private final Executor executor = Executors.newCachedThreadPool();
-    private ArrayList<HandlerMetadata> handlers = new ArrayList<>();
+    private ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlers = new ArrayList<>();
 
     private HTTPServer(final int serverPort) {
         this.serverPort = serverPort;
     }
 
-    public void addHandler(final RequestMethod method, final String path, final RequestHandler... handlers) {
-        val newHandlers = HandlerMetadata.builder().method(method).path(path).handlers(handlers).build();
+    public void addHandler(final RequestMethod method, final String path, final RequestHandlerBIO... handlers) {
+        val newHandlers = new BIOHandlerMetadata(method, path, handlers);
         this.handlers.add(newHandlers);
     }
 
-    public void use(final String path, final RequestHandler... handlers) {
-        val newHandlers = HandlerMetadata.builder().method(RequestMethod.ALL).path(path).handlers(handlers)
-                                         .build();
+    public void use(final String path, final RequestHandlerBIO... handlers) {
+        val newHandlers = new BIOHandlerMetadata(RequestMethod.ALL, path, handlers);
         this.handlers.add(newHandlers);
     }
 
-    public void get(final String path, final RequestHandler... handlers) {
-        val newHandlers = HandlerMetadata.builder().method(RequestMethod.GET).path(path).handlers(handlers)
-                                         .build();
+    public void get(final String path, final RequestHandlerBIO... handlers) {
+        val newHandlers = new BIOHandlerMetadata(RequestMethod.GET, path, handlers);
         this.handlers.add(newHandlers);
     }
 
-    public void post(final String path, final RequestHandler... handlers) {
-        val newHandlers = HandlerMetadata.builder().method(RequestMethod.POST).path(path).handlers(handlers)
-                                         .build();
+    public void post(final String path, final RequestHandlerBIO... handlers) {
+        val newHandlers = new BIOHandlerMetadata(RequestMethod.POST, path, handlers);
         this.handlers.add(newHandlers);
     }
 
-    public void put(final String path, final RequestHandler... handlers) {
-        val newHandlers = HandlerMetadata.builder().method(RequestMethod.PUT).path(path).handlers(handlers)
-                                         .build();
+    public void put(final String path, final RequestHandlerBIO... handlers) {
+        val newHandlers = new BIOHandlerMetadata(RequestMethod.PUT, path, handlers);
         this.handlers.add(newHandlers);
     }
 
-    public void delete(final String path, final RequestHandler... handlers) {
-        val newHandlers = HandlerMetadata.builder().method(RequestMethod.DELETE).path(path).handlers(handlers)
-                                         .build();
+    public void delete(final String path, final RequestHandlerBIO... handlers) {
+        val newHandlers = new BIOHandlerMetadata(RequestMethod.DELETE, path, handlers);
         this.handlers.add(newHandlers);
     }
 
@@ -69,7 +65,7 @@ public final class HTTPServer {
         System.out.println("Started HTTP Server on port " + serverPort);
         for (; ; ) {
             val socket = serverSocket.accept();
-            executor.execute(new RequestPipeline(socket, handlers));
+            executor.execute(new RequestPipelineBIO(socket, handlers));
         }
     }
 }
