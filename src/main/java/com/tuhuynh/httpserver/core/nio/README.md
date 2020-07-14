@@ -27,16 +27,8 @@ public final class MiniServer {
 ```java
 public final class TestNIOServer {
     public static void main(String[] args) throws Exception {
-        val workerPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        val workerPool = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() * 2);
         val server = NIOHTTPServer.port(1234);
-        
-        // Global middleware
-        server.use(ctx -> {
-            System.out.println("This is a global middleware");
-
-            return HttpResponse.nextAsync();
-        });
-
 
         server.use("/", ctx -> HttpResponse.ofAsync("Hello World"));
 
@@ -63,10 +55,12 @@ public final class TestNIOServer {
             return async.submit();
         });
 
-        // This request will block the main thread (event loop)
+        // This request will block one of the event loop thread
+        // By default you have cpu.length * 2 event loop thread
         server.use("/block", ctx -> {
-            Thread.sleep(10 * 1000);
-            return HttpResponse.ofAsync("Block the event loop!");
+            System.out.println(Thread.currentThread().getName() + " is gonna be blocked now!");
+            Thread.sleep(60 * 1000); // Block for 60s
+            return HttpResponse.ofAsync("Block one event loop thread!");
         });
 
         // Middleware

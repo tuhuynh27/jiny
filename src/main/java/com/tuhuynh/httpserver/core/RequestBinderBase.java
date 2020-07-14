@@ -176,14 +176,4 @@ public class RequestBinderBase {
             return this;
         }
     }
-
-    @RequiredArgsConstructor
-    @Getter
-    public class Async {
-        CompletableFuture<HttpResponse> promise;
-
-        void submit(final String text) {
-            promise.complete(HttpResponse.of(text));
-        }
-    }
 }

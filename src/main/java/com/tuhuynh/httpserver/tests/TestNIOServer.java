@@ -38,10 +38,12 @@ public final class TestNIOServer {
             return async.submit();
         });
 
-        // This request will block the main thread (event loop)
+        // This request will block one of the event loop thread
+        // By default you have cpu.length * 2 event loop thread
         server.use("/block", ctx -> {
-            Thread.sleep(10 * 1000);
-            return HttpResponse.ofAsync("Block the event loop!");
+            System.out.println(Thread.currentThread().getName() + " is gonna be blocked now!");
+            Thread.sleep(60 * 1000); // Block for 60s
+            return HttpResponse.ofAsync("Block one event loop thread!");
         });
 
         // Middleware
