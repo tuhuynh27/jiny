@@ -18,14 +18,14 @@ Add this to `pom.xml`:
 <dependency>
   <groupId>com.tuhuynh</groupId>
   <artifactId>httpserver</artifactId>
-  <version>0.1.5-ALPHA</version>
+  <version>0.1.6-ALPHA</version>
 </dependency>
 ```
 
 or `build.gradle`:
 
 ```groovy
-compile group: 'com.tuhuynh', name: 'httpserver', version: '0.1.5-ALPHA'
+compile group: 'com.tuhuynh', name: 'httpserver', version: '0.1.6-ALPHA'
 ```
 
 ## Quick Start
@@ -33,9 +33,9 @@ compile group: 'com.tuhuynh', name: 'httpserver', version: '0.1.5-ALPHA'
 ```java
 public final class MiniServer {
     public static void main(String[] args) throws IOException {
-        val server = HTTPServer.port(8080);
+        val server = HTTPServer.port(1234);
         server.get("/ping", ctx -> HttpResponse.of("Pong"));
-        server.start(); // Listen and serve on localhost:8080
+        server.start(); // Listen and serve on localhost:1234
     }
 }
 ```
@@ -47,7 +47,7 @@ It's very easy to use just like [Go Gin](https://github.com/gin-gonic/gin) or Go
 ```java
 public final class LightWeightServer {
     public static void main(String[] args) throws IOException {
-        val server = HTTPServer.port(8080);
+        val server = HTTPServer.port(1234);
 
         server.use("/", ctx -> HttpResponse.of("Hello World"));
         server.post("/echo", ctx -> HttpResponse.of(ctx.getBody()));
@@ -157,10 +157,14 @@ public final class LightWeightServer {
 - Support request path's slash trim
 - Refactor code
 
+### 0.1.6-ALPHA
+
+- Added an experimental NIO Server
+- Refactor code
+
 ### Up coming:
 
 - Support annotation to decorate the code (@Handler @Router)
-- **Support an NIO (Non Blocking I/O) HTTP Server & Client based on `java.nio`**
 - Support built-in JSON marshall/unmarshall support
 - Improve routing/switch core performance
 

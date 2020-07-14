@@ -1,13 +1,24 @@
-package com.tuhuynh.httpserver.tests;
+# Lightweight Java NIO HTTP Server
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
+"Asynchronous" Non-blocking I/O version on `com.tuhuynh.httpserver`
 
-import com.tuhuynh.httpserver.NIOHTTPServer;
-import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
+## Quick Start
 
-import lombok.val;
+Install [com.tuhuynh.httpserver](https://github.com/huynhminhtufu/httpserver/packages/309436)
 
+```java
+public final class MiniServer {
+    public static void main(String[] args) throws IOException {
+        val server = NIOHTTPServer.port(1234);
+        server.use("/", ctx -> CompletableFuture.completedFuture(HttpResponse.of("Hello World")));
+        server.start(); // Listen and serve on localhost:1234
+    }
+}
+```
+
+## API Examples (use with CompletableFuture)
+
+```java
 public final class TestNIOServer {
     public static void main(String[] args) throws Exception {
         val workerPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
@@ -48,3 +59,4 @@ public final class TestNIOServer {
         server.start();
     }
 }
+```
