@@ -31,83 +31,83 @@ public final class MiniServer {
 ## API Examples (use with `CompletableFuture`)
 
 ```java
-public final class TestNIOServer {
-    public static void main(String[] args) throws Exception {
-        val workerPool = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() * 2);
-        val server = NIOHTTPServer.port(1234);
+import com.tuhuynh.httpserver.NIOHttpServer;
+import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
+import com.tuhuynh.httpserver.core.nio.AsyncHelper;
 
-        // Similar with HTTP BIO Server's API, but you need to include the "Async" at the end of the name
-        server.use("/", ctx -> HttpResponse.ofAsync("Hello World"));
+val workerPool = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() * 2);
+val server = NIOHttpServer.port(1234);
 
-        server.post("/echo", ctx -> HttpResponse.ofAsync(ctx.getBody()));
+// Similar with HTTP BIO Server's API, but you need to include the "Async" at the end of the name
+server.use("/", ctx -> HttpResponse.ofAsync("Hello World"));
 
-        server.get("/thread", ctx -> HttpResponse.ofAsync(Thread.currentThread().getName()));
+server.post("/echo", ctx -> HttpResponse.ofAsync(ctx.getBody()));
 
-        // /query?foo=bar
-        server.get("/query", ctx -> {
-            final String bar = ctx.getQuery().get("foo");
-            return HttpResponse.ofAsync(bar);
-        });
+server.get("/thread", ctx -> HttpResponse.ofAsync(Thread.currentThread().getName()));
 
-        // /params/:foo/:bar
-        server.get("params", ctx -> {
-            final String foo = ctx.getParam().get("foo");
-            final String bar = ctx.getParam().get("bar");
-            return HttpResponse.ofAsync("Foo: " + foo + ", Bar: " + bar);
-        });
+// /query?foo=bar
+server.get("/query", ctx -> {
+    final String bar = ctx.getQuery().get("foo");
+    return HttpResponse.ofAsync(bar);
+});
 
-        // Catch all
-        server.get("/all/**", ctx -> HttpResponse.ofAsync(ctx.getPath()));
+// /params/:foo/:bar
+server.get("params", ctx -> {
+    final String foo = ctx.getParam().get("foo");
+    final String bar = ctx.getParam().get("bar");
+    return HttpResponse.ofAsync("Foo: " + foo + ", Bar: " + bar);
+});
 
-        // This request will not block the main thread (event loop)
-        // It move the blocking operation into another thread pool (workerPool)
-        server.get("/sleep", ctx -> {
-            val async = AsyncHelper.make();
+// Catch all
+server.get("/all/**", ctx -> HttpResponse.ofAsync(ctx.getPath()));
 
-            workerPool.submit(() -> {
-                System.out.println(ctx.getPath());
-                try {
-                    // Some expensive / blocking task
-                    val thread = Thread.currentThread().getName();
-                    System.out.println("Executing an expensive task on " + thread);
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    System.out.println(e.getMessage());
-                }
+// This request will not block the main thread (event loop)
+// It move the blocking operation into another thread pool (workerPool)
+server.get("/sleep", ctx -> {
+    val async = AsyncHelper.make();
 
-                val thread = Thread.currentThread().getName();
-                async.resolve("Work has done, current thread is: " + thread);
-            });
+    workerPool.submit(() -> {
+        System.out.println(ctx.getPath());
+        try {
+            // Some expensive / blocking task
+            val thread = Thread.currentThread().getName();
+            System.out.println("Executing an expensive task on " + thread);
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            System.out.println(e.getMessage());
+        }
 
-            return async.submit();
-        });
+        val thread = Thread.currentThread().getName();
+        async.resolve("Work has done, current thread is: " + thread);
+    });
 
-        // This request will block one of the event loop threads
-        // By default you have cpu.length * 2 event loop threads
-        server.use("/block", ctx -> {
-            System.out.println(Thread.currentThread().getName() + " is gonna be blocked now!");
-            Thread.sleep(60 * 1000); // Block for 60s
-            return HttpResponse.ofAsync("Block one event loop thread!");
-        });
+    return async.submit();
+});
 
-        // Middleware
-        server.get("/protected", ctx -> {
-            val authorizationHeader = ctx.getHeader().get("Authorization");
-            if (!authorizationHeader.startsWith("Bearer ")) {
-                return HttpResponse.rejectAsync("InvalidToken", 401);
-            }
-            ctx.putHandlerData("username", "tuhuynh");
-            return HttpResponse.nextAsync();
-        }, ctx -> HttpResponse.ofAsync("Login success, hello: " + ctx.getData("username")));
+// This request will block one of the event loop threads
+// By default you have cpu.length * 2 event loop threads
+server.use("/block", ctx -> {
+    System.out.println(Thread.currentThread().getName() + " is gonna be blocked now!");
+    Thread.sleep(60 * 1000); // Block for 60s
+    return HttpResponse.ofAsync("Block one event loop thread!");
+});
 
-        // Handle error
-        server.get("/panic", ctx -> {
-            throw new Exception("Panicked!");
-        });
-
-        server.start();
+// Middleware
+server.get("/protected", ctx -> {
+    val authorizationHeader = ctx.getHeader().get("Authorization");
+    if (!authorizationHeader.startsWith("Bearer ")) {
+        return HttpResponse.rejectAsync("InvalidToken", 401);
     }
-}
+    ctx.putHandlerData("username", "tuhuynh");
+    return HttpResponse.nextAsync();
+}, ctx -> HttpResponse.ofAsync("Login success, hello: " + ctx.getData("username")));
+
+// Handle error
+server.get("/panic", ctx -> {
+    throw new Exception("Panicked!");
+});
+
+server.start();
 ```
 
 But I think it's better to use [async-await](https://github.com/electronicarts/ea-async) to wrap the async code, improve the readability.

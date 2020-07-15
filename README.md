@@ -52,7 +52,7 @@ import com.tuhuynh.httpserver.HttpServer;
 import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
 import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerBIO;
 
-val server = HTTPServer.port(1234);
+val server = HttpServer.port(1234);
 
 server.use("/", ctx -> HttpResponse.of("Hello World"));
 server.post("/echo", ctx -> HttpResponse.of(ctx.getBody()));
@@ -108,17 +108,15 @@ server.get("/protected",
 
 // Global middleware
 server.use(ctx -> {
-    if (!"application/json".equals(ctx.getHeader().get("content-type").toLowerCase())) {
-        return HttpResponse.reject("Only support RESTful API").status(403);
-    }
-
+    val thread = Thread.currentThread().getName();
+    System.out.println("Serving in " + thread);
     return HttpResponse.next();
 });
 
 // Perform as a proxy server
 server.get("/meme", ctx -> {
     // Built-in HTTP Client
-    val meme = HTTPClient.builder()
+    val meme = HttpClient.builder()
                          .url("https://meme-api.herokuapp.com/gimme")
                          .method("GET")
                          .build().perform();
