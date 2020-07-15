@@ -3,8 +3,8 @@ package com.tuhuynh.httpserver.tests;
 import java.io.IOException;
 import java.util.Random;
 
-import com.tuhuynh.httpserver.HTTPClient;
-import com.tuhuynh.httpserver.HTTPServer;
+import com.tuhuynh.httpserver.HttpClient;
+import com.tuhuynh.httpserver.HttpServer;
 import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
 import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerBIO;
 
@@ -12,7 +12,7 @@ import lombok.val;
 
 public final class TestServer {
     public static void main(String[] args) throws IOException {
-        val server = HTTPServer.port(1234);
+        val server = HttpServer.port(1234);
 
         server.use("/", ctx -> HttpResponse.of("Hello World"));
         server.post("/echo", ctx -> HttpResponse.of(ctx.getBody()));
@@ -76,7 +76,7 @@ public final class TestServer {
         // Perform as a proxy server
         server.get("/meme", ctx -> {
             // Built-in HTTP Client
-            val meme = HTTPClient.builder()
+            val meme = HttpClient.builder()
                                  .url("https://meme-api.herokuapp.com/gimme")
                                  .method("GET")
                                  .build().perform();

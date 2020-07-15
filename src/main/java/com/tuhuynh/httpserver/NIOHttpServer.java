@@ -22,16 +22,16 @@ import com.tuhuynh.httpserver.core.nio.RequestPipelineNIO;
 import lombok.SneakyThrows;
 import lombok.val;
 
-public final class NIOHTTPServer {
-    public static NIOHTTPServer port(final int serverPort) {
-        return new NIOHTTPServer(serverPort);
+public final class NIOHttpServer {
+    public static NIOHttpServer port(final int serverPort) {
+        return new NIOHttpServer(serverPort);
     }
 
     private final int serverPort;
     private ArrayList<RequestHandlerNIO> middlewares = new ArrayList<>();
     private ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlers = new ArrayList<>();
 
-    private NIOHTTPServer(final int serverPort) {
+    private NIOHttpServer(final int serverPort) {
         this.serverPort = serverPort;
     }
 

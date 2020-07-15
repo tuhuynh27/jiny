@@ -2,7 +2,7 @@ package com.tuhuynh.httpserver.tests;
 
 import java.util.concurrent.Executors;
 
-import com.tuhuynh.httpserver.NIOHTTPServer;
+import com.tuhuynh.httpserver.NIOHttpServer;
 import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
 import com.tuhuynh.httpserver.core.nio.AsyncHelper;
 
@@ -11,7 +11,7 @@ import lombok.val;
 public final class TestNIOServer {
     public static void main(String[] args) throws Exception {
         val workerPool = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() * 2);
-        val server = NIOHTTPServer.port(1234);
+        val server = NIOHttpServer.port(1234);
 
         // Similar with HTTP BIO Server's API, but you need to include the "Async" at the end of the name
         server.use("/", ctx -> HttpResponse.ofAsync("Hello World"));

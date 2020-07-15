@@ -47,8 +47,8 @@ public final class MiniServer {
 It's very easy to use just like [Go Gin](https://github.com/gin-gonic/gin) or Golang's built-in [net/http](https://golang.org/pkg/net/http/) package as it has similar APIs.
 
 ```java
-import com.tuhuynh.httpserver.HTTPClient;
-import com.tuhuynh.httpserver.HTTPServer;
+import com.tuhuynh.httpserver.HttpClient;
+import com.tuhuynh.httpserver.HttpServer;
 import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
 import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerBIO;
 

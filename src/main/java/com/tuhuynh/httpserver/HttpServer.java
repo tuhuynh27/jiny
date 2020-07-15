@@ -19,9 +19,9 @@ import com.tuhuynh.httpserver.core.bio.RequestPipelineBIO;
 
 import lombok.val;
 
-public final class HTTPServer {
-    public static HTTPServer port(final int serverPort) {
-        return new HTTPServer(serverPort);
+public final class HttpServer {
+    public static HttpServer port(final int serverPort) {
+        return new HttpServer(serverPort);
     }
 
     private final int serverPort;
@@ -29,7 +29,7 @@ public final class HTTPServer {
     private ArrayList<RequestHandlerBIO> middlewares = new ArrayList<>();
     private ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlers = new ArrayList<>();
 
-    private HTTPServer(final int serverPort) {
+    private HttpServer(final int serverPort) {
         this.serverPort = serverPort;
     }
 

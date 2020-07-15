@@ -17,7 +17,7 @@ import lombok.val;
 
 @RequiredArgsConstructor
 @Builder
-public final class HTTPClient {
+public final class HttpClient {
     private final String url;
     private final String method;
     private final HashMap<String, String> headers;
