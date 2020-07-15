@@ -193,23 +193,23 @@ server.start();
 
 **Zero dependency**, it just uses the Java core built-in APIs, also `lombok` is used to compile and build the library.
 
-Lines of code: **1141**
+Lines of code: **1163**
 ```
-  35 ./src/main/java/com/tuhuynh/httpserver/core/GroupThreadFactory.java
-  63 ./src/main/java/com/tuhuynh/httpserver/core/bio/RequestBinderBIO.java
-  64 ./src/main/java/com/tuhuynh/httpserver/core/bio/RequestPipelineBIO.java
- 190 ./src/main/java/com/tuhuynh/httpserver/core/RequestBinder.java
-  86 ./src/main/java/com/tuhuynh/httpserver/core/nio/RequestBinderNIO.java
- 112 ./src/main/java/com/tuhuynh/httpserver/core/nio/RequestPipelineNIO.java
+  64 ./src/main/java/com/tuhuynh/httpserver/core/bio/RequestPipeline.java
+  62 ./src/main/java/com/tuhuynh/httpserver/core/bio/RequestBinder.java
+  35 ./src/main/java/com/tuhuynh/httpserver/core/ServerThreadFactory.java
+ 191 ./src/main/java/com/tuhuynh/httpserver/core/RequestBinder.java
+ 112 ./src/main/java/com/tuhuynh/httpserver/core/nio/RequestPipeline.java
+  85 ./src/main/java/com/tuhuynh/httpserver/core/nio/RequestBinder.java
   34 ./src/main/java/com/tuhuynh/httpserver/core/nio/AsyncHelper.java
- 136 ./src/main/java/com/tuhuynh/httpserver/core/RequestUtils.java
+ 136 ./src/main/java/com/tuhuynh/httpserver/core/RequestParser.java
   14 ./src/main/java/com/tuhuynh/httpserver/tests/TestClient.java
   87 ./src/main/java/com/tuhuynh/httpserver/tests/TestNIOServer.java
   94 ./src/main/java/com/tuhuynh/httpserver/tests/TestServer.java
   81 ./src/main/java/com/tuhuynh/httpserver/HttpServer.java
   94 ./src/main/java/com/tuhuynh/httpserver/NIOHttpServer.java
   74 ./src/main/java/com/tuhuynh/httpserver/HttpClient.java
-1164 total
+1163 total
 ```
 
 ## Side project
