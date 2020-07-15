@@ -9,14 +9,14 @@ import java.util.ArrayList;
 
 import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerBIO;
-import com.tuhuynh.httpserver.core.RequestUtils;
+import com.tuhuynh.httpserver.core.RequestParser;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.val;
 
 @RequiredArgsConstructor
-public final class RequestPipelineBIO implements Runnable {
+public final class RequestPipeline implements Runnable {
     private final Socket socket;
     private final ArrayList<RequestHandlerBIO> middlewares;
     private final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlers;
@@ -48,11 +48,11 @@ public final class RequestPipelineBIO implements Runnable {
             body.append((char) in.read());
         }
 
-        val requestMetadata = RequestUtils.parseRequest(requestStringArr.stream().toArray(String[]::new),
+        val requestContext = RequestParser.parseRequest(requestStringArr.stream().toArray(String[]::new),
                                                         body.toString());
 
-        val responseObject = new RequestBinderBIO(requestMetadata, middlewares, handlers).getResponseObject();
-        val responseString = RequestUtils.parseResponse(responseObject);
+        val responseObject = new RequestBinder(requestContext, middlewares, handlers).getResponseObject();
+        val responseString = RequestParser.parseResponse(responseObject);
 
         out.write(responseString);
     }

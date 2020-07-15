@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import com.tuhuynh.httpserver.core.RequestUtils.RequestMethod;
+import com.tuhuynh.httpserver.core.RequestParser.RequestMethod;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,7 +43,8 @@ public class RequestBinder {
                                               && numOfSlashOfRequestPath == numOfSlashOfHandlerPath;
 
         val isCatchAll = handlerPath.endsWith("/**");
-        val handlerCatchAllPattern = handlerPath.length() > 3 ? handlerPath.substring(0, handlerPath.length() - 2) : "";
+        val handlerCatchAllPattern = handlerPath.length() > 3 ? handlerPath.substring(0, handlerPath.length()
+                                                                                         - 2) : "";
         val isMatchCatchAll = isCatchAll && (requestPath.isEmpty() ? "/".startsWith(handlerCatchAllPattern) :
                                              requestPath.startsWith(handlerCatchAllPattern));
 
@@ -72,12 +73,12 @@ public class RequestBinder {
 
     @FunctionalInterface
     public interface RequestHandlerBIO extends RequestHandlerBase {
-        HttpResponse handleFunc(RequestContext requestMetadata) throws Exception;
+        HttpResponse handleFunc(RequestContext requestContext) throws Exception;
     }
 
     @FunctionalInterface
     public interface RequestHandlerNIO extends RequestHandlerBase {
-        CompletableFuture<HttpResponse> handleFunc(RequestContext requestMetadata) throws Exception;
+        CompletableFuture<HttpResponse> handleFunc(RequestContext requestContext) throws Exception;
     }
 
     @Builder

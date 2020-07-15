@@ -6,19 +6,18 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.tuhuynh.httpserver.core.RequestBinder;
-import com.tuhuynh.httpserver.core.RequestUtils.RequestMethod;
+import com.tuhuynh.httpserver.core.RequestParser.RequestMethod;
 
 import lombok.val;
 import lombok.var;
 
-public final class RequestBinderBIO extends RequestBinder {
+public final class RequestBinder extends com.tuhuynh.httpserver.core.RequestBinder {
     private final ArrayList<RequestHandlerBIO> middlewares;
     private final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlerMetadata;
 
-    public RequestBinderBIO(RequestContext requestContext,
-                            final ArrayList<RequestHandlerBIO> middlewares,
-                            final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlerMetadata) {
+    public RequestBinder(RequestContext requestContext,
+                         final ArrayList<RequestHandlerBIO> middlewares,
+                         final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlerMetadata) {
         super(requestContext);
         this.middlewares = middlewares;
         this.handlerMetadata = handlerMetadata;

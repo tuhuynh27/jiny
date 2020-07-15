@@ -9,22 +9,22 @@ import java.util.concurrent.CompletableFuture;
 
 import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerNIO;
-import com.tuhuynh.httpserver.core.RequestUtils;
+import com.tuhuynh.httpserver.core.RequestParser;
 
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.val;
 import lombok.var;
 
-public class RequestPipelineNIO {
+public class RequestPipeline {
     private final AsynchronousSocketChannel clientSocketChannel;
     private final ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
     private final ArrayList<RequestHandlerNIO> middlewares;
     private final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlers;
 
-    public RequestPipelineNIO(final AsynchronousSocketChannel clientSocketChannel,
-                              final ArrayList<RequestHandlerNIO> middlewares,
-                              final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlers)
+    public RequestPipeline(final AsynchronousSocketChannel clientSocketChannel,
+                           final ArrayList<RequestHandlerNIO> middlewares,
+                           final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlers)
             throws IOException {
         this.clientSocketChannel = clientSocketChannel;
         this.middlewares = middlewares;
@@ -74,12 +74,12 @@ public class RequestPipelineNIO {
             req = requestParts[0].trim().split("\n");
             body = requestParts.length == 2 ? requestParts[1].trim() : "";
 
-            val requestMetadata = RequestUtils.parseRequest(req, body);
-            val responseObject = new RequestBinderNIO(requestMetadata, middlewares, handlers)
+            val requestContext = RequestParser.parseRequest(req, body);
+            val responseObject = new RequestBinder(requestContext, middlewares, handlers)
                     .getResponseObject();
 
             responseObject.thenAccept(responseObjectReturned -> {
-                val responseString = RequestUtils.parseResponse(responseObjectReturned);
+                val responseString = RequestParser.parseResponse(responseObjectReturned);
 
                 clientSocketChannel.write(MessageCodec.encode(responseString), null,
                                           new CompletionHandler<Integer, Object>() {

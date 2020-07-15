@@ -10,12 +10,12 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import com.tuhuynh.httpserver.core.GroupThreadFactory;
+import com.tuhuynh.httpserver.core.ServerThreadFactory;
 import com.tuhuynh.httpserver.core.RequestBinder.BIOHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerBIO;
-import com.tuhuynh.httpserver.core.RequestUtils.RequestMethod;
-import com.tuhuynh.httpserver.core.bio.RequestPipelineBIO;
+import com.tuhuynh.httpserver.core.RequestParser.RequestMethod;
+import com.tuhuynh.httpserver.core.bio.RequestPipeline;
 
 import lombok.val;
 
@@ -26,7 +26,7 @@ public final class HttpServer {
 
     private final int serverPort;
     private final Executor executor = Executors.newCachedThreadPool(
-            new GroupThreadFactory("request-processor"));
+            new ServerThreadFactory("request-processor"));
     private ArrayList<RequestHandlerBIO> middlewares = new ArrayList<>();
     private ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlers = new ArrayList<>();
 
@@ -75,7 +75,7 @@ public final class HttpServer {
         System.out.println("Started HTTP Server on port " + serverPort);
         for (; ; ) {
             val socket = serverSocket.accept();
-            executor.execute(new RequestPipelineBIO(socket, middlewares, handlers));
+            executor.execute(new RequestPipeline(socket, middlewares, handlers));
         }
     }
 }

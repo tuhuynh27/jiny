@@ -6,12 +6,12 @@ import java.util.concurrent.ThreadFactory;
 
 import lombok.val;
 
-public class GroupThreadFactory implements ThreadFactory {
+public class ServerThreadFactory implements ThreadFactory {
     private int counter;
     private String name;
     private List<String> stats;
 
-    public GroupThreadFactory(String name) {
+    public ServerThreadFactory(String name) {
         counter = 1;
         this.name = name;
         stats = new ArrayList<>();

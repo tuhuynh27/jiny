@@ -12,12 +12,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
-import com.tuhuynh.httpserver.core.GroupThreadFactory;
+import com.tuhuynh.httpserver.core.ServerThreadFactory;
 import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinder.NIOHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerNIO;
-import com.tuhuynh.httpserver.core.RequestUtils.RequestMethod;
-import com.tuhuynh.httpserver.core.nio.RequestPipelineNIO;
+import com.tuhuynh.httpserver.core.RequestParser.RequestMethod;
+import com.tuhuynh.httpserver.core.nio.RequestPipeline;
 
 import lombok.SneakyThrows;
 import lombok.val;
@@ -73,7 +73,7 @@ public final class NIOHttpServer {
 
     public void start() throws IOException, InterruptedException, ExecutionException, TimeoutException {
         val group = AsynchronousChannelGroup.withFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2,
-                                                                 new GroupThreadFactory("event-loop"));
+                                                                 new ServerThreadFactory("event-loop"));
         val serverSocketChannel = AsynchronousServerSocketChannel.open(group);
         serverSocketChannel.bind(new InetSocketAddress(serverPort));
         System.out.println("Started NIO HTTP Server on port " + serverPort);
@@ -82,7 +82,7 @@ public final class NIOHttpServer {
             @Override
             public void completed(AsynchronousSocketChannel clientSocketChannel, Object attachment) {
                 serverSocketChannel.accept(null, this);
-                new RequestPipelineNIO(clientSocketChannel, middlewares, handlers).run();
+                new RequestPipeline(clientSocketChannel, middlewares, handlers).run();
             }
 
             @Override
