@@ -29,8 +29,8 @@ public class RequestBinderBase {
         }
 
         val handlerPathOriginal = h.getPath();
-        val handlerPathArrWithHandlerParams = Arrays.stream(handlerPathOriginal.split("/"));
-        val handlerPath = handlerPathArrWithHandlerParams.filter(e -> !e.startsWith(":")).collect(
+        val handlerPathArr = Arrays.stream(handlerPathOriginal.split("/"));
+        val handlerPath = handlerPathArr.filter(e -> !e.startsWith(":")).collect(
                 Collectors.joining("/"));
 
         val numOfHandlerParams = handlerPathOriginal.length() - handlerPathOriginal.replace(":", "")
@@ -41,6 +41,10 @@ public class RequestBinderBase {
 
         val requestWithHandlerParamsMatched = numOfHandlerParams > 0 && requestPath.startsWith(handlerPath)
                                               && numOfSlashOfRequestPath == numOfSlashOfHandlerPath;
+
+        val isCatchAll = handlerPath.endsWith("/**");
+        val isMatchCatchAll = isCatchAll && requestPath.startsWith(
+                handlerPath.substring(0, handlerPath.length() - 2));
 
         if (requestWithHandlerParamsMatched) {
             val elementsOfHandlerPath = handlerPathOriginal.split("/");
@@ -58,6 +62,7 @@ public class RequestBinderBase {
                                .requestPath(requestPath)
                                .handlerPath(handlerPath)
                                .requestWithHandlerParamsMatched(requestWithHandlerParamsMatched)
+                               .isMatchCatchAll(isMatchCatchAll)
                                .build();
     }
 
@@ -80,6 +85,7 @@ public class RequestBinderBase {
         String requestPath;
         String handlerPath;
         boolean requestWithHandlerParamsMatched;
+        boolean isMatchCatchAll;
     }
 
     @Getter

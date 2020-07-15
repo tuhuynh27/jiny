@@ -33,12 +33,16 @@ public final class TestNIOServer {
             return HttpResponse.ofAsync("Foo: " + foo + ", Bar: " + bar);
         });
 
+        // Catch all
+        server.get("/all/**", ctx -> HttpResponse.ofAsync(ctx.getPath()));
+
         // This request will not block the main thread (event loop)
         // It move the blocking operation into another thread pool (workerPool)
         server.get("/sleep", ctx -> {
             val async = AsyncHelper.make();
 
             workerPool.submit(() -> {
+                System.out.println(ctx.getPath());
                 try {
                     // Some expensive / blocking task
                     val thread = Thread.currentThread().getName();

@@ -92,12 +92,16 @@ public final class RequestUtils {
     private static RequestMethod getMethod(final String originalMethod) {
         val method = originalMethod.toLowerCase();
         switch (method) {
+            case "head":
+                return RequestMethod.HEAD;
             case "get":
                 return RequestMethod.GET;
             case "post":
                 return RequestMethod.POST;
             case "put":
                 return RequestMethod.PUT;
+            case "patch":
+                return RequestMethod.PATCH;
             case "delete":
                 return RequestMethod.DELETE;
             default:
@@ -121,9 +125,11 @@ public final class RequestUtils {
     }
 
     public enum RequestMethod {
+        HEAD,
         GET,
         POST,
         PUT,
+        PATCH,
         DELETE,
         ALL
     }

@@ -48,6 +48,9 @@ public final class TestServer {
             return HttpResponse.of("Category ID is " + categoryID + ", Item ID is " + itemID);
         });
 
+        // Catch all
+        server.get("/all/**", ctx -> HttpResponse.of(ctx.getPath()));
+
         // Middleware support: Sample JWT Verify Middleware
         RequestHandlerBIO jwtValidator = ctx -> {
             val authorizationHeader = ctx.getHeader().get("Authorization");

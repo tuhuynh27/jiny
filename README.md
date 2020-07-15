@@ -47,7 +47,7 @@ public final class MiniServer {
 It's very easy to use just like [Go Gin](https://github.com/gin-gonic/gin) or Golang's built-in [net/http](https://golang.org/pkg/net/http/) package as it has similar APIs.
 
 ```java
-public final class LightWeightServer {
+public final class TestServer {
     public static void main(String[] args) throws IOException {
         val server = HTTPServer.port(1234);
 
@@ -84,6 +84,9 @@ public final class LightWeightServer {
             val itemID = ctx.getParam().get("itemID");
             return HttpResponse.of("Category ID is " + categoryID + ", Item ID is " + itemID);
         });
+
+        // Catch all
+        server.get("/all/**", ctx -> HttpResponse.of(ctx.getPath()));
 
         // Middleware support: Sample JWT Verify Middleware
         RequestHandlerBIO jwtValidator = ctx -> {
@@ -122,7 +125,7 @@ public final class LightWeightServer {
 
         // Handle error
         server.get("/panic", ctx -> {
-            throw new Exception("Panicked!");
+            throw new RuntimeException("Panicked!");
         });
 
         server.start();
@@ -182,7 +185,6 @@ public final class LightWeightServer {
 ### Up coming:
 
 - Support CORS config, body compression and some default middlewares
-- Support "Catch-All" parameters: /request/**
 - Improve matching/routing performance by using [dynamic trie](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.12.7321&rep=rep1&type=pdf) (radix tree) structure
 - Support built-in JSON marshall/unmarshall support
 - Support annotation to decorate the code (@Handler @Router)

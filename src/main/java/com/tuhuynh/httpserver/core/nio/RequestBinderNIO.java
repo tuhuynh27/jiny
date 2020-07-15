@@ -32,9 +32,10 @@ public final class RequestBinderNIO extends RequestBinderBase {
         for (val h : handlerMetadata) {
             val binder = binderInit(h);
 
-            if ((requestContext.getMethod() == h.getMethod() || (h.getMethod() == RequestMethod.ALL))
+            if (binder.isMatchCatchAll() ||
+                (requestContext.getMethod() == h.getMethod() || (h.getMethod() == RequestMethod.ALL))
                 && (binder.getRequestPath().equals(binder.getHandlerPath()) || binder
-                    .isRequestWithHandlerParamsMatched())) {
+                        .isRequestWithHandlerParamsMatched())) {
                 val handlers = Arrays.asList(h.handlers);
                 val handlersAndMiddlewares = Stream.concat(middlewares.stream(), handlers.stream()).collect(
                         Collectors.toList());
