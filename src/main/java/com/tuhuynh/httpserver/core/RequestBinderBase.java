@@ -153,6 +153,10 @@ public class RequestBinderBase {
             return CompletableFuture.completedFuture(of(t));
         }
 
+        public static <T> CompletableFuture<HttpResponse> ofAsync(final T t, final int httpStatusCode) {
+            return CompletableFuture.completedFuture(of(t).status(httpStatusCode));
+        }
+
         public static <T> HttpResponse of(final T t) {
             return new HttpResponse(200, t.toString(), true);
         }

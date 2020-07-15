@@ -85,7 +85,7 @@ public final class TestServer {
 
         // Handle error
         server.get("/panic", ctx -> {
-            throw new Exception("Panicked!");
+            throw new RuntimeException("Panicked!");
         });
 
         server.start();

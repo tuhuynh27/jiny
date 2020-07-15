@@ -54,21 +54,32 @@ public final class RequestBinderNIO extends RequestBinderBase {
 
     private void resolvePromiseChain(final LinkedList<RequestHandlerNIO> handlerQueue) throws Exception {
         if (handlerQueue.size() == 1) {
-            handlerQueue.removeFirst().handleFunc(requestContext).thenAccept(result -> {
-                isDone.complete(result);
-            });
-        } else {
-            handlerQueue.removeFirst().handleFunc(requestContext).thenAccept(result -> {
-                if (result.isAllowNext()) {
-                    try {
-                        resolvePromiseChain(handlerQueue);
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
-                    }
-                } else {
+            try {
+                handlerQueue.removeFirst().handleFunc(requestContext).thenAccept(result -> {
                     isDone.complete(result);
-                }
-            });
+                });
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                isDone.complete(HttpResponse.of(e.getMessage()).status(500));
+            }
+        } else {
+            try {
+                handlerQueue.removeFirst().handleFunc(requestContext).thenAccept(result -> {
+                    if (result.isAllowNext()) {
+                        try {
+                            resolvePromiseChain(handlerQueue);
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                            isDone.complete(HttpResponse.of(e.getMessage()).status(500));
+                        }
+                    } else {
+                        isDone.complete(result);
+                    }
+                });
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                isDone.complete(HttpResponse.of(e.getMessage()).status(500));
+            }
         }
     }
 }

@@ -2,7 +2,7 @@
 
 "Asynchronous" Non-blocking I/O version on `com.tuhuynh.httpserver`, using Java SE's `java.net` & `java.nio` packages.
 
-This is kinda "naive [Netty](https://netty.io/) clone with [Go-Gin](https://github.com/gin-gonic/gin) interface" but with HTTP protocol support (Netty is a TCP Framework).  
+This is kinda "naive [Netty](https://netty.io/) clone with [Go-Gin](https://github.com/gin-gonic/gin) interface" also with HTTP protocol support (Netty is just a TCP Framework).  
 
 **Currently, this is in the experimental mode**
 
@@ -10,7 +10,7 @@ This is kinda "naive [Netty](https://netty.io/) clone with [Go-Gin](https://gith
 
 This server uses the latest `AsynchronousServerSocketChannel` API of Java SE 7, which is fully Async I/O (with underlying OS support for `epoll`/`kqueue` edge-triggered syscalls).
 
-The [old versions](https://github.com/huynhminhtufu/httpserver/blob/678bc216a91d8d6504983c7cd22d1c1cef1e88bd/src/main/java/com/tuhuynh/httpserver/core/nio/RequestPipelineNIO.java) (< 0.1.6) use `SocketServerChannel` and a `Selector` which is just a NIO Multiplexer aka "polling mechanism" (with `select` and `poll` which is lever-triggered)
+The [old versions](https://github.com/huynhminhtufu/httpserver/blob/678bc216a91d8d6504983c7cd22d1c1cef1e88bd/src/main/java/com/tuhuynh/httpserver/core/nio/RequestPipelineNIO.java) (< 0.1.6) use `SocketServerChannel` and a `Selector` which is just a NIO Multiplexer aka "polling mechanism" (with `select` and `poll` which is lever-triggered syscalls)
 
 ## Quick Start
 
@@ -36,11 +36,28 @@ public final class TestNIOServer {
         val workerPool = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() * 2);
         val server = NIOHTTPServer.port(1234);
 
+        // Similar with HTTP BIO Server's API, but you need to include the "Async" at the end of the name
         server.use("/", ctx -> HttpResponse.ofAsync("Hello World"));
+
+        server.post("/echo", ctx -> HttpResponse.ofAsync(ctx.getBody()));
 
         server.get("/thread", ctx -> HttpResponse.ofAsync(Thread.currentThread().getName()));
 
+        // /query?foo=bar
+        server.get("/query", ctx -> {
+            final String bar = ctx.getQuery().get("foo");
+            return HttpResponse.ofAsync(bar);
+        });
+
+        // /params/:foo/:bar
+        server.get("params", ctx -> {
+            final String foo = ctx.getParam().get("foo");
+            final String bar = ctx.getParam().get("bar");
+            return HttpResponse.ofAsync("Foo: " + foo + ", Bar: " + bar);
+        });
+
         // This request will not block the main thread (event loop)
+        // It move the blocking operation into another thread pool (workerPool)
         server.get("/sleep", ctx -> {
             val async = AsyncHelper.make();
 
@@ -61,8 +78,8 @@ public final class TestNIOServer {
             return async.submit();
         });
 
-        // This request will block one of the event loop thread
-        // By default you have cpu.length * 2 event loop thread
+        // This request will block one of the event loop threads
+        // By default you have cpu.length * 2 event loop threads
         server.use("/block", ctx -> {
             System.out.println(Thread.currentThread().getName() + " is gonna be blocked now!");
             Thread.sleep(60 * 1000); // Block for 60s
@@ -78,6 +95,11 @@ public final class TestNIOServer {
             ctx.putHandlerData("username", "tuhuynh");
             return HttpResponse.nextAsync();
         }, ctx -> HttpResponse.ofAsync("Login success, hello: " + ctx.getData("username")));
+
+        // Handle error
+        server.get("/panic", ctx -> {
+            throw new Exception("Panicked!");
+        });
 
         server.start();
     }

@@ -52,7 +52,7 @@ public final class RequestBinderBIO extends RequestBinderBase {
                     }
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
-                    return HttpResponse.of("Internal Server Error").status(500);
+                    return HttpResponse.of(e.getMessage()).status(500);
                 }
             }
         }
