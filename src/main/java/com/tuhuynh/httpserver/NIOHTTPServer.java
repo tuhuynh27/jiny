@@ -16,7 +16,7 @@ import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinder.NIOHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerNIO;
 import com.tuhuynh.httpserver.core.RequestUtils.RequestMethod;
-import com.tuhuynh.httpserver.core.nio.EventLoopThreadFactory;
+import com.tuhuynh.httpserver.core.GroupThreadFactory;
 import com.tuhuynh.httpserver.core.nio.RequestPipelineNIO;
 
 import lombok.SneakyThrows;
@@ -73,7 +73,7 @@ public final class NIOHTTPServer {
 
     public void start() throws IOException, InterruptedException, ExecutionException, TimeoutException {
         val group = AsynchronousChannelGroup.withFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2,
-                                                                 new EventLoopThreadFactory("event-loop"));
+                                                                 new GroupThreadFactory("event-loop"));
         val serverSocketChannel = AsynchronousServerSocketChannel.open(group);
         serverSocketChannel.bind(new InetSocketAddress(serverPort));
         serverSocketChannel.accept(null, new CompletionHandler<AsynchronousSocketChannel, Object>() {

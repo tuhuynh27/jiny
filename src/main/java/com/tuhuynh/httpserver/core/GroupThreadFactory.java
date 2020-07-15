@@ -1,4 +1,4 @@
-package com.tuhuynh.httpserver.core.nio;
+package com.tuhuynh.httpserver.core;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,12 +6,12 @@ import java.util.concurrent.ThreadFactory;
 
 import lombok.val;
 
-public class EventLoopThreadFactory implements ThreadFactory {
+public class GroupThreadFactory implements ThreadFactory {
     private int counter;
     private String name;
     private List<String> stats;
 
-    public EventLoopThreadFactory(String name) {
+    public GroupThreadFactory(String name) {
         counter = 1;
         this.name = name;
         stats = new ArrayList<>();
@@ -21,7 +21,7 @@ public class EventLoopThreadFactory implements ThreadFactory {
     public Thread newThread(Runnable runnable) {
         val t = new Thread(runnable, name + "-thread-" + counter);
         counter++;
-        stats.add(String.format("Created thread %d with name %s on %s \n", t.getId(), t.getName(),
+        stats.add(String.format("Created thread %d with name %s on %d \n", t.getId(), t.getName(),
                                 System.currentTimeMillis() / 1000L));
         return t;
     }

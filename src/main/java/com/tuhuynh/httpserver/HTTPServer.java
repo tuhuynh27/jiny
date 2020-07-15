@@ -10,6 +10,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+import com.tuhuynh.httpserver.core.GroupThreadFactory;
 import com.tuhuynh.httpserver.core.RequestBinder.BIOHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerBIO;
@@ -24,7 +25,7 @@ public final class HTTPServer {
     }
 
     private final int serverPort;
-    private final Executor executor = Executors.newCachedThreadPool();
+    private final Executor executor = Executors.newCachedThreadPool(new GroupThreadFactory("request-processor"));
     private ArrayList<RequestHandlerBIO> middlewares = new ArrayList<>();
     private ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlers = new ArrayList<>();
 
