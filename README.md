@@ -20,14 +20,14 @@ Add this to `pom.xml`:
 <dependency>
   <groupId>com.tuhuynh</groupId>
   <artifactId>httpserver</artifactId>
-  <version>0.1.6-ALPHA</version>
+  <version>0.1.7-ALPHA</version>
 </dependency>
 ```
 
 or `build.gradle`:
 
 ```groovy
-compile group: 'com.tuhuynh', name: 'httpserver', version: '0.1.6-ALPHA'
+compile group: 'com.tuhuynh', name: 'httpserver', version: '0.1.7-ALPHA'
 ```
 
 ## Quick Start
