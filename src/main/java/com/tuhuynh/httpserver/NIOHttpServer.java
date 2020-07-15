@@ -12,11 +12,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
+import com.tuhuynh.httpserver.core.GroupThreadFactory;
 import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinder.NIOHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerNIO;
 import com.tuhuynh.httpserver.core.RequestUtils.RequestMethod;
-import com.tuhuynh.httpserver.core.GroupThreadFactory;
 import com.tuhuynh.httpserver.core.nio.RequestPipelineNIO;
 
 import lombok.SneakyThrows;
@@ -76,6 +76,7 @@ public final class NIOHttpServer {
                                                                  new GroupThreadFactory("event-loop"));
         val serverSocketChannel = AsynchronousServerSocketChannel.open(group);
         serverSocketChannel.bind(new InetSocketAddress(serverPort));
+        System.out.println("Started NIO HTTP Server on port " + serverPort);
         serverSocketChannel.accept(null, new CompletionHandler<AsynchronousSocketChannel, Object>() {
             @SneakyThrows
             @Override

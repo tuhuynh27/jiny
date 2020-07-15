@@ -25,7 +25,8 @@ public final class HttpServer {
     }
 
     private final int serverPort;
-    private final Executor executor = Executors.newCachedThreadPool(new GroupThreadFactory("request-processor"));
+    private final Executor executor = Executors.newCachedThreadPool(
+            new GroupThreadFactory("request-processor"));
     private ArrayList<RequestHandlerBIO> middlewares = new ArrayList<>();
     private ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlers = new ArrayList<>();
 

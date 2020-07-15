@@ -43,8 +43,9 @@ public class RequestBinder {
                                               && numOfSlashOfRequestPath == numOfSlashOfHandlerPath;
 
         val isCatchAll = handlerPath.endsWith("/**");
-        val isMatchCatchAll = isCatchAll && requestPath.startsWith(
-                handlerPath.substring(0, handlerPath.length() - 2));
+        val handlerCatchAllPattern = handlerPath.length() > 3 ? handlerPath.substring(0, handlerPath.length() - 2) : "";
+        val isMatchCatchAll = isCatchAll && (requestPath.isEmpty() ? "/".startsWith(handlerCatchAllPattern) :
+                                             requestPath.startsWith(handlerCatchAllPattern));
 
         if (requestWithHandlerParamsMatched) {
             val elementsOfHandlerPath = handlerPathOriginal.split("/");
