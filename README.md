@@ -47,90 +47,91 @@ public final class MiniServer {
 It's very easy to use just like [Go Gin](https://github.com/gin-gonic/gin) or Golang's built-in [net/http](https://golang.org/pkg/net/http/) package as it has similar APIs.
 
 ```java
-public final class TestServer {
-    public static void main(String[] args) throws IOException {
-        val server = HTTPServer.port(1234);
+import com.tuhuynh.httpserver.HTTPClient;
+import com.tuhuynh.httpserver.HTTPServer;
+import com.tuhuynh.httpserver.core.RequestBinderBase.HttpResponse;
+import com.tuhuynh.httpserver.core.RequestBinderBase.RequestHandlerBIO;
 
-        server.use("/", ctx -> HttpResponse.of("Hello World"));
-        server.post("/echo", ctx -> HttpResponse.of(ctx.getBody()));
+val server = HTTPServer.port(1234);
 
-        // Free to execute blocking tasks with a Cached ThreadPool
-        server.get("/sleep", ctx -> {
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                System.out.println(e.getMessage());
-            }
-            return HttpResponse.of("Sleep done!");
-        });
+server.use("/", ctx -> HttpResponse.of("Hello World"));
+server.post("/echo", ctx -> HttpResponse.of(ctx.getBody()));
 
-        server.get("/thread",
-                   ctx -> HttpResponse.of(Thread.currentThread().getName()));
-
-        server.get("/random", ctx -> {
-            val rand = new Random();
-            return HttpResponse.of(String.valueOf(rand.nextInt(100 + 1)));
-        });
-
-        // Get query params, ex: /query?hello=world
-        server.get("/query", ctx -> {
-            val world = ctx.getQuery().get("hello");
-            return HttpResponse.of("Hello: " + world);
-        });
-
-        // Get handler params, ex: /params/:categoryID/:itemID
-        server.get("/params/:categoryID/:itemID", ctx -> {
-            val categoryID = ctx.getParam().get("categoryID");
-            val itemID = ctx.getParam().get("itemID");
-            return HttpResponse.of("Category ID is " + categoryID + ", Item ID is " + itemID);
-        });
-
-        // Catch all
-        server.get("/all/**", ctx -> HttpResponse.of(ctx.getPath()));
-
-        // Middleware support: Sample JWT Verify Middleware
-        RequestHandlerBIO jwtValidator = ctx -> {
-            val authorizationHeader = ctx.getHeader().get("Authorization");
-            // Check JWT is valid, below is just a sample check
-            if (!authorizationHeader.startsWith("Bearer")) {
-                return HttpResponse.reject("Invalid token").status(401);
-            }
-            ctx.putHandlerData("username", "tuhuynh");
-            return HttpResponse.next();
-        };
-        // Then, inject middleware to the request function chain like this
-        server.get("/protected",
-                   jwtValidator, // jwtMiddleware
-                   ctx -> HttpResponse.of("Login success, hello: " + ctx.getData("username")));
-
-        // Global middleware
-        server.use(ctx -> {
-            if (!"application/json".equals(ctx.getHeader().get("content-type").toLowerCase())) {
-                return HttpResponse.reject("Only support RESTful API").status(403);
-            }
-
-            return HttpResponse.next();
-        });
-
-        // Perform as a proxy server
-        server.get("/meme", ctx -> {
-            // Built-in HTTP Client
-            val meme = HTTPClient.builder()
-                                 .url("https://meme-api.herokuapp.com/gimme")
-                                 .method("GET")
-                                 .build().perform();
-            return HttpResponse.of(meme.getBody())
-                               .status(meme.getStatus());
-        });
-
-        // Handle error
-        server.get("/panic", ctx -> {
-            throw new RuntimeException("Panicked!");
-        });
-
-        server.start();
+// Free to execute blocking tasks with a Cached ThreadPool
+server.get("/sleep", ctx -> {
+    try {
+        Thread.sleep(5000);
+    } catch (InterruptedException e) {
+        System.out.println(e.getMessage());
     }
-}
+    return HttpResponse.of("Sleep done!");
+});
+
+server.get("/thread",
+           ctx -> HttpResponse.of(Thread.currentThread().getName()));
+
+server.get("/random", ctx -> {
+    val rand = new Random();
+    return HttpResponse.of(String.valueOf(rand.nextInt(100 + 1)));
+});
+
+// Get query params, ex: /query?hello=world
+server.get("/query", ctx -> {
+    val world = ctx.getQuery().get("hello");
+    return HttpResponse.of("Hello: " + world);
+});
+
+// Get handler params, ex: /params/:categoryID/:itemID
+server.get("/params/:categoryID/:itemID", ctx -> {
+    val categoryID = ctx.getParam().get("categoryID");
+    val itemID = ctx.getParam().get("itemID");
+    return HttpResponse.of("Category ID is " + categoryID + ", Item ID is " + itemID);
+});
+
+// Catch all
+server.get("/all/**", ctx -> HttpResponse.of(ctx.getPath()));
+
+// Middleware support: Sample JWT Verify Middleware
+RequestHandlerBIO jwtValidator = ctx -> {
+    val authorizationHeader = ctx.getHeader().get("Authorization");
+    // Check JWT is valid, below is just a sample check
+    if (!authorizationHeader.startsWith("Bearer")) {
+        return HttpResponse.reject("Invalid token").status(401);
+    }
+    ctx.putHandlerData("username", "tuhuynh");
+    return HttpResponse.next();
+};
+// Then, inject middleware to the request function chain like this
+server.get("/protected",
+           jwtValidator, // jwtMiddleware
+           ctx -> HttpResponse.of("Login success, hello: " + ctx.getData("username")));
+
+// Global middleware
+server.use(ctx -> {
+    if (!"application/json".equals(ctx.getHeader().get("content-type").toLowerCase())) {
+        return HttpResponse.reject("Only support RESTful API").status(403);
+    }
+
+    return HttpResponse.next();
+});
+
+// Perform as a proxy server
+server.get("/meme", ctx -> {
+    // Built-in HTTP Client
+    val meme = HTTPClient.builder()
+                         .url("https://meme-api.herokuapp.com/gimme")
+                         .method("GET")
+                         .build().perform();
+    return HttpResponse.of(meme.getBody())
+                       .status(meme.getStatus());
+});
+
+// Handle error
+server.get("/panic", ctx -> {
+    throw new RuntimeException("Panicked!");
+});
+
+server.start();
 ```
 
 (after build: size is just 30-50 KB .jar file, run and init cost about ~20MB RAM)
@@ -187,6 +188,7 @@ public final class TestServer {
 - Support CORS config, body compression and some default middlewares
 - Improve matching/routing performance by using [dynamic trie](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.12.7321&rep=rep1&type=pdf) (radix tree) structure
 - Support built-in JSON marshall/unmarshall support
+- Support WebSocket server
 - Support annotation to decorate the code (@Handler @Router)
 
 ## Dependencies
