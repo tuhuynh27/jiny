@@ -7,13 +7,13 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.tuhuynh.httpserver.core.RequestBinderBase;
+import com.tuhuynh.httpserver.core.RequestBinder;
 import com.tuhuynh.httpserver.core.RequestUtils.RequestMethod;
 
 import lombok.val;
 import lombok.var;
 
-public final class RequestBinderNIO extends RequestBinderBase {
+public final class RequestBinderNIO extends RequestBinder {
     private final ArrayList<RequestHandlerNIO> middlewares;
     private final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlerMetadata;
     private CompletableFuture<HttpResponse> isDone = new CompletableFuture<>();

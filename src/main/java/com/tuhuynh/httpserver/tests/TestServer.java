@@ -5,8 +5,8 @@ import java.util.Random;
 
 import com.tuhuynh.httpserver.HTTPClient;
 import com.tuhuynh.httpserver.HTTPServer;
-import com.tuhuynh.httpserver.core.RequestBinderBase.HttpResponse;
-import com.tuhuynh.httpserver.core.RequestBinderBase.RequestHandlerBIO;
+import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
+import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerBIO;
 
 import lombok.val;
 
@@ -68,10 +68,8 @@ public final class TestServer {
 
         // Global middleware
         server.use(ctx -> {
-            if (!"application/json".equals(ctx.getHeader().get("content-type").toLowerCase())) {
-                return HttpResponse.reject("Only support RESTful API").status(403);
-            }
-
+            val thread = Thread.currentThread().getName();
+            System.out.println("Serving in " + thread);
             return HttpResponse.next();
         });
 

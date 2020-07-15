@@ -3,7 +3,7 @@ package com.tuhuynh.httpserver.core.nio;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-import com.tuhuynh.httpserver.core.RequestBinderBase.HttpResponse;
+import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
 
 import lombok.Getter;
 

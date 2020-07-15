@@ -49,8 +49,8 @@ It's very easy to use just like [Go Gin](https://github.com/gin-gonic/gin) or Go
 ```java
 import com.tuhuynh.httpserver.HTTPClient;
 import com.tuhuynh.httpserver.HTTPServer;
-import com.tuhuynh.httpserver.core.RequestBinderBase.HttpResponse;
-import com.tuhuynh.httpserver.core.RequestBinderBase.RequestHandlerBIO;
+import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
+import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerBIO;
 
 val server = HTTPServer.port(1234);
 

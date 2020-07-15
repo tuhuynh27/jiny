@@ -6,8 +6,8 @@ import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
-import com.tuhuynh.httpserver.core.RequestBinderBase.HttpResponse;
-import com.tuhuynh.httpserver.core.RequestBinderBase.RequestContext;
+import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
+import com.tuhuynh.httpserver.core.RequestBinder.RequestContext;
 
 import lombok.NoArgsConstructor;
 import lombok.val;

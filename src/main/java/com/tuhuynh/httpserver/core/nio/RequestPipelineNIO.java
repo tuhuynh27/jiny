@@ -7,8 +7,8 @@ import java.nio.channels.CompletionHandler;
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
-import com.tuhuynh.httpserver.core.RequestBinderBase.BaseHandlerMetadata;
-import com.tuhuynh.httpserver.core.RequestBinderBase.RequestHandlerNIO;
+import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
+import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerNIO;
 import com.tuhuynh.httpserver.core.RequestUtils;
 
 import lombok.NoArgsConstructor;

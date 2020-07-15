@@ -3,7 +3,7 @@ package com.tuhuynh.httpserver.tests;
 import java.util.concurrent.Executors;
 
 import com.tuhuynh.httpserver.NIOHTTPServer;
-import com.tuhuynh.httpserver.core.RequestBinderBase.HttpResponse;
+import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
 import com.tuhuynh.httpserver.core.nio.AsyncHelper;
 
 import lombok.val;

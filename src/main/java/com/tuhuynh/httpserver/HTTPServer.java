@@ -10,9 +10,9 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import com.tuhuynh.httpserver.core.RequestBinderBase.BIOHandlerMetadata;
-import com.tuhuynh.httpserver.core.RequestBinderBase.BaseHandlerMetadata;
-import com.tuhuynh.httpserver.core.RequestBinderBase.RequestHandlerBIO;
+import com.tuhuynh.httpserver.core.RequestBinder.BIOHandlerMetadata;
+import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
+import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerBIO;
 import com.tuhuynh.httpserver.core.RequestUtils.RequestMethod;
 import com.tuhuynh.httpserver.core.bio.RequestPipelineBIO;
 

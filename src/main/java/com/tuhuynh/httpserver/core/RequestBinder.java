@@ -15,7 +15,7 @@ import lombok.val;
 import lombok.var;
 
 @RequiredArgsConstructor
-public class RequestBinderBase {
+public class RequestBinder {
     protected final RequestContext requestContext;
 
     protected BinderInitObject binderInit(final BaseHandlerMetadata<?> h) {

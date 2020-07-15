@@ -12,9 +12,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
-import com.tuhuynh.httpserver.core.RequestBinderBase.BaseHandlerMetadata;
-import com.tuhuynh.httpserver.core.RequestBinderBase.NIOHandlerMetadata;
-import com.tuhuynh.httpserver.core.RequestBinderBase.RequestHandlerNIO;
+import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
+import com.tuhuynh.httpserver.core.RequestBinder.NIOHandlerMetadata;
+import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerNIO;
 import com.tuhuynh.httpserver.core.RequestUtils.RequestMethod;
 import com.tuhuynh.httpserver.core.nio.EventLoopThreadFactory;
 import com.tuhuynh.httpserver.core.nio.RequestPipelineNIO;
