@@ -1,10 +1,16 @@
-# Lightweight Java NIO HTTP Server
+# Lightweight Java Async NIO HTTP Server
 
 "Asynchronous" Non-blocking I/O version on `com.tuhuynh.httpserver`, using Java SE's `java.net` & `java.nio` packages.
 
-This is kinda naive "[Netty](https://netty.io/) clone with [Go-Gin](https://github.com/gin-gonic/gin) interface" but in HTTP level (Netty is just TCP framework).  
+This is kinda "naive [Netty](https://netty.io/) clone with [Go-Gin](https://github.com/gin-gonic/gin) interface" but with HTTP protocol support (Netty is a TCP Framework).  
 
-**Currently, this is in experimental mode**
+**Currently, this is in the experimental mode**
+
+### Insight
+
+This server uses the latest `AsynchronousServerSocketChannel` API of Java SE 7, which is fully Async I/O (with underlying OS support for `epoll`/`kqueue` edge-triggered syscalls).
+
+The [old versions](https://github.com/huynhminhtufu/httpserver/blob/678bc216a91d8d6504983c7cd22d1c1cef1e88bd/src/main/java/com/tuhuynh/httpserver/core/nio/RequestPipelineNIO.java) (< 0.1.6) use `SocketServerChannel` and a `Selector` which is just a NIO Multiplexer aka "polling mechanism" (with `select` and `poll` which is lever-triggered)
 
 ## Quick Start
 

@@ -8,7 +8,7 @@ I build this for my [LINE Bot webhook server](https://github.com/huynhminhtufu/l
 
 There seems to be this perception that Java in itself is lacking some features that facilitate proper application development (unlike like many feature of [Go](https://golang.org/pkg/net/http/)).
 
-**Experimental: [Non-blocking mode HTTP Server](https://github.com/huynhminhtufu/httpserver/tree/master/src/main/java/com/tuhuynh/httpserver/core/nio)**
+**Experimental: [Non-blocking Asynchronous HTTP Server](https://github.com/huynhminhtufu/httpserver/tree/master/src/main/java/com/tuhuynh/httpserver/core/nio)** (if you have a large RPS want to save your server's resources)
 
 ## Installation
 
@@ -173,8 +173,15 @@ public final class LightWeightServer {
 - Added an experimental NIO Server
 - Refactor code
 
+### 0.1.7-ALPHA
+
+- Update NIO Server to use with `AsynchronousServerSocketChannel` API
+- Fix some bugs in routing handlers (duplicate middleware)
+- Refactor code
+
 ### Up coming:
 
+- Support CORS config and some default middlewares
 - Support annotation to decorate the code (@Handler @Router)
 - Support built-in JSON marshall/unmarshall support
 - Improve routing/switch core performance
