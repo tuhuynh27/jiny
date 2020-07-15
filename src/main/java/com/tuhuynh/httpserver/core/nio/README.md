@@ -10,7 +10,7 @@ This is kinda "naive [Netty](https://netty.io/) clone with [Go-Gin](https://gith
 
 This server uses the latest `AsynchronousServerSocketChannel` (aka NIO.2 AIO API) API of Java SE 7, which use the [Proactor Pattern](https://en.wikipedia.org/wiki/Proactor_pattern) and it is fully Async I/O (with underlying OS support for `epoll`/`kqueue` edge-triggered syscalls).
 
-The [old versions](https://github.com/huynhminhtufu/httpserver/blob/678bc216a91d8d6504983c7cd22d1c1cef1e88bd/src/main/java/com/tuhuynh/httpserver/core/nio/RequestPipelineNIO.java) (< 0.1.6) use `SocketServerChannel` and a `Selector` (aka NIO API) which is just a I/O Multiplexer aka "polling mechanism" (with `select` and `poll` / `epoll` `kqueue` lever-triggered syscalls)
+The [old versions](https://github.com/huynhminhtufu/httpserver/blob/678bc216a91d8d6504983c7cd22d1c1cef1e88bd/src/main/java/com/tuhuynh/httpserver/core/nio/RequestPipelineNIO.java) (< 0.1.6) use `SocketServerChannel` and a `Selector` (aka NIO API) which is just a I/O Multiplexer aka "polling mechanism" (with `epoll` / `kqueue` lever-triggered syscalls), that why Netty used a native epoll instead of Java NIO API.
 
 ## Quick Start
 
