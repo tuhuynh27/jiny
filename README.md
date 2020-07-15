@@ -130,7 +130,7 @@ public final class LightWeightServer {
 }
 ```
 
-(after build: size is just 30-50 KB .jar file, run and init cost about 20-30MB RAM)
+(after build: size is just 30-50 KB .jar file, run and init cost about ~20MB RAM)
 
 ## Changelogs
 
@@ -181,32 +181,33 @@ public final class LightWeightServer {
 
 ### Up coming:
 
-- Support CORS config and some default middlewares
-- Support annotation to decorate the code (@Handler @Router)
+- Support CORS config, body compression and some default middlewares
+- Support "Catch-All" parameters: /request/**
+- Improve matching/routing performance by using [dynamic trie](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.12.7321&rep=rep1&type=pdf) (radix tree) structure
 - Support built-in JSON marshall/unmarshall support
-- Improve routing/switch core performance
+- Support annotation to decorate the code (@Handler @Router)
 
 ## Dependencies
 
 **Zero dependency**, it just uses the Java core built-in APIs, also `lombok` is used to compile and build the library.
 
-Lines of code: 1052
+Lines of code: **1141**
 ```
   62 ./src/main/java/com/tuhuynh/httpserver/core/bio/RequestBinderBIO.java
   64 ./src/main/java/com/tuhuynh/httpserver/core/bio/RequestPipelineBIO.java
- 189 ./src/main/java/com/tuhuynh/httpserver/core/RequestBinderBase.java
-  74 ./src/main/java/com/tuhuynh/httpserver/core/nio/RequestBinderNIO.java
+ 183 ./src/main/java/com/tuhuynh/httpserver/core/RequestBinderBase.java
+  85 ./src/main/java/com/tuhuynh/httpserver/core/nio/RequestBinderNIO.java
   35 ./src/main/java/com/tuhuynh/httpserver/core/nio/EventLoopThreadFactory.java
  112 ./src/main/java/com/tuhuynh/httpserver/core/nio/RequestPipelineNIO.java
-  29 ./src/main/java/com/tuhuynh/httpserver/core/nio/AsyncHelper.java
+  34 ./src/main/java/com/tuhuynh/httpserver/core/nio/AsyncHelper.java
  130 ./src/main/java/com/tuhuynh/httpserver/core/RequestUtils.java
   14 ./src/main/java/com/tuhuynh/httpserver/tests/TestClient.java
-  59 ./src/main/java/com/tuhuynh/httpserver/tests/TestNIOServer.java
+  83 ./src/main/java/com/tuhuynh/httpserver/tests/TestNIOServer.java
   93 ./src/main/java/com/tuhuynh/httpserver/tests/TestServer.java
   79 ./src/main/java/com/tuhuynh/httpserver/HTTPServer.java
   93 ./src/main/java/com/tuhuynh/httpserver/NIOHTTPServer.java
   74 ./src/main/java/com/tuhuynh/httpserver/HTTPClient.java
-1107 total
+1141 total
 ```
 
 ## Side project
