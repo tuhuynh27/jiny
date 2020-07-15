@@ -195,21 +195,21 @@ server.start();
 
 Lines of code: **1141**
 ```
-  62 ./src/main/java/com/tuhuynh/httpserver/core/bio/RequestBinderBIO.java
+  35 ./src/main/java/com/tuhuynh/httpserver/core/GroupThreadFactory.java
+  63 ./src/main/java/com/tuhuynh/httpserver/core/bio/RequestBinderBIO.java
   64 ./src/main/java/com/tuhuynh/httpserver/core/bio/RequestPipelineBIO.java
- 183 ./src/main/java/com/tuhuynh/httpserver/core/RequestBinderBase.java
-  85 ./src/main/java/com/tuhuynh/httpserver/core/nio/RequestBinderNIO.java
-  35 ./src/main/java/com/tuhuynh/httpserver/core/nio/EventLoopThreadFactory.java
+ 190 ./src/main/java/com/tuhuynh/httpserver/core/RequestBinder.java
+  86 ./src/main/java/com/tuhuynh/httpserver/core/nio/RequestBinderNIO.java
  112 ./src/main/java/com/tuhuynh/httpserver/core/nio/RequestPipelineNIO.java
   34 ./src/main/java/com/tuhuynh/httpserver/core/nio/AsyncHelper.java
- 130 ./src/main/java/com/tuhuynh/httpserver/core/RequestUtils.java
+ 136 ./src/main/java/com/tuhuynh/httpserver/core/RequestUtils.java
   14 ./src/main/java/com/tuhuynh/httpserver/tests/TestClient.java
-  83 ./src/main/java/com/tuhuynh/httpserver/tests/TestNIOServer.java
-  93 ./src/main/java/com/tuhuynh/httpserver/tests/TestServer.java
-  79 ./src/main/java/com/tuhuynh/httpserver/HTTPServer.java
-  93 ./src/main/java/com/tuhuynh/httpserver/NIOHTTPServer.java
-  74 ./src/main/java/com/tuhuynh/httpserver/HTTPClient.java
-1141 total
+  87 ./src/main/java/com/tuhuynh/httpserver/tests/TestNIOServer.java
+  94 ./src/main/java/com/tuhuynh/httpserver/tests/TestServer.java
+  81 ./src/main/java/com/tuhuynh/httpserver/HttpServer.java
+  94 ./src/main/java/com/tuhuynh/httpserver/NIOHttpServer.java
+  74 ./src/main/java/com/tuhuynh/httpserver/HttpClient.java
+1164 total
 ```
 
 ## Side project
