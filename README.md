@@ -50,7 +50,6 @@ It's very easy to use just like [Go Gin](https://github.com/gin-gonic/gin) or Go
 import com.tuhuynh.httpserver.HttpClient;
 import com.tuhuynh.httpserver.HttpServer;
 import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
-import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerBIO;
 
 val server = HttpServer.port(1234);
 
@@ -102,19 +101,17 @@ server.get("/params/:categoryID/:itemID", ctx -> {
 // Catch all
 server.get("/all/**", ctx -> HttpResponse.of(ctx.getPath()));
 
-// Middleware support: Sample JWT Verify Middleware
-RequestHandlerBIO jwtValidator = ctx -> {
-    val authorizationHeader = ctx.getHeader().get("Authorization");
-    // Check JWT is valid, below is just a sample check
-    if (!authorizationHeader.startsWith("Bearer")) {
-        return HttpResponse.reject("Invalid token").status(401);
-    }
-    ctx.putHandlerData("username", "tuhuynh");
-    return HttpResponse.next();
-};
-// Then, inject middleware to the request function chain like this
-server.get("/protected",
-           jwtValidator, // jwtMiddleware
+// Middleware support
+server.get("/protected", // You wanna provide a jwt validator on this endpoint
+           ctx -> {
+               val authorizationHeader = ctx.getHeader().get("Authorization");
+               // Check JWT is valid, below is just a sample check
+               if (!authorizationHeader.startsWith("Bearer")) {
+                   return HttpResponse.reject("Invalid token").status(401);
+               }
+               ctx.putHandlerData("username", "tuhuynh");
+               return HttpResponse.next();
+           }, // Injected
            ctx -> HttpResponse.of("Login success, hello: " + ctx.getData("username")));
 
 // Global middleware
@@ -196,8 +193,6 @@ server.start();
 
 - Support CORS config, body compression and some default middlewares
 - Improve matching/routing performance by using [dynamic trie](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.12.7321&rep=rep1&type=pdf) (radix tree) structure
-- Support built-in JSON marshall/unmarshall support
-- Support WebSocket server
 - Support annotation to decorate the code (@Handler @Router)
 
 ## Dependencies
