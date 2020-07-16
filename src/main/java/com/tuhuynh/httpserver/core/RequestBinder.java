@@ -81,6 +81,11 @@ public class RequestBinder {
         CompletableFuture<HttpResponse> handleFunc(RequestContext requestContext) throws Exception;
     }
 
+    @FunctionalInterface
+    public interface RequestTransformer {
+        String render(Object model);
+    }
+
     @Builder
     @Getter
     protected static class BinderInitObject {
@@ -165,22 +170,40 @@ public class RequestBinder {
             return CompletableFuture.completedFuture(of(t).status(httpStatusCode));
         }
 
+        public static <T> CompletableFuture<HttpResponse> ofAsync(final T t,
+                                                                  final RequestTransformer transformer) {
+            return CompletableFuture.completedFuture(of(t).transform(transformer).status(200));
+        }
+
+        public static <T> CompletableFuture<HttpResponse> ofAsync(final T t,
+                                                                  final RequestTransformer transformer,
+                                                                  final int httpStatusCode) {
+            return CompletableFuture.completedFuture(of(t).transform(transformer).status(httpStatusCode));
+        }
+
         public static <T> HttpResponse of(final T t) {
-            return new HttpResponse(200, t.toString(), true);
+            return new HttpResponse(200, t, true);
+        }
+
+        public static <T> HttpResponse of(final T t, final int httpStatusCode) {
+            return new HttpResponse(httpStatusCode, t, true);
         }
 
         public static CompletableFuture<HttpResponse> createPromise() {
             return new CompletableFuture<>();
         }
-
         private int httpStatusCode;
         private String responseString;
         private boolean allowNext;
-
-        private HttpResponse(final int httpStatusCode, final String responseString, final boolean allowNext) {
+        private <T> HttpResponse(final int httpStatusCode, final T responseObject, final boolean allowNext) {
             this.httpStatusCode = httpStatusCode;
-            this.responseString = responseString;
+            responseString = responseObject.toString();
             this.allowNext = allowNext;
+        }
+
+        public HttpResponse transform(RequestTransformer transformer) {
+            responseString = transformer.render(responseString);
+            return this;
         }
 
         public HttpResponse status(final int httpStatusCode) {

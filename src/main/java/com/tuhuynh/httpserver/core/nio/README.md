@@ -45,6 +45,16 @@ server.post("/echo", ctx -> HttpResponse.ofAsync(ctx.getBody()));
 
 server.get("/thread", ctx -> HttpResponse.ofAsync(Thread.currentThread().getName()));
 
+// You can put in a JSON transform adapter like Google GSON
+server.get("/json", ctx -> {
+    val customer = CustomObject.builder()
+                               .email("abc@gmail.com")
+                               .name("Tu Huynh").build();
+    val gson = new Gson();
+    return HttpResponse.ofAsync(customer, gson::toJson);
+    // You will get {"email": "abc@gmail.com", "name": "Tu Huynh"}
+});
+
 // /query?foo=bar
 server.get("/query", ctx -> {
     final String bar = ctx.getQuery().get("foo");

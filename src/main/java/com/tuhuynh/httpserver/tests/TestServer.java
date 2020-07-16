@@ -8,6 +8,7 @@ import com.tuhuynh.httpserver.HttpServer;
 import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
 import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerBIO;
 
+import lombok.Builder;
 import lombok.val;
 
 public final class TestServer {
@@ -16,6 +17,13 @@ public final class TestServer {
 
         server.use("/", ctx -> HttpResponse.of("Hello World"));
         server.post("/echo", ctx -> HttpResponse.of(ctx.getBody()));
+
+        // You can put in a JSON adapter like Google GSON
+        server.get("/json", ctx -> {
+            val text = "Hello";
+            return HttpResponse.of(text)
+                               .transform(t -> t + "SimulateJSON");
+        });
 
         // Free to execute blocking tasks with a Cached ThreadPool
         server.get("/sleep", ctx -> {
@@ -90,7 +98,11 @@ public final class TestServer {
         });
 
         server.start();
+    }
 
-        // Test Sonar
+    @Builder
+    static class CustomObject {
+        String email;
+        String name;
     }
 }

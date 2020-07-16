@@ -75,6 +75,17 @@ server.get("/random", ctx -> {
     return HttpResponse.of(String.valueOf(rand.nextInt(100 + 1)));
 });
 
+// You can put in a JSON transform adapter like Google GSON
+server.get("/json", ctx -> {
+    val customer = CustomObject.builder()
+                               .email("abc@gmail.com")
+                               .name("Tu Huynh").build();
+    val gson = new Gson();
+    return HttpResponse.of(customer)
+                       .transform(gson::toJson);
+    // You will get {"email": "abc@gmail.com", "name": "Tu Huynh"}
+});
+
 // Get query params, ex: /query?hello=world
 server.get("/query", ctx -> {
     val world = ctx.getQuery().get("hello");

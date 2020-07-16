@@ -20,6 +20,12 @@ public final class TestNIOServer {
 
         server.get("/thread", ctx -> HttpResponse.ofAsync(Thread.currentThread().getName()));
 
+        // You can put in a JSON adapter like Google GSON
+        server.get("/json", ctx -> {
+            val text = "Hello";
+            return HttpResponse.ofAsync(text, t -> t + "SimulateJson");
+        });
+
         // /query?foo=bar
         server.get("/query", ctx -> {
             final String bar = ctx.getQuery().get("foo");
