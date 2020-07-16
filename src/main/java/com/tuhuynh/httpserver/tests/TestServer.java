@@ -90,5 +90,7 @@ public final class TestServer {
         });
 
         server.start();
+
+        // Test Sonar
     }
 }
