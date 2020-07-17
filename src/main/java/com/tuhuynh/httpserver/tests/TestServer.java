@@ -17,13 +17,6 @@ public final class TestServer {
         server.use("/", ctx -> HttpResponse.of("Hello World"));
         server.post("/echo", ctx -> HttpResponse.of(ctx.getBody()));
 
-        // You can put in a JSON adapter like Google GSON
-        server.get("/json", ctx -> {
-            val text = "Hello";
-            return HttpResponse.of(text)
-                               .transform(t -> t + "SimulateJSON");
-        });
-
         // Free to execute blocking tasks with a Cached ThreadPool
         server.get("/sleep", ctx -> {
             try {

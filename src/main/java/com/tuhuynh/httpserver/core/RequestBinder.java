@@ -193,16 +193,16 @@ public class RequestBinder {
             return new CompletableFuture<>();
         }
         private int httpStatusCode;
-        private String responseString;
+        private Object responseObject;
         private boolean allowNext;
         private <T> HttpResponse(final int httpStatusCode, final T responseObject, final boolean allowNext) {
             this.httpStatusCode = httpStatusCode;
-            responseString = responseObject.toString();
+            this.responseObject = responseObject;
             this.allowNext = allowNext;
         }
 
         public HttpResponse transform(RequestTransformer transformer) {
-            responseString = transformer.render(responseString);
+            responseObject = transformer.render(responseObject);
             return this;
         }
 

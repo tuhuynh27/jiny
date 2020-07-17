@@ -73,7 +73,7 @@ public final class RequestParser {
         }
 
         return "HTTP/1.1 " + httpResponse.getHttpStatusCode() + ' ' + httpStatusText + "\n\n" + httpResponse
-                .getResponseString() + '\n';
+                .getResponseObject() + '\n';
     }
 
     public static HashMap<String, String> splitQuery(final String url) {

@@ -24,14 +24,14 @@ Add this to `pom.xml`:
 <dependency>
   <groupId>com.tuhuynh</groupId>
   <artifactId>httpserver</artifactId>
-  <version>0.1.8-ALPHA</version>
+  <version>0.1.9-ALPHA</version>
 </dependency>
 ```
 
 or `build.gradle`:
 
 ```groovy
-compile group: 'com.tuhuynh', name: 'httpserver', version: '0.1.8-ALPHA'
+compile group: 'com.tuhuynh', name: 'httpserver', version: '0.1.9-ALPHA'
 ```
 
 ## Quick Start
@@ -195,7 +195,7 @@ server.start();
 - Fix some bugs in routing handlers (duplicate middleware)
 - Refactor code
 
-### 0.1.8-ALPHA
+### 0.1.8-ALPHA && 0.1.9-ALPHA
 
 - Support "Catch All" handler
 - Refactor & Restructure code
