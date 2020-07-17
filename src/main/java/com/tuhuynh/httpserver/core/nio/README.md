@@ -61,8 +61,8 @@ server.get("/query", ctx -> {
     return HttpResponse.ofAsync(bar);
 });
 
-// /params/:foo/:bar
-server.get("params", ctx -> {
+// /params/hello/world
+server.get("/params/:foo/:bar", ctx -> {
     final String foo = ctx.getParam().get("foo");
     final String bar = ctx.getParam().get("bar");
     return HttpResponse.ofAsync("Foo: " + foo + ", Bar: " + bar);
