@@ -6,17 +6,17 @@ This is kinda "naive [Netty](https://netty.io/) clone with [Go-Gin](https://gith
 
 **Currently, this is in the experimental mode**
 
-### Insight
+### NIO Insight
 
 This server uses the latest `AsynchronousServerSocketChannel` (aka NIO.2 AIO API) API of Java SE 7, which use the [Proactor Pattern](https://en.wikipedia.org/wiki/Proactor_pattern) and it is fully Async I/O (with underlying OS support for `epoll`/`kqueue` edge-triggered syscalls).
 
-The [old versions](https://github.com/huynhminhtufu/httpserver/blob/678bc216a91d8d6504983c7cd22d1c1cef1e88bd/src/main/java/com/tuhuynh/httpserver/core/nio/RequestPipelineNIO.java) (< 0.1.6) use `SocketServerChannel` and a `Selector` (aka NIO API) which is just a I/O Multiplexer aka "polling mechanism" (with `epoll` / `kqueue` lever-triggered syscalls), that why Netty used a native epoll instead of Java NIO API.
+The [old versions](https://github.com/huynhminhtufu/httpserver/blob/678bc216a91d8d6504983c7cd22d1c1cef1e88bd/src/main/java/com/tuhuynh/httpserver/core/nio/RequestPipelineNIO.java) (< 0.1.6) use `SocketServerChannel` and a `Selector` (aka NIO API) which is just a I/O Multiplexer aka "polling mechanism" (with `epoll` / `kqueue` lever-triggered syscalls).
 
 ## Quick Start
 
 Install [com.tuhuynh.httpserver](https://github.com/huynhminhtufu/httpserver/packages/309436)
 
-This NIO HTTP Server is fully compatible with [HTTPServer's API](https://github.com/huynhminhtufu/httpserver#api-examples)
+This NIO HTTP Server is fully compatible with [Lightweight HTTPServer's API](https://github.com/huynhminhtufu/httpserver#api-examples)
 
 ```java
 public final class MiniServer {

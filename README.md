@@ -1,12 +1,16 @@
 # Lightweight Java HTTP Server
 
-`com.tuhuynh.httpserver` is a light-weight (tiny) HTTP Server (handler/router) written in Vanilla Java with no dependency (based on `java.net` & `java.io` packages). It features a simple HTTP Handler including request parser, routing, middlewares and more. If you need a quick start & simple way to write a Java server, you will love this library.
+`com.tuhuynh.httpserver` features a **lightweight, expressive and unopinionated** pure HTTP Server including request parser, routing, middlewares and more. If you need a quick start & simple way to write a Java server, you will love this library. Unlike in other web frameworks, you can structure your application as you want.
+
+### Embeddable
+
+You can run a Lightweight Java HTTP Server in another existed application such as Spring, Play, Struts... on a different port. "Run on same port" feature will be available soon.
 
 ## Why?
 
 I build this for my [LINE Bot webhook server](https://github.com/huynhminhtufu/line-bot) which will be rewritten in Java, [Servlet APIs](https://docs.oracle.com/javaee/7/api/javax/servlet/package-summary.html) / [JavaEE](https://www.oracle.com/java/technologies/java-ee-glance.html) stuff is too heavy-weight (The Servlet APIs require that your application must be run within a servlet container), super complex and very verbose, also Java 8 SE is lacking a built-in simple HTTP handler/router.
 
-There seems to be this perception that Java in itself is lacking some features that facilitate proper application development (unlike like many feature of [Go](https://golang.org/pkg/net/http/)).
+There seems to be this perception that Java in itself is lacking some features that facilitate proper application development (unlike like many feature of [Go](https://golang.org/pkg/net/http/)) as Java web development has traditionally been very cumbersome with verbose framework.
 
 **Experimental: [Non-blocking Asynchronous HTTP Server](https://github.com/huynhminhtufu/httpserver/tree/master/src/main/java/com/tuhuynh/httpserver/core/nio)** (if you have a large RPS want to save your server's resources)
 
@@ -31,6 +35,8 @@ compile group: 'com.tuhuynh', name: 'httpserver', version: '0.1.7-ALPHA'
 ```
 
 ## Quick Start
+
+You has your REST API ready to serve JSON in less than ten lines of code:
 
 ```java
 public final class MiniServer {
