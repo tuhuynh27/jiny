@@ -24,14 +24,14 @@ Add this to `pom.xml`:
 <dependency>
   <groupId>com.tuhuynh</groupId>
   <artifactId>httpserver</artifactId>
-  <version>0.1.7-ALPHA</version>
+  <version>0.1.8-ALPHA</version>
 </dependency>
 ```
 
 or `build.gradle`:
 
 ```groovy
-compile group: 'com.tuhuynh', name: 'httpserver', version: '0.1.7-ALPHA'
+compile group: 'com.tuhuynh', name: 'httpserver', version: '0.1.8-ALPHA'
 ```
 
 ## Quick Start
@@ -194,6 +194,12 @@ server.start();
 - Update NIO Server to use with `AsynchronousServerSocketChannel` API
 - Fix some bugs in routing handlers (duplicate middleware)
 - Refactor code
+
+### 0.1.8-ALPHA
+
+- Support "Catch All" handler
+- Refactor & Restructure code
+- Support JSON adapter support
 
 ### Up coming:
 
