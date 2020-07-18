@@ -120,4 +120,32 @@ server.get("/panic", ctx -> {
 server.start();
 ```
 
-But I think it's better to use [async-await](https://github.com/electronicarts/ea-async) to wrap the async code, improve the readability.
+## Or use with Reactive Streams handler such as `Reactor` (or `RxJava`):
+
+```java
+val server = NIOHttpServer.port(1234);
+
+server.get("/", ctx -> Mono.fromCallable(System::currentTimeMillis)
+                           .map(HttpResponse::of)
+                           .toFuture());
+
+server.get("/blocking", ctx ->
+        Mono.just("blocking")
+            .subscribeOn(Schedulers.boundedElastic()) // Execute it on another thread pool
+            .map(i -> {
+                try {
+                    // Blocking operation
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    System.out.println(
+                            Arrays.toString(e.getStackTrace())));
+                }
+                return i;
+            })
+            .map(HttpResponse::of)
+            .toFuture());
+
+server.start();
+```
+
+Or you can use [async-await](https://github.com/electronicarts/ea-async) to wrap the async code, improve the readability.
