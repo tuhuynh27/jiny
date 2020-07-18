@@ -8,7 +8,7 @@ You can run a Lightweight Java HTTP Server in another existed application such a
 
 ## Why?
 
-I build this for my [LINE Bot webhook server](https://github.com/huynhminhtufu/line-bot) which will be rewritten in Java, [Servlet APIs](https://docs.oracle.com/javaee/7/api/javax/servlet/package-summary.html) / [JavaEE](https://www.oracle.com/java/technologies/java-ee-glance.html) stuff is too heavy-weight (The Servlet APIs require that your application must be run within a servlet container), super complex and very verbose, also Java 8 SE is lacking a built-in simple HTTP handler/router.
+I build this for my [LINE Bot webhook server](https://github.com/huynhminhtufu/linebot) which will be rewritten in Java, [Servlet APIs](https://docs.oracle.com/javaee/7/api/javax/servlet/package-summary.html) / [JavaEE](https://www.oracle.com/java/technologies/java-ee-glance.html) stuff is too heavy-weight (The Servlet APIs require that your application must be run within a servlet container), super complex and very verbose, also Java 8 SE is lacking a built-in simple HTTP handler/router.
 
 There seems to be this perception that Java in itself is lacking some features that facilitate proper application development (unlike like many feature of [Go](https://golang.org/pkg/net/http/)) as Java web development has traditionally been very cumbersome with verbose framework.
 
