@@ -10,7 +10,7 @@ This is kinda "naive [Netty](https://netty.io/) clone with [Go-Gin](https://gith
 
 This server uses the latest `AsynchronousServerSocketChannel` (aka NIO.2 AIO API) API of Java SE 7, which use the [Proactor Pattern](https://en.wikipedia.org/wiki/Proactor_pattern) and it is fully Async I/O (with underlying OS support for `epoll`/`kqueue` edge-triggered syscalls).
 
-The [old versions](https://github.com/huynhminhtufu/httpserver/blob/678bc216a91d8d6504983c7cd22d1c1cef1e88bd/src/main/java/com/tuhuynh/httpserver/core/nio/RequestPipelineNIO.java) (< 0.1.6) use `SocketServerChannel` and a `Selector` (aka NIO API) which is just a I/O Multiplexer aka "polling mechanism" (with `epoll` / `kqueue` lever-triggered syscalls).
+The [old versions](https://github.com/huynhminhtufu/httpserver/blob/678bc216a91d8d6504983c7cd22d1c1cef1e88bd/src/main/java/com/tuhuynh/httpserver/core/nio/RequestPipelineNIO.java) (< 0.1.6) use `SocketServerChannel` and a `Selector` (aka NIO API) which is just a I/O Multiplexer aka "polling mechanism" (with `epoll` / `kqueue` level-triggered syscalls).
 
 ## Quick Start
 
@@ -120,11 +120,9 @@ server.get("/panic", ctx -> {
 server.start();
 ```
 
-## Or use with Reactive Streams handler such as `Reactor` (or `RxJava`):
+## Or use with Reactive Streams systems such as `Reactor` (or `RxJava`):
 
 ```java
-val server = NIOHttpServer.port(1234);
-
 server.get("/", ctx -> Mono.fromCallable(System::currentTimeMillis)
                            .map(HttpResponse::of)
                            .toFuture());
@@ -132,20 +130,17 @@ server.get("/", ctx -> Mono.fromCallable(System::currentTimeMillis)
 server.get("/blocking", ctx ->
         Mono.just("blocking")
             .subscribeOn(Schedulers.boundedElastic()) // Execute it on another thread pool
-            .map(i -> {
-                try {
-                    // Blocking operation
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    System.out.println(
-                            Arrays.toString(e.getStackTrace())));
-                }
-                return i;
+            .map(text -> {
+                // Blocking operation
+                Thread.sleep(1000);
+                return text;
             })
             .map(HttpResponse::of)
             .toFuture());
 
 server.start();
 ```
+
+(after build: size is just 30-50 KB .jar file, run and init cost about ~20MB RAM compared to ~20MB.jar and 300MB RAM init of [Spring Boot WebFlux Netty](https://start.spring.io/))
 
 Or you can use [async-await](https://github.com/electronicarts/ea-async) to wrap the async code, improve the readability.

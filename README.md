@@ -1,16 +1,12 @@
 # Lightweight Java HTTP Server
 
-`com.tuhuynh.httpserver` features a **lightweight, expressive and unopinionated** pure HTTP Server including request parser, routing, middlewares and more. If you need a quick start & simple way to write a Java server, you will love this library. Unlike in other web frameworks, you can structure your application as you want.
-
-### Embeddable
-
-You can run a Lightweight Java HTTP Server in another existed application such as Spring, Play, Struts... on a different port. "Run on same port" feature will be available soon.
+`com.tuhuynh.httpserver` features a **lightweight (Servlets-free), expressive and unopinionated** pure HTTP Server including request parser, routing, middlewares and more. If you need a quick start & simple way to write a Java server, you will love this library. Unlike in other web frameworks, you can structure your application as you want.
 
 ## Why?
 
 I build this for my [LINE Bot webhook server](https://github.com/huynhminhtufu/linebot) which will be rewritten in Java, [Servlet APIs](https://docs.oracle.com/javaee/7/api/javax/servlet/package-summary.html) / [JavaEE](https://www.oracle.com/java/technologies/java-ee-glance.html) stuff is too heavy-weight (The Servlet APIs require that your application must be run within a servlet container), super complex and very verbose, also Java 8 SE is lacking a built-in simple HTTP handler/router.
 
-There seems to be this perception that Java in itself is lacking some features that facilitate proper application development (unlike like many feature of [Go](https://golang.org/pkg/net/http/)) as Java web development has traditionally been very cumbersome with verbose framework.
+Java in itself is lacking some features that facilitate proper application development (unlike many features of Go) as Java web development has traditionally been very cumbersome with verbose frameworks.
 
 **Experimental: [Non-blocking Asynchronous HTTP Server](https://github.com/huynhminhtufu/httpserver/tree/master/src/main/java/com/tuhuynh/httpserver/core/nio)** (if you have a large RPS want to save your server's resources)
 
@@ -47,6 +43,8 @@ public final class MiniServer {
     }
 }
 ```
+
+Example project: [LINE Bot Webhook Server](https://github.com/huynhminhtufu/linebot)
 
 ## API Examples
 
@@ -146,7 +144,7 @@ server.get("/panic", ctx -> {
 server.start();
 ```
 
-(after build: size is just 30-50 KB .jar file, run and init cost about ~20MB RAM)
+(after build: size is just 30-50 KB .jar file, run and init cost about ~20MB RAM compared to ~20MB.jar and 350MB RAM init of [Spring Boot Tomcat](https://start.spring.io/))
 
 ## Changelogs
 
@@ -204,6 +202,8 @@ server.start();
 ### Up coming:
 
 - Support CORS config, body compression and some default middlewares
+- Support serve static files
+- Add logging, handle NPE problems, unit tests
 - Improve matching/routing performance by using [dynamic trie](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.12.7321&rep=rep1&type=pdf) (radix tree) structure
 - Support annotation to decorate the code (@Handler @Router)
 
@@ -211,23 +211,23 @@ server.start();
 
 **Zero dependency**, it just uses the Java core built-in APIs, also `lombok` is used to compile and build the library.
 
-Lines of code: **1163**
+Lines of code: **1190**
 ```
   64 ./src/main/java/com/tuhuynh/httpserver/core/bio/RequestPipeline.java
   62 ./src/main/java/com/tuhuynh/httpserver/core/bio/RequestBinder.java
   35 ./src/main/java/com/tuhuynh/httpserver/core/ServerThreadFactory.java
- 191 ./src/main/java/com/tuhuynh/httpserver/core/RequestBinder.java
+ 214 ./src/main/java/com/tuhuynh/httpserver/core/RequestBinder.java
  112 ./src/main/java/com/tuhuynh/httpserver/core/nio/RequestPipeline.java
   85 ./src/main/java/com/tuhuynh/httpserver/core/nio/RequestBinder.java
   34 ./src/main/java/com/tuhuynh/httpserver/core/nio/AsyncHelper.java
  136 ./src/main/java/com/tuhuynh/httpserver/core/RequestParser.java
   14 ./src/main/java/com/tuhuynh/httpserver/tests/TestClient.java
   87 ./src/main/java/com/tuhuynh/httpserver/tests/TestNIOServer.java
-  94 ./src/main/java/com/tuhuynh/httpserver/tests/TestServer.java
+  98 ./src/main/java/com/tuhuynh/httpserver/tests/TestServer.java
   81 ./src/main/java/com/tuhuynh/httpserver/HttpServer.java
   94 ./src/main/java/com/tuhuynh/httpserver/NIOHttpServer.java
   74 ./src/main/java/com/tuhuynh/httpserver/HttpClient.java
-1163 total
+1190 total
 ```
 
 ## Side project
