@@ -12,14 +12,14 @@ import com.tuhuynh.httpserver.core.RequestParser.RequestMethod;
 import lombok.val;
 import lombok.var;
 
-public final class RequestBinder extends com.tuhuynh.httpserver.core.RequestBinder {
+public final class RequestBinderNIO extends com.tuhuynh.httpserver.core.RequestBinder {
     private final ArrayList<RequestHandlerNIO> middlewares;
     private final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlerMetadata;
     private CompletableFuture<HttpResponse> isDone = new CompletableFuture<>();
 
-    public RequestBinder(RequestContext requestContext,
-                         final ArrayList<RequestHandlerNIO> middlewares,
-                         final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlerMetadata) {
+    public RequestBinderNIO(RequestContext requestContext,
+                            final ArrayList<RequestHandlerNIO> middlewares,
+                            final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlerMetadata) {
         super(requestContext);
         this.middlewares = middlewares;
         this.handlerMetadata = handlerMetadata;

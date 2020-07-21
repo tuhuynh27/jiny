@@ -11,13 +11,13 @@ import com.tuhuynh.httpserver.core.RequestParser.RequestMethod;
 import lombok.val;
 import lombok.var;
 
-public final class RequestBinder extends com.tuhuynh.httpserver.core.RequestBinder {
+public final class RequestBinderBIO extends com.tuhuynh.httpserver.core.RequestBinder {
     private final ArrayList<RequestHandlerBIO> middlewares;
     private final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlerMetadata;
 
-    public RequestBinder(RequestContext requestContext,
-                         final ArrayList<RequestHandlerBIO> middlewares,
-                         final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlerMetadata) {
+    public RequestBinderBIO(RequestContext requestContext,
+                            final ArrayList<RequestHandlerBIO> middlewares,
+                            final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlerMetadata) {
         super(requestContext);
         this.middlewares = middlewares;
         this.handlerMetadata = handlerMetadata;

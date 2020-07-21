@@ -1,5 +1,6 @@
 package com.tuhuynh.httpserver.tests;
 
+import java.io.IOException;
 import java.util.concurrent.Executors;
 
 import com.tuhuynh.httpserver.NIOHttpServer;
@@ -80,6 +81,20 @@ public final class TestNIOServer {
         // Handle error
         server.get("/panic", ctx -> {
             throw new Exception("Panicked!");
+        });
+
+        new Thread(() -> {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                server.stop();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
 
         server.start();

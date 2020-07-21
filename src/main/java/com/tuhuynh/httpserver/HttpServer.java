@@ -24,6 +24,7 @@ public final class HttpServer {
         return new HttpServer(serverPort);
     }
 
+    private ServerSocket serverSocket;
     private final int serverPort;
     private final Executor executor = Executors.newCachedThreadPool(
             new ServerThreadFactory("request-processor"));
@@ -70,12 +71,21 @@ public final class HttpServer {
     }
 
     public void start() throws IOException {
-        val serverSocket = new ServerSocket();
+        serverSocket = new ServerSocket();
+        serverSocket.setReuseAddress(true);
         serverSocket.bind(new InetSocketAddress(InetAddress.getLocalHost(), serverPort));
         System.out.println("Started HTTP Server on port " + serverPort);
-        for (; ; ) {
+
+        while (!serverSocket.isClosed()) {
             val socket = serverSocket.accept();
             executor.execute(new RequestPipeline(socket, middlewares, handlers));
+        }
+    }
+
+    public void stop() throws IOException {
+        if (!serverSocket.isClosed()) {
+            serverSocket.close();
+            System.out.println("Stopped HTTP Server on port " + serverPort);
         }
     }
 }

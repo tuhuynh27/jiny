@@ -42,7 +42,6 @@ public final class RequestPipeline implements Runnable {
         while (!(inputLine = in.readLine()).isEmpty()) {
             requestStringArr.add(inputLine);
         }
-        System.out.println(requestStringArr);
         val body = new StringBuilder();
         while (in.ready()) {
             body.append((char) in.read());
@@ -51,7 +50,7 @@ public final class RequestPipeline implements Runnable {
         val requestContext = RequestParser.parseRequest(requestStringArr.stream().toArray(String[]::new),
                                                         body.toString());
 
-        val responseObject = new RequestBinder(requestContext, middlewares, handlers).getResponseObject();
+        val responseObject = new RequestBinderBIO(requestContext, middlewares, handlers).getResponseObject();
         val responseString = RequestParser.parseResponse(responseObject);
 
         out.write(responseString);

@@ -75,7 +75,7 @@ public class RequestPipeline {
             body = requestParts.length == 2 ? requestParts[1].trim() : "";
 
             val requestContext = RequestParser.parseRequest(req, body);
-            val responseObject = new RequestBinder(requestContext, middlewares, handlers)
+            val responseObject = new RequestBinderNIO(requestContext, middlewares, handlers)
                     .getResponseObject();
 
             responseObject.thenAccept(responseObjectReturned -> {

@@ -27,6 +27,7 @@ public final class NIOHttpServer {
         return new NIOHttpServer(serverPort);
     }
 
+    private AsynchronousServerSocketChannel serverSocketChannel;
     private final int serverPort;
     private ArrayList<RequestHandlerNIO> middlewares = new ArrayList<>();
     private ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlers = new ArrayList<>();
@@ -74,7 +75,7 @@ public final class NIOHttpServer {
     public void start() throws IOException, InterruptedException, ExecutionException, TimeoutException {
         val group = AsynchronousChannelGroup.withFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2,
                                                                  new ServerThreadFactory("event-loop"));
-        val serverSocketChannel = AsynchronousServerSocketChannel.open(group);
+        serverSocketChannel = AsynchronousServerSocketChannel.open(group);
         serverSocketChannel.bind(new InetSocketAddress(serverPort));
         System.out.println("Started NIO HTTP Server on port " + serverPort);
         serverSocketChannel.accept(null, new CompletionHandler<AsynchronousSocketChannel, Object>() {
@@ -90,5 +91,11 @@ public final class NIOHttpServer {
                 System.out.println(exc.getMessage());
             }
         });
+    }
+
+    public void stop() throws IOException {
+        if (serverSocketChannel.isOpen()) {
+            serverSocketChannel.close();
+        }
     }
 }
