@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import com.tuhuynh.httpserver.core.RequestParser.RequestMethod;
+import com.tuhuynh.httpserver.core.ParserUtils.RequestMethod;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

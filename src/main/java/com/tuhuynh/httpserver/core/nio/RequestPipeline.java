@@ -9,7 +9,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerNIO;
-import com.tuhuynh.httpserver.core.RequestParser;
+import com.tuhuynh.httpserver.core.ParserUtils;
 
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
@@ -74,12 +74,12 @@ public class RequestPipeline {
             req = requestParts[0].trim().split("\n");
             body = requestParts.length == 2 ? requestParts[1].trim() : "";
 
-            val requestContext = RequestParser.parseRequest(req, body);
+            val requestContext = ParserUtils.parseRequest(req, body);
             val responseObject = new RequestBinderNIO(requestContext, middlewares, handlers)
                     .getResponseObject();
 
             responseObject.thenAccept(responseObjectReturned -> {
-                val responseString = RequestParser.parseResponse(responseObjectReturned);
+                val responseString = ParserUtils.parseResponse(responseObjectReturned);
 
                 clientSocketChannel.write(MessageCodec.encode(responseString), null,
                                           new CompletionHandler<Integer, Object>() {

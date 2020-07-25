@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerBIO;
-import com.tuhuynh.httpserver.core.RequestParser;
+import com.tuhuynh.httpserver.core.ParserUtils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -47,11 +47,11 @@ public final class RequestPipeline implements Runnable {
             body.append((char) in.read());
         }
 
-        val requestContext = RequestParser.parseRequest(requestStringArr.stream().toArray(String[]::new),
-                                                        body.toString());
+        val requestContext = ParserUtils.parseRequest(requestStringArr.stream().toArray(String[]::new),
+                                                      body.toString());
 
         val responseObject = new RequestBinderBIO(requestContext, middlewares, handlers).getResponseObject();
-        val responseString = RequestParser.parseResponse(responseObject);
+        val responseString = ParserUtils.parseResponse(responseObject);
 
         out.write(responseString);
     }

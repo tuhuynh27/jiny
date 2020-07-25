@@ -7,7 +7,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.tuhuynh.httpserver.core.RequestParser.RequestMethod;
+import com.tuhuynh.httpserver.core.ParserUtils.RequestMethod;
 
 import lombok.val;
 import lombok.var;

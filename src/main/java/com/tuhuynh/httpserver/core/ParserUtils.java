@@ -14,7 +14,7 @@ import lombok.val;
 import lombok.var;
 
 @NoArgsConstructor
-public final class RequestParser {
+public final class ParserUtils {
     private static final Pattern HEADER_PATTERN = Pattern.compile(": ");
 
     public static RequestContext parseRequest(final String[] request, final String body) {

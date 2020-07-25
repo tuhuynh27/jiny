@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import com.tuhuynh.httpserver.core.RequestBinder.BIOHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerBIO;
-import com.tuhuynh.httpserver.core.RequestParser.RequestMethod;
+import com.tuhuynh.httpserver.core.ParserUtils.RequestMethod;
 import com.tuhuynh.httpserver.core.ServerThreadFactory;
 import com.tuhuynh.httpserver.core.bio.RequestPipeline;
 

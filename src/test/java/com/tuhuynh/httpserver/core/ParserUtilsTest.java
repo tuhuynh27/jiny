@@ -7,15 +7,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
 import com.tuhuynh.httpserver.core.RequestBinder.RequestContext;
+import com.tuhuynh.httpserver.core.ParserUtils.RequestMethod;
 
-public class RequestParserTest {
+public class ParserUtilsTest {
     @Test
     @DisplayName("Parse Request Test")
     void parseRequestTest() {
         String[] request = {"GET /test HTTP/1.1", "Host: localhost", "User-Agent: Mozilla/5.0"};
         String body = "SampleBody";
-        RequestContext context = RequestParser.parseRequest(request, body);
+        RequestContext context = ParserUtils.parseRequest(request, body);
         assertEquals("/test", context.getPath(), "Get Path");
+        assertEquals(RequestMethod.GET, context.getMethod(), "Get Method");
         assertEquals("Mozilla/5.0", context.getHeader().get("user-agent"), "Get Header");
         assertEquals("SampleBody", context.getBody(), "Get Body");
     }
@@ -25,7 +27,7 @@ public class RequestParserTest {
     void parseResponseTest() {
         HttpResponse response = HttpResponse.of("Hello World");
         assertEquals(200, response.getHttpStatusCode(), "Get HTTP Status Code");
-        String responseString = RequestParser.parseResponse(response);
+        String responseString = ParserUtils.parseResponse(response);
         assertEquals("HTTP/1.1 200 OK\n\nHello World\n", responseString, "Get response string");
     }
 }

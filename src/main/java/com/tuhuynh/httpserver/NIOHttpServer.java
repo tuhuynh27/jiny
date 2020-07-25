@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinder.NIOHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerNIO;
-import com.tuhuynh.httpserver.core.RequestParser.RequestMethod;
+import com.tuhuynh.httpserver.core.ParserUtils.RequestMethod;
 import com.tuhuynh.httpserver.core.ServerThreadFactory;
 import com.tuhuynh.httpserver.core.nio.RequestPipeline;
 
