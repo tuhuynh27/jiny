@@ -23,11 +23,10 @@ public final class HttpServer {
     public static HttpServer port(final int serverPort) {
         return new HttpServer(serverPort);
     }
-
-    private ServerSocket serverSocket;
     private final int serverPort;
     private final Executor executor = Executors.newCachedThreadPool(
             new ServerThreadFactory("request-processor"));
+    private ServerSocket serverSocket;
     private ArrayList<RequestHandlerBIO> middlewares = new ArrayList<>();
     private ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlers = new ArrayList<>();
 
@@ -73,7 +72,7 @@ public final class HttpServer {
     public void start() throws IOException {
         serverSocket = new ServerSocket();
         serverSocket.setReuseAddress(true);
-        serverSocket.bind(new InetSocketAddress(InetAddress.getLocalHost(), serverPort));
+        serverSocket.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), serverPort));
         System.out.println("Started HTTP Server on port " + serverPort);
 
         while (!serverSocket.isClosed()) {

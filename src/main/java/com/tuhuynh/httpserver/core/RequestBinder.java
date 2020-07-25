@@ -192,9 +192,11 @@ public class RequestBinder {
         public static CompletableFuture<HttpResponse> createPromise() {
             return new CompletableFuture<>();
         }
+
         private int httpStatusCode;
         private Object responseObject;
         private boolean allowNext;
+
         private <T> HttpResponse(final int httpStatusCode, final T responseObject, final boolean allowNext) {
             this.httpStatusCode = httpStatusCode;
             this.responseObject = responseObject;

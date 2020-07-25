@@ -1,6 +1,7 @@
 package com.tuhuynh.httpserver;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousServerSocketChannel;
@@ -26,9 +27,8 @@ public final class NIOHttpServer {
     public static NIOHttpServer port(final int serverPort) {
         return new NIOHttpServer(serverPort);
     }
-
-    private AsynchronousServerSocketChannel serverSocketChannel;
     private final int serverPort;
+    private AsynchronousServerSocketChannel serverSocketChannel;
     private ArrayList<RequestHandlerNIO> middlewares = new ArrayList<>();
     private ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlers = new ArrayList<>();
 
@@ -76,7 +76,7 @@ public final class NIOHttpServer {
         val group = AsynchronousChannelGroup.withFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2,
                                                                  new ServerThreadFactory("event-loop"));
         serverSocketChannel = AsynchronousServerSocketChannel.open(group);
-        serverSocketChannel.bind(new InetSocketAddress(serverPort));
+        serverSocketChannel.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), serverPort));
         System.out.println("Started NIO HTTP Server on port " + serverPort);
         serverSocketChannel.accept(null, new CompletionHandler<AsynchronousSocketChannel, Object>() {
             @SneakyThrows
