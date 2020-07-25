@@ -1,19 +1,19 @@
 package com.tuhuynh.httpserver.core;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import com.tuhuynh.httpserver.core.ParserUtils.RequestMethod;
 import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
 import com.tuhuynh.httpserver.core.RequestBinder.RequestContext;
-import com.tuhuynh.httpserver.core.ParserUtils.RequestMethod;
 
 public class ParserUtilsTest {
     @Test
     @DisplayName("Parse Request Test")
     void parseRequestTest() {
-        String[] request = {"GET /test HTTP/1.1", "Host: localhost", "User-Agent: Mozilla/5.0"};
+        String[] request = { "GET /test HTTP/1.1", "Host: localhost", "User-Agent: Mozilla/5.0" };
         String body = "SampleBody";
         RequestContext context = ParserUtils.parseRequest(request, body);
         assertEquals("/test", context.getPath(), "Get Path");

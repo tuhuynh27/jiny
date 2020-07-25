@@ -13,10 +13,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
+import com.tuhuynh.httpserver.core.ParserUtils.RequestMethod;
 import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinder.NIOHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerNIO;
-import com.tuhuynh.httpserver.core.ParserUtils.RequestMethod;
 import com.tuhuynh.httpserver.core.ServerThreadFactory;
 import com.tuhuynh.httpserver.core.nio.RequestPipeline;
 
@@ -27,6 +27,7 @@ public final class NIOHttpServer {
     public static NIOHttpServer port(final int serverPort) {
         return new NIOHttpServer(serverPort);
     }
+
     private final int serverPort;
     private AsynchronousServerSocketChannel serverSocketChannel;
     private ArrayList<RequestHandlerNIO> middlewares = new ArrayList<>();

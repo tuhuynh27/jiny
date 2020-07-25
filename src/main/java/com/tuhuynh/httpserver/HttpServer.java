@@ -10,10 +10,10 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+import com.tuhuynh.httpserver.core.ParserUtils.RequestMethod;
 import com.tuhuynh.httpserver.core.RequestBinder.BIOHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerBIO;
-import com.tuhuynh.httpserver.core.ParserUtils.RequestMethod;
 import com.tuhuynh.httpserver.core.ServerThreadFactory;
 import com.tuhuynh.httpserver.core.bio.RequestPipeline;
 
@@ -23,6 +23,7 @@ public final class HttpServer {
     public static HttpServer port(final int serverPort) {
         return new HttpServer(serverPort);
     }
+
     private final int serverPort;
     private final Executor executor = Executors.newCachedThreadPool(
             new ServerThreadFactory("request-processor"));

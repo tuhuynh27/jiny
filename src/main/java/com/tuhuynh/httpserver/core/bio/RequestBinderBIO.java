@@ -7,11 +7,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.tuhuynh.httpserver.core.ParserUtils.RequestMethod;
+import com.tuhuynh.httpserver.core.RequestBinder;
 
 import lombok.val;
 import lombok.var;
 
-public final class RequestBinderBIO extends com.tuhuynh.httpserver.core.RequestBinder {
+public final class RequestBinderBIO extends RequestBinder {
     private final ArrayList<RequestHandlerBIO> middlewares;
     private final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlerMetadata;
 

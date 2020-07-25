@@ -7,9 +7,9 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import com.tuhuynh.httpserver.core.ParserUtils;
 import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
 import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerBIO;
-import com.tuhuynh.httpserver.core.ParserUtils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
