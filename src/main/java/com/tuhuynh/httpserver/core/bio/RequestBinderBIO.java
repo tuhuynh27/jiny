@@ -37,8 +37,9 @@ public final class RequestBinderBIO extends RequestBinder {
                     val handlers = Arrays.asList(h.handlers);
                     val handlersAndMiddlewares = Stream.concat(middlewares.stream(), handlers.stream()).collect(
                             Collectors.toList());
-                    for (int i = 0; i < handlersAndMiddlewares.size(); i++) {
-                        val isLastItem = i == handlersAndMiddlewares.size() - 1;
+                    val size = handlersAndMiddlewares.size();
+                    for (int i = 0; i < size; i++) {
+                        val isLastItem = (i == size - 1);
                         val resultFromPreviousHandler = handlersAndMiddlewares.get(i).handleFunc(
                                 requestContext);
                         if (!isLastItem && !resultFromPreviousHandler.isAllowNext()) {
