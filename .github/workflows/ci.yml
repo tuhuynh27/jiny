@@ -1,9 +1,13 @@
-name: Java CI/CD on master
+name: Java CI runner
 
 on:
   push:
     branches:
       - master
+    pull_request:
+      - '*'
+      - '*/*'
+      - '!master'
 
 jobs:
   test:
