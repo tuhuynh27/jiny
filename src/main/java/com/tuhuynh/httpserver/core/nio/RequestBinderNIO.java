@@ -37,9 +37,8 @@ public final class RequestBinderNIO extends RequestBinder {
                 && (binder.getRequestPath().equals(binder.getHandlerPath()) || binder
                         .isRequestWithHandlerParamsMatched())) {
                 val handlers = Arrays.asList(h.handlers);
-                val handlersAndMiddlewares = Stream.concat(middlewares.stream(), handlers.stream()).collect(
-                        Collectors.toList());
-                val handlerLinkedList = new LinkedList<>(handlersAndMiddlewares);
+                val handlerLinkedList = Stream.concat(middlewares.stream(), handlers.stream()).
+                        collect(Collectors.toCollection(LinkedList::new));
                 resolvePromiseChain(handlerLinkedList);
                 isFound = true;
                 break;

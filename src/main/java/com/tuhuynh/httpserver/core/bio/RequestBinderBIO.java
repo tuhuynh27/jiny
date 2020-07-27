@@ -47,8 +47,6 @@ public final class RequestBinderBIO extends RequestBinder {
                         } else {
                             if (isLastItem) {
                                 return resultFromPreviousHandler;
-                            } else {
-                                continue;
                             }
                         }
                     }
