@@ -229,9 +229,3 @@ Lines of code: **1190**
   74 ./src/main/java/com/tuhuynh/httpserver/HttpClient.java
 1190 total
 ```
-
-## Side project
-
-A bottom-up approach to learn the network programming in Java core, by creating my own server library.
-
-![](https://miro.medium.com/max/1400/1*ziPHz443ne9yNwK0CmA0lQ.png)
