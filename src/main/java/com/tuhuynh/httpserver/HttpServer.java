@@ -28,8 +28,8 @@ public final class HttpServer {
     private final Executor executor = Executors.newCachedThreadPool(
             new ServerThreadFactory("request-processor"));
     private ServerSocket serverSocket;
-    private ArrayList<RequestHandlerBIO> middlewares = new ArrayList<>();
-    private ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlers = new ArrayList<>();
+    private final ArrayList<RequestHandlerBIO> middlewares = new ArrayList<>();
+    private final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlers = new ArrayList<>();
 
     private HttpServer(final int serverPort) {
         this.serverPort = serverPort;

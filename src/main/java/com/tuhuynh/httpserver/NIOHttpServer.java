@@ -30,8 +30,8 @@ public final class NIOHttpServer {
 
     private final int serverPort;
     private AsynchronousServerSocketChannel serverSocketChannel;
-    private ArrayList<RequestHandlerNIO> middlewares = new ArrayList<>();
-    private ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlers = new ArrayList<>();
+    private final ArrayList<RequestHandlerNIO> middlewares = new ArrayList<>();
+    private final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlers = new ArrayList<>();
 
     private NIOHttpServer(final int serverPort) {
         this.serverPort = serverPort;
