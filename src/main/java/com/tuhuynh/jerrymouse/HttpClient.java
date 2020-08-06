@@ -1,4 +1,4 @@
-package com.tuhuynh.httpserver;
+package com.tuhuynh.jerrymouse;
 
 import java.io.BufferedReader;
 import java.io.IOException;

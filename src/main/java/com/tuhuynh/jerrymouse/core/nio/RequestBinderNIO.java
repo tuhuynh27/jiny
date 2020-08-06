@@ -1,4 +1,4 @@
-package com.tuhuynh.httpserver.core.nio;
+package com.tuhuynh.jerrymouse.core.nio;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,8 +7,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.tuhuynh.httpserver.core.ParserUtils.RequestMethod;
-import com.tuhuynh.httpserver.core.RequestBinder;
+import com.tuhuynh.jerrymouse.core.ParserUtils.RequestMethod;
+import com.tuhuynh.jerrymouse.core.RequestBinder;
 
 import lombok.val;
 import lombok.var;

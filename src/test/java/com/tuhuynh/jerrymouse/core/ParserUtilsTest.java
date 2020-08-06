@@ -1,12 +1,12 @@
-package com.tuhuynh.httpserver.core;
+package com.tuhuynh.jerrymouse.core;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.tuhuynh.httpserver.core.ParserUtils.RequestMethod;
-import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
+import com.tuhuynh.jerrymouse.core.ParserUtils.RequestMethod;
+import com.tuhuynh.jerrymouse.core.RequestBinder.HttpResponse;
 
 import lombok.val;
 

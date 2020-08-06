@@ -1,4 +1,4 @@
-package com.tuhuynh.httpserver.core;
+package com.tuhuynh.jerrymouse.core;
 
 import java.util.ArrayList;
 import java.util.List;

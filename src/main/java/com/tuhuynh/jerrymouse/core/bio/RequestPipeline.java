@@ -1,4 +1,4 @@
-package com.tuhuynh.httpserver.core.bio;
+package com.tuhuynh.jerrymouse.core.bio;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,9 +7,9 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import com.tuhuynh.httpserver.core.ParserUtils;
-import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
-import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerBIO;
+import com.tuhuynh.jerrymouse.core.ParserUtils;
+import com.tuhuynh.jerrymouse.core.RequestBinder.BaseHandlerMetadata;
+import com.tuhuynh.jerrymouse.core.RequestBinder.RequestHandlerBIO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;

@@ -1,11 +1,11 @@
-package com.tuhuynh.httpserver.core;
+package com.tuhuynh.jerrymouse.core;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import com.tuhuynh.httpserver.core.ParserUtils.RequestMethod;
+import com.tuhuynh.jerrymouse.core.ParserUtils.RequestMethod;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

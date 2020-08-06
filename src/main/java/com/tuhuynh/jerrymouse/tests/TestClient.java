@@ -1,8 +1,8 @@
-package com.tuhuynh.httpserver.tests;
+package com.tuhuynh.jerrymouse.tests;
 
 import java.io.IOException;
 
-import com.tuhuynh.httpserver.HttpClient;
+import com.tuhuynh.jerrymouse.HttpClient;
 
 import lombok.val;
 

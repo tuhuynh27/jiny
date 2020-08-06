@@ -1,4 +1,4 @@
-package com.tuhuynh.httpserver.core;
+package com.tuhuynh.jerrymouse.core;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -6,8 +6,8 @@ import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
-import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
-import com.tuhuynh.httpserver.core.RequestBinder.RequestContext;
+import com.tuhuynh.jerrymouse.core.RequestBinder.HttpResponse;
+import com.tuhuynh.jerrymouse.core.RequestBinder.RequestContext;
 
 import lombok.NoArgsConstructor;
 import lombok.val;

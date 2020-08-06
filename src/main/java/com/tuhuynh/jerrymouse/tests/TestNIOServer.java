@@ -1,11 +1,11 @@
-package com.tuhuynh.httpserver.tests;
+package com.tuhuynh.jerrymouse.tests;
 
 import java.io.IOException;
 import java.util.concurrent.Executors;
 
-import com.tuhuynh.httpserver.NIOHttpServer;
-import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
-import com.tuhuynh.httpserver.core.nio.AsyncHelper;
+import com.tuhuynh.jerrymouse.NIOHttpServer;
+import com.tuhuynh.jerrymouse.core.RequestBinder.HttpResponse;
+import com.tuhuynh.jerrymouse.core.nio.AsyncHelper;
 
 import lombok.val;
 

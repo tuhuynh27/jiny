@@ -1,4 +1,4 @@
-package com.tuhuynh.httpserver.core.bio;
+package com.tuhuynh.jerrymouse.core.bio;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -6,8 +6,8 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.tuhuynh.httpserver.core.ParserUtils.RequestMethod;
-import com.tuhuynh.httpserver.core.RequestBinder;
+import com.tuhuynh.jerrymouse.core.ParserUtils.RequestMethod;
+import com.tuhuynh.jerrymouse.core.RequestBinder;
 
 import lombok.val;
 import lombok.var;

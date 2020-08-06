@@ -1,4 +1,4 @@
-package com.tuhuynh.httpserver;
+package com.tuhuynh.jerrymouse;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -10,12 +10,12 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import com.tuhuynh.httpserver.core.ParserUtils.RequestMethod;
-import com.tuhuynh.httpserver.core.RequestBinder.BIOHandlerMetadata;
-import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
-import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerBIO;
-import com.tuhuynh.httpserver.core.ServerThreadFactory;
-import com.tuhuynh.httpserver.core.bio.RequestPipeline;
+import com.tuhuynh.jerrymouse.core.ParserUtils.RequestMethod;
+import com.tuhuynh.jerrymouse.core.RequestBinder.BIOHandlerMetadata;
+import com.tuhuynh.jerrymouse.core.RequestBinder.BaseHandlerMetadata;
+import com.tuhuynh.jerrymouse.core.RequestBinder.RequestHandlerBIO;
+import com.tuhuynh.jerrymouse.core.ServerThreadFactory;
+import com.tuhuynh.jerrymouse.core.bio.RequestPipeline;
 
 import lombok.val;
 
@@ -27,9 +27,9 @@ public final class HttpServer {
     private final int serverPort;
     private final Executor executor = Executors.newCachedThreadPool(
             new ServerThreadFactory("request-processor"));
-    private ServerSocket serverSocket;
     private final ArrayList<RequestHandlerBIO> middlewares = new ArrayList<>();
     private final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlers = new ArrayList<>();
+    private ServerSocket serverSocket;
 
     private HttpServer(final int serverPort) {
         this.serverPort = serverPort;

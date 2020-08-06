@@ -1,4 +1,4 @@
-package com.tuhuynh.httpserver;
+package com.tuhuynh.jerrymouse;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -13,12 +13,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
-import com.tuhuynh.httpserver.core.ParserUtils.RequestMethod;
-import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
-import com.tuhuynh.httpserver.core.RequestBinder.NIOHandlerMetadata;
-import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerNIO;
-import com.tuhuynh.httpserver.core.ServerThreadFactory;
-import com.tuhuynh.httpserver.core.nio.RequestPipeline;
+import com.tuhuynh.jerrymouse.core.ParserUtils.RequestMethod;
+import com.tuhuynh.jerrymouse.core.RequestBinder.BaseHandlerMetadata;
+import com.tuhuynh.jerrymouse.core.RequestBinder.NIOHandlerMetadata;
+import com.tuhuynh.jerrymouse.core.RequestBinder.RequestHandlerNIO;
+import com.tuhuynh.jerrymouse.core.ServerThreadFactory;
+import com.tuhuynh.jerrymouse.core.nio.RequestPipeline;
 
 import lombok.SneakyThrows;
 import lombok.val;
@@ -29,9 +29,9 @@ public final class NIOHttpServer {
     }
 
     private final int serverPort;
-    private AsynchronousServerSocketChannel serverSocketChannel;
     private final ArrayList<RequestHandlerNIO> middlewares = new ArrayList<>();
     private final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlers = new ArrayList<>();
+    private AsynchronousServerSocketChannel serverSocketChannel;
 
     private NIOHttpServer(final int serverPort) {
         this.serverPort = serverPort;

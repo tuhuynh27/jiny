@@ -1,6 +1,6 @@
 # Lightweight Java Async NIO HTTP Server
 
-"Asynchronous" Non-blocking I/O version on `com.tuhuynh.httpserver`, using Java SE's `java.net` & `java.nio` packages.
+"Asynchronous" Non-blocking I/O version on `com.tuhuynh.jerrymouse`, using Java SE's `java.net` & `java.nio` packages.
 
 This is kinda "naive [Netty](https://netty.io/) clone with [Go-Gin](https://github.com/gin-gonic/gin) interface" also with an easy-to-use API interface covering HTTP protocol support (Netty is just a TCP Framework).  
 
@@ -10,13 +10,13 @@ This is kinda "naive [Netty](https://netty.io/) clone with [Go-Gin](https://gith
 
 This server uses the latest `AsynchronousServerSocketChannel` (aka NIO.2 AIO API) API of Java SE 7, which use the [Proactor Pattern](https://en.wikipedia.org/wiki/Proactor_pattern) and it is fully Async I/O (with underlying OS support for `epoll`/`kqueue` edge-triggered syscalls).
 
-The [old versions](https://github.com/huynhminhtufu/httpserver/blob/678bc216a91d8d6504983c7cd22d1c1cef1e88bd/src/main/java/com/tuhuynh/httpserver/core/nio/RequestPipelineNIO.java) (< 0.1.6) use `SocketServerChannel` and a `Selector` (aka NIO API) which is just a I/O Multiplexer aka "polling mechanism" (with `epoll` / `kqueue` level-triggered syscalls).
+The [old versions](https://github.com/huynhminhtufu/jerrymouse/blob/678bc216a91d8d6504983c7cd22d1c1cef1e88bd/src/main/java/com/tuhuynh/jerrymouse/core/nio/RequestPipelineNIO.java) (< 0.1.6) use `SocketServerChannel` and a `Selector` (aka NIO API) which is just a I/O Multiplexer aka "polling mechanism" (with `epoll` / `kqueue` level-triggered syscalls).
 
 ## Quick Start
 
-Install [com.tuhuynh.httpserver](https://github.com/huynhminhtufu/httpserver/packages/309436)
+Install [com.tuhuynh.jerrymouse](https://github.com/huynhminhtufu/jerrymouse/packages/309436)
 
-This NIO HTTP Server is fully compatible with [Lightweight HTTPServer's API](https://github.com/huynhminhtufu/httpserver#api-examples)
+This NIO HTTP Server is fully compatible with [Lightweight HTTPServer's API](https://github.com/huynhminhtufu/jerrymouse#api-examples)
 
 ```java
 public final class MiniServer {
@@ -31,9 +31,7 @@ public final class MiniServer {
 ## API Examples (use with `CompletableFuture`)
 
 ```java
-import com.tuhuynh.httpserver.NIOHttpServer;
-import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
-import com.tuhuynh.httpserver.core.nio.AsyncHelper;
+
 
 val workerPool = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() * 2);
 val server = NIOHttpServer.port(1234);

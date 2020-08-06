@@ -1,9 +1,9 @@
-package com.tuhuynh.httpserver.core.nio;
+package com.tuhuynh.jerrymouse.core.nio;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
+import com.tuhuynh.jerrymouse.core.RequestBinder.HttpResponse;
 
 import lombok.Getter;
 

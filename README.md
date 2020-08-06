@@ -1,6 +1,6 @@
 # Lightweight Java HTTP Server
 
-`com.tuhuynh.httpserver` features a **lightweight (Servlets-free), expressive and unopinionated** pure HTTP Server including request parser, routing, middlewares and more. If you need a quick start & simple way to write a Java server, you will love this library. Unlike in other web frameworks, you can structure your application as you want.
+**Jerrymouse** features a **lightweight (Servlets-free), expressive and unopinionated** pure HTTP Server including request parser, routing, middlewares and more. If you need a quick start & simple way to write a Java server, you will love this library. Unlike in other web frameworks, you can structure your application as you want.
 
 ## Why?
 
@@ -8,18 +8,18 @@ I build this for my [LINE Bot webhook server](https://github.com/huynhminhtufu/l
 
 Java in itself is lacking some features that facilitate proper application development (unlike many features of Go) as Java web development has traditionally been very cumbersome with verbose frameworks.
 
-**Experimental: [Non-blocking Asynchronous HTTP Server](https://github.com/huynhminhtufu/httpserver/tree/master/src/main/java/com/tuhuynh/httpserver/core/nio)** (if you have a large RPS want to save your server's resources)
+**Experimental: [Non-blocking Asynchronous HTTP Server](https://github.com/huynhminhtufu/jerrymouse/tree/master/src/main/java/com/tuhuynh/jerrymouse/core/nio)** (if you have a large RPS want to save your server's resources)
 
 ## Installation
 
-(thanks [Github Packages](https://github.com/huynhminhtufu/httpserver/packages/309436) <3)
+(thanks [Github Packages](https://github.com/huynhminhtufu/jerrymouse/packages/309436) <3)
 
 Add this to `pom.xml`:
 
 ```xml
 <dependency>
   <groupId>com.tuhuynh</groupId>
-  <artifactId>httpserver</artifactId>
+  <artifactId>jerrymouse</artifactId>
   <version>0.1.9-ALPHA</version>
 </dependency>
 ```
@@ -27,7 +27,7 @@ Add this to `pom.xml`:
 or `build.gradle`:
 
 ```groovy
-compile group: 'com.tuhuynh', name: 'httpserver', version: '0.1.9-ALPHA'
+compile group: 'com.tuhuynh', name: 'jerrymouse', version: '0.1.9-ALPHA'
 ```
 
 ## Quick Start
@@ -51,9 +51,9 @@ Example project: [LINE Bot Webhook Server](https://github.com/huynhminhtufu/line
 It's very easy to use just like [Go Gin](https://github.com/gin-gonic/gin) or Golang's built-in [net/http](https://golang.org/pkg/net/http/) package as it has similar APIs.
 
 ```java
-import com.tuhuynh.httpserver.HttpClient;
-import com.tuhuynh.httpserver.HttpServer;
-import com.tuhuynh.httpserver.core.RequestBinder.HttpResponse;
+import com.tuhuynh.jerrymouse.HttpClient;
+import com.tuhuynh.jerrymouse.HttpServer;
+import com.tuhuynh.jerrymouse.core.RequestBinder.HttpResponse;
 
 val server = HttpServer.port(1234);
 
@@ -213,19 +213,19 @@ server.start();
 
 Lines of code: **1190**
 ```
-  64 ./src/main/java/com/tuhuynh/httpserver/core/bio/RequestPipeline.java
-  62 ./src/main/java/com/tuhuynh/httpserver/core/bio/RequestBinder.java
-  35 ./src/main/java/com/tuhuynh/httpserver/core/ServerThreadFactory.java
- 214 ./src/main/java/com/tuhuynh/httpserver/core/RequestBinder.java
- 112 ./src/main/java/com/tuhuynh/httpserver/core/nio/RequestPipeline.java
-  85 ./src/main/java/com/tuhuynh/httpserver/core/nio/RequestBinder.java
-  34 ./src/main/java/com/tuhuynh/httpserver/core/nio/AsyncHelper.java
- 136 ./src/main/java/com/tuhuynh/httpserver/core/RequestParser.java
-  14 ./src/main/java/com/tuhuynh/httpserver/tests/TestClient.java
-  87 ./src/main/java/com/tuhuynh/httpserver/tests/TestNIOServer.java
-  98 ./src/main/java/com/tuhuynh/httpserver/tests/TestServer.java
-  81 ./src/main/java/com/tuhuynh/httpserver/HttpServer.java
-  94 ./src/main/java/com/tuhuynh/httpserver/NIOHttpServer.java
-  74 ./src/main/java/com/tuhuynh/httpserver/HttpClient.java
+  64 ./src/main/java/com/tuhuynh/jerrymouse/core/bio/RequestPipeline.java
+  62 ./src/main/java/com/tuhuynh/jerrymouse/core/bio/RequestBinder.java
+  35 ./src/main/java/com/tuhuynh/jerrymouse/core/ServerThreadFactory.java
+ 214 ./src/main/java/com/tuhuynh/jerrymouse/core/RequestBinder.java
+ 112 ./src/main/java/com/tuhuynh/jerrymouse/core/nio/RequestPipeline.java
+  85 ./src/main/java/com/tuhuynh/jerrymouse/core/nio/RequestBinder.java
+  34 ./src/main/java/com/tuhuynh/jerrymouse/core/nio/AsyncHelper.java
+ 136 ./src/main/java/com/tuhuynh/jerrymouse/core/RequestParser.java
+  14 ./src/main/java/com/tuhuynh/jerrymouse/tests/TestClient.java
+  87 ./src/main/java/com/tuhuynh/jerrymouse/tests/TestNIOServer.java
+  98 ./src/main/java/com/tuhuynh/jerrymouse/tests/TestServer.java
+  81 ./src/main/java/com/tuhuynh/jerrymouse/HttpServer.java
+  94 ./src/main/java/com/tuhuynh/jerrymouse/NIOHttpServer.java
+  74 ./src/main/java/com/tuhuynh/jerrymouse/HttpClient.java
 1190 total
 ```

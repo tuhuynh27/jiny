@@ -1,4 +1,4 @@
-package com.tuhuynh.httpserver.core.nio;
+package com.tuhuynh.jerrymouse.core.nio;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -7,9 +7,9 @@ import java.nio.channels.CompletionHandler;
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
-import com.tuhuynh.httpserver.core.ParserUtils;
-import com.tuhuynh.httpserver.core.RequestBinder.BaseHandlerMetadata;
-import com.tuhuynh.httpserver.core.RequestBinder.RequestHandlerNIO;
+import com.tuhuynh.jerrymouse.core.ParserUtils;
+import com.tuhuynh.jerrymouse.core.RequestBinder.BaseHandlerMetadata;
+import com.tuhuynh.jerrymouse.core.RequestBinder.RequestHandlerNIO;
 
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
