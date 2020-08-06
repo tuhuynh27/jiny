@@ -1,6 +1,10 @@
-# Lightweight Java HTTP Server
+<p align="center">
+  <img src="https://i.imgur.com/s5JWz5t.png" />
+</p>
 
-**Jerrymouse** features a **lightweight (Servlets-free), expressive and unopinionated** pure HTTP Server including request parser, routing, middlewares and more. If you need a quick start & simple way to write a Java server, you will love this library. Unlike in other web frameworks, you can structure your application as you want.
+# **Jerrymouse** - Lightweight Java HTTP Server/Client
+
+**Jerrymouse** features a **lightweight (Servlets-free), expressive and unopinionated** pure HTTP Server/Client including request parser, routing, middlewares, proxy-mode and more. If you need a quick start & simple way to write a JVM server, you would love this library. Unlike others web frameworks, you can structure your application as you want.
 
 ## Why?
 
