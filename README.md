@@ -148,7 +148,7 @@ server.get("/panic", ctx -> {
 server.start();
 ```
 
-(after build: size is just 30-50 KB .jar file, run and init cost about ~20MB RAM compared to ~20MB.jar and 350MB RAM init of [Spring Boot Tomcat](https://start.spring.io/))
+(after build: size is just 30-50 KB .jar file, compared to ~20MB.jar bootstrap size of [Spring Boot Tomcat](https://start.spring.io/))
 
 ## Changelogs
 
