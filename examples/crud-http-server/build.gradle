@@ -1,0 +1,41 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '5.0.0'
+}
+
+group 'com.tuhuynh'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "GitHubPackages"
+        url = uri("https://maven.pkg.github.com/huynhminhtufu/jerrymouse")
+        credentials {
+            username = project.findProperty("github.user") ?: System.getenv("USERNAME")
+            password = project.findProperty("github.token") ?: System.getenv("TOKEN")
+        }
+    }
+}
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+
+    compile group: 'com.tuhuynh', name: 'jerrymouse', version: '0.1.9-ALPHA'
+    implementation 'com.google.code.gson:gson:2.8.6'
+}
+
+ext {
+    javaMainClass = 'com.tuhuynh.crud.Main'
+}
+
+application {
+    mainClassName = javaMainClass
+}
+
+shadowJar {
+    classifier = 'fat'
+}
