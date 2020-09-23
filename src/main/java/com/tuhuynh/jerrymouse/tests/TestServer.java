@@ -1,14 +1,13 @@
 package com.tuhuynh.jerrymouse.tests;
 
-import java.io.IOException;
-import java.util.Random;
-
 import com.tuhuynh.jerrymouse.HttpClient;
 import com.tuhuynh.jerrymouse.HttpServer;
 import com.tuhuynh.jerrymouse.core.RequestBinder.HttpResponse;
-
 import lombok.Builder;
 import lombok.val;
+
+import java.io.IOException;
+import java.util.Random;
 
 public final class TestServer {
     public static void main(String[] args) throws IOException {

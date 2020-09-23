@@ -1,14 +1,12 @@
 package com.tuhuynh.jerrymouse.core;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import com.tuhuynh.jerrymouse.core.ParserUtils.RequestMethod;
+import com.tuhuynh.jerrymouse.core.RequestBinder.HttpResponse;
+import lombok.val;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.tuhuynh.jerrymouse.core.ParserUtils.RequestMethod;
-import com.tuhuynh.jerrymouse.core.RequestBinder.HttpResponse;
-
-import lombok.val;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ParserUtilsTest {
     @Test

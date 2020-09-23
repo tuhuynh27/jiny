@@ -1,5 +1,14 @@
 package com.tuhuynh.jerrymouse;
 
+import com.tuhuynh.jerrymouse.core.ParserUtils.RequestMethod;
+import com.tuhuynh.jerrymouse.core.RequestBinder.BaseHandlerMetadata;
+import com.tuhuynh.jerrymouse.core.RequestBinder.NIOHandlerMetadata;
+import com.tuhuynh.jerrymouse.core.RequestBinder.RequestHandlerNIO;
+import com.tuhuynh.jerrymouse.core.ServerThreadFactory;
+import com.tuhuynh.jerrymouse.core.nio.RequestPipeline;
+import lombok.SneakyThrows;
+import lombok.val;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -12,16 +21,6 @@ import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
-
-import com.tuhuynh.jerrymouse.core.ParserUtils.RequestMethod;
-import com.tuhuynh.jerrymouse.core.RequestBinder.BaseHandlerMetadata;
-import com.tuhuynh.jerrymouse.core.RequestBinder.NIOHandlerMetadata;
-import com.tuhuynh.jerrymouse.core.RequestBinder.RequestHandlerNIO;
-import com.tuhuynh.jerrymouse.core.ServerThreadFactory;
-import com.tuhuynh.jerrymouse.core.nio.RequestPipeline;
-
-import lombok.SneakyThrows;
-import lombok.val;
 
 public final class NIOHttpServer {
     public static NIOHttpServer port(final int serverPort) {

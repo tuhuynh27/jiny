@@ -1,19 +1,18 @@
 package com.tuhuynh.jerrymouse.core.bio;
 
+import com.tuhuynh.jerrymouse.core.ParserUtils;
+import com.tuhuynh.jerrymouse.core.RequestBinder.BaseHandlerMetadata;
+import com.tuhuynh.jerrymouse.core.RequestBinder.RequestHandlerBIO;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.val;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
-
-import com.tuhuynh.jerrymouse.core.ParserUtils;
-import com.tuhuynh.jerrymouse.core.RequestBinder.BaseHandlerMetadata;
-import com.tuhuynh.jerrymouse.core.RequestBinder.RequestHandlerBIO;
-
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.val;
 
 @RequiredArgsConstructor
 public final class RequestPipeline implements Runnable {

@@ -1,20 +1,18 @@
 package com.tuhuynh.jerrymouse.core.nio;
 
-import java.io.IOException;
+import com.tuhuynh.jerrymouse.core.ParserUtils;
+import com.tuhuynh.jerrymouse.core.RequestBinder.BaseHandlerMetadata;
+import com.tuhuynh.jerrymouse.core.RequestBinder.RequestHandlerNIO;
+import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.val;
+import lombok.var;
+
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
-
-import com.tuhuynh.jerrymouse.core.ParserUtils;
-import com.tuhuynh.jerrymouse.core.RequestBinder.BaseHandlerMetadata;
-import com.tuhuynh.jerrymouse.core.RequestBinder.RequestHandlerNIO;
-
-import lombok.NoArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.val;
-import lombok.var;
 
 public class RequestPipeline {
     private final AsynchronousSocketChannel clientSocketChannel;
@@ -24,14 +22,13 @@ public class RequestPipeline {
 
     public RequestPipeline(final AsynchronousSocketChannel clientSocketChannel,
                            final ArrayList<RequestHandlerNIO> middlewares,
-                           final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlers)
-            throws IOException {
+                           final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlers) {
         this.clientSocketChannel = clientSocketChannel;
         this.middlewares = middlewares;
         this.handlers = handlers;
     }
 
-    public void run() throws Exception {
+    public void run() {
         if (clientSocketChannel != null && clientSocketChannel.isOpen()) {
             read().thenAccept(msg -> {
                 try {

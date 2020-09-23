@@ -1,5 +1,10 @@
 package com.tuhuynh.jerrymouse.core.nio;
 
+import com.tuhuynh.jerrymouse.core.ParserUtils.RequestMethod;
+import com.tuhuynh.jerrymouse.core.RequestBinder;
+import lombok.val;
+import lombok.var;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -7,16 +12,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.tuhuynh.jerrymouse.core.ParserUtils.RequestMethod;
-import com.tuhuynh.jerrymouse.core.RequestBinder;
-
-import lombok.val;
-import lombok.var;
-
 public final class RequestBinderNIO extends RequestBinder {
     private final ArrayList<RequestHandlerNIO> middlewares;
     private final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlerMetadata;
-    private CompletableFuture<HttpResponse> isDone = new CompletableFuture<>();
+    private final CompletableFuture<HttpResponse> isDone = new CompletableFuture<>();
 
     public RequestBinderNIO(RequestContext requestContext,
                             final ArrayList<RequestHandlerNIO> middlewares,
@@ -55,9 +54,7 @@ public final class RequestBinderNIO extends RequestBinder {
     private void resolvePromiseChain(final LinkedList<RequestHandlerNIO> handlerQueue) throws Exception {
         if (handlerQueue.size() == 1) {
             try {
-                handlerQueue.removeFirst().handleFunc(requestContext).thenAccept(result -> {
-                    isDone.complete(result);
-                });
+                handlerQueue.removeFirst().handleFunc(requestContext).thenAccept(isDone::complete);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
                 isDone.complete(HttpResponse.of(e.getMessage()).status(500));

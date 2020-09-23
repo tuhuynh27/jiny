@@ -1,17 +1,16 @@
 package com.tuhuynh.jerrymouse.core;
 
+import com.tuhuynh.jerrymouse.core.RequestBinder.HttpResponse;
+import com.tuhuynh.jerrymouse.core.RequestBinder.RequestContext;
+import lombok.NoArgsConstructor;
+import lombok.val;
+import lombok.var;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.HashMap;
 import java.util.regex.Pattern;
-
-import com.tuhuynh.jerrymouse.core.RequestBinder.HttpResponse;
-import com.tuhuynh.jerrymouse.core.RequestBinder.RequestContext;
-
-import lombok.NoArgsConstructor;
-import lombok.val;
-import lombok.var;
 
 @NoArgsConstructor
 public final class ParserUtils {

@@ -1,16 +1,15 @@
 package com.tuhuynh.jerrymouse.core.bio;
 
+import com.tuhuynh.jerrymouse.core.ParserUtils.RequestMethod;
+import com.tuhuynh.jerrymouse.core.RequestBinder;
+import lombok.val;
+import lombok.var;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import com.tuhuynh.jerrymouse.core.ParserUtils.RequestMethod;
-import com.tuhuynh.jerrymouse.core.RequestBinder;
-
-import lombok.val;
-import lombok.var;
 
 public final class RequestBinderBIO extends RequestBinder {
     private final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> middlewares;

@@ -1,13 +1,12 @@
 package com.tuhuynh.jerrymouse.tests;
 
-import java.io.IOException;
-import java.util.concurrent.Executors;
-
 import com.tuhuynh.jerrymouse.NIOHttpServer;
 import com.tuhuynh.jerrymouse.core.RequestBinder.HttpResponse;
 import com.tuhuynh.jerrymouse.core.nio.AsyncHelper;
-
 import lombok.val;
+
+import java.io.IOException;
+import java.util.concurrent.Executors;
 
 public final class TestNIOServer {
     public static void main(String[] args) throws Exception {
@@ -28,7 +27,7 @@ public final class TestNIOServer {
         });
 
         // /params/:foo/:bar
-        server.get("params", ctx -> {
+        server.get("/params/:foo/:bar", ctx -> {
             final String foo = ctx.getParam().get("foo");
             final String bar = ctx.getParam().get("bar");
             return HttpResponse.ofAsync("Foo: " + foo + ", Bar: " + bar);

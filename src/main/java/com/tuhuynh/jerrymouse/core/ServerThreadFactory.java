@@ -1,10 +1,10 @@
 package com.tuhuynh.jerrymouse.core;
 
+import lombok.val;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
-
-import lombok.val;
 
 public class ServerThreadFactory implements ThreadFactory {
     private int counter;

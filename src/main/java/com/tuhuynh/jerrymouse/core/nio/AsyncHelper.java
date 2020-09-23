@@ -1,11 +1,10 @@
 package com.tuhuynh.jerrymouse.core.nio;
 
+import com.tuhuynh.jerrymouse.core.RequestBinder.HttpResponse;
+import lombok.Getter;
+
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
-
-import com.tuhuynh.jerrymouse.core.RequestBinder.HttpResponse;
-
-import lombok.Getter;
 
 @Getter
 public final class AsyncHelper {

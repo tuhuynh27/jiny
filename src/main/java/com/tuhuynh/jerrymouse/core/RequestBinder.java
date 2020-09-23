@@ -1,13 +1,12 @@
 package com.tuhuynh.jerrymouse.core;
 
+import com.tuhuynh.jerrymouse.core.ParserUtils.RequestMethod;
+import lombok.*;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-
-import com.tuhuynh.jerrymouse.core.ParserUtils.RequestMethod;
-
-import lombok.*;
 
 @RequiredArgsConstructor
 public class RequestBinder {
