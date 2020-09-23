@@ -93,6 +93,8 @@ public final class ParserUtils {
         switch (method) {
             case "head":
                 return RequestMethod.HEAD;
+            case "options":
+                return RequestMethod.OPTIONS;
             case "get":
                 return RequestMethod.GET;
             case "post":
@@ -125,6 +127,7 @@ public final class ParserUtils {
 
     public enum RequestMethod {
         HEAD,
+        OPTIONS,
         GET,
         POST,
         PUT,
