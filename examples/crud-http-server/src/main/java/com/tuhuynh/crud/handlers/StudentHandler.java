@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 
 @RequiredArgsConstructor
-public final class CrudHandler {
+public final class StudentHandler {
     private final Gson gson = new Gson();
     private final ArrayList<Student> students;
 

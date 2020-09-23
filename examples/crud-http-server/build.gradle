@@ -26,6 +26,8 @@ dependencies {
 
     compile group: 'com.tuhuynh', name: 'jerrymouse', version: '0.1.9-ALPHA'
     implementation 'com.google.code.gson:gson:2.8.6'
+
+    compile group: 'org.mongodb', name: 'mongodb-driver-sync', version: '4.1.0-beta2'
 }
 
 ext {
