@@ -7,12 +7,7 @@ import java.util.stream.Collectors;
 
 import com.tuhuynh.jerrymouse.core.ParserUtils.RequestMethod;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.val;
-import lombok.var;
+import lombok.*;
 
 @RequiredArgsConstructor
 public class RequestBinder {
@@ -98,13 +93,13 @@ public class RequestBinder {
     @Getter
     @Builder
     public static final class RequestContext {
-        private RequestMethod method;
-        private String path;
-        private HashMap<String, String> header;
-        private String body;
-        private HashMap<String, String> query;
-        private HashMap<String, String> param;
-        private HashMap<String, String> data;
+        private final RequestMethod method;
+        private final String path;
+        private final HashMap<String, String> header;
+        private final String body;
+        private final HashMap<String, String> query;
+        private final HashMap<String, String> param;
+        private final HashMap<String, String> data;
 
         public void putHandlerData(final String key, final String value) {
             data.put(key, value);
@@ -118,6 +113,7 @@ public class RequestBinder {
     @AllArgsConstructor
     @RequiredArgsConstructor
     @Getter
+    @Setter
     public abstract static class BaseHandlerMetadata<T extends RequestHandlerBase> {
         public RequestMethod method;
         public String path;
@@ -125,6 +121,7 @@ public class RequestBinder {
     }
 
     @Getter
+    @Setter
     public static class BIOHandlerMetadata extends BaseHandlerMetadata<RequestHandlerBIO> {
         public BIOHandlerMetadata(final RequestMethod method, final String path,
                                   final RequestHandlerBIO[] handlers) {
@@ -133,6 +130,7 @@ public class RequestBinder {
     }
 
     @Getter
+    @Setter
     public static class NIOHandlerMetadata extends BaseHandlerMetadata<RequestHandlerNIO> {
         public NIOHandlerMetadata(final RequestMethod method, final String path,
                                   final RequestHandlerNIO[] handlers) {
@@ -195,7 +193,7 @@ public class RequestBinder {
 
         private int httpStatusCode;
         private Object responseObject;
-        private boolean allowNext;
+        private final boolean allowNext;
 
         private <T> HttpResponse(final int httpStatusCode, final T responseObject, final boolean allowNext) {
             this.httpStatusCode = httpStatusCode;

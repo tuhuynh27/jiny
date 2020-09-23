@@ -13,11 +13,11 @@ import lombok.val;
 import lombok.var;
 
 public final class RequestBinderBIO extends RequestBinder {
-    private final ArrayList<RequestHandlerBIO> middlewares;
+    private final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> middlewares;
     private final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlerMetadata;
 
     public RequestBinderBIO(RequestContext requestContext,
-                            final ArrayList<RequestHandlerBIO> middlewares,
+                            final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> middlewares,
                             final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlerMetadata) {
         super(requestContext);
         this.middlewares = middlewares;
@@ -34,9 +34,17 @@ public final class RequestBinderBIO extends RequestBinder {
                         .isRequestWithHandlerParamsMatched())) {
                 try {
                     // Handle middleware function chain
+                    val middlewareMatched = middlewares.stream()
+                            .filter(e -> requestContext.getPath().startsWith(e.getPath()))
+                            .map(BaseHandlerMetadata::getHandlers)
+                            .flatMap(e -> Arrays.stream(e).distinct())
+                            .collect(Collectors.toList());
                     val handlers = Arrays.asList(h.handlers);
-                    val handlersAndMiddlewares = Stream.concat(middlewares.stream(), handlers.stream()).collect(
-                            Collectors.toList());
+
+                    val handlersAndMiddlewares = Stream
+                            .concat(middlewareMatched.stream(), handlers.stream())
+                            .collect(Collectors.toList());
+
                     val size = handlersAndMiddlewares.size();
                     for (int i = 0; i < size; i++) {
                         val isLastItem = (i == size - 1);

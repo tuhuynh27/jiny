@@ -18,7 +18,7 @@ import lombok.val;
 @RequiredArgsConstructor
 public final class RequestPipeline implements Runnable {
     private final Socket socket;
-    private final ArrayList<RequestHandlerBIO> middlewares;
+    private final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> middlewares;
     private final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlers;
     private BufferedReader in;
     private PrintWriter out;

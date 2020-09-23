@@ -54,7 +54,7 @@ public final class TestServer {
         // Middleware support
         server.get("/protected", // You wanna provide a jwt validator on this endpoint
                    ctx -> {
-                       val authorizationHeader = ctx.getHeader().get("Authorization");
+                       val authorizationHeader = ctx.getHeader().get("authorization");
                        // Check JWT is valid, below is just a sample check
                        if (!authorizationHeader.startsWith("Bearer")) {
                            return HttpResponse.reject("Invalid token").status(401);
