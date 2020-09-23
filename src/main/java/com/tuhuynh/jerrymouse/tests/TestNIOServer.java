@@ -69,9 +69,9 @@ public final class TestNIOServer {
 
         // Middleware
         server.get("/protected", ctx -> {
-            val authorizationHeader = ctx.getHeader().get("Authorization");
+            val authorizationHeader = ctx.getHeader().get("authorization");
             if (!authorizationHeader.startsWith("Bearer ")) {
-                return HttpResponse.rejectAsync("InvalidToken", 401);
+                return HttpResponse.rejectAsync("Invalid Token", 401);
             }
             ctx.putHandlerData("username", "tuhuynh");
             return HttpResponse.nextAsync();

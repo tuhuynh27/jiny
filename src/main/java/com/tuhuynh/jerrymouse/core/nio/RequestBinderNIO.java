@@ -13,12 +13,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class RequestBinderNIO extends RequestBinder {
-    private final ArrayList<RequestHandlerNIO> middlewares;
+    private final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> middlewares;
     private final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlerMetadata;
     private final CompletableFuture<HttpResponse> isDone = new CompletableFuture<>();
 
     public RequestBinderNIO(RequestContext requestContext,
-                            final ArrayList<RequestHandlerNIO> middlewares,
+                            final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> middlewares,
                             final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlerMetadata) {
         super(requestContext);
         this.middlewares = middlewares;
@@ -35,8 +35,13 @@ public final class RequestBinderNIO extends RequestBinder {
                 (requestContext.getMethod() == h.getMethod() || (h.getMethod() == RequestMethod.ALL))
                 && (binder.getRequestPath().equals(binder.getHandlerPath()) || binder
                         .isRequestWithHandlerParamsMatched())) {
+                val middlewareMatched = middlewares.stream()
+                        .filter(e -> requestContext.getPath().startsWith(e.getPath()))
+                        .map(BaseHandlerMetadata::getHandlers)
+                        .flatMap(e -> Arrays.stream(e).distinct())
+                        .collect(Collectors.toList());
                 val handlers = Arrays.asList(h.handlers);
-                val handlerLinkedList = Stream.concat(middlewares.stream(), handlers.stream()).
+                val handlerLinkedList = Stream.concat(middlewareMatched.stream(), handlers.stream()).
                         collect(Collectors.toCollection(LinkedList::new));
                 resolvePromiseChain(handlerLinkedList);
                 isFound = true;

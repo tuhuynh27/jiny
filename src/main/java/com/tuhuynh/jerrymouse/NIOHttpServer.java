@@ -1,10 +1,9 @@
 package com.tuhuynh.jerrymouse;
 
 import com.tuhuynh.jerrymouse.core.ParserUtils.RequestMethod;
-import com.tuhuynh.jerrymouse.core.RequestBinder.BaseHandlerMetadata;
-import com.tuhuynh.jerrymouse.core.RequestBinder.NIOHandlerMetadata;
 import com.tuhuynh.jerrymouse.core.RequestBinder.RequestHandlerNIO;
 import com.tuhuynh.jerrymouse.core.ServerThreadFactory;
+import com.tuhuynh.jerrymouse.core.nio.HttpRouter;
 import com.tuhuynh.jerrymouse.core.nio.RequestPipeline;
 import lombok.SneakyThrows;
 import lombok.val;
@@ -16,8 +15,6 @@ import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
@@ -28,48 +25,54 @@ public final class NIOHttpServer {
     }
 
     private final int serverPort;
-    private final ArrayList<RequestHandlerNIO> middlewares = new ArrayList<>();
-    private final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlers = new ArrayList<>();
     private AsynchronousServerSocketChannel serverSocketChannel;
+
+    private final HttpRouter rootRouter = new HttpRouter();
 
     private NIOHttpServer(final int serverPort) {
         this.serverPort = serverPort;
     }
 
+    public void use(final String path, final HttpRouter router) {
+        val refactoredMiddlewares = router.getMiddlewares().stream().peek(e -> {
+            val refactoredPath = path + e.getPath();
+            e.setPath(refactoredPath);
+        }).collect(Collectors.toList());
+        val refactoredHandlers = router.getHandlers().stream().peek(e -> {
+            val refactoredPath = path + e.getPath();
+            e.setPath(refactoredPath);
+        }).collect(Collectors.toList());
+        rootRouter.getMiddlewares().addAll(refactoredMiddlewares);
+        rootRouter.getHandlers().addAll(refactoredHandlers);
+    }
+
     public void addHandler(final RequestMethod method, final String path,
                            final RequestHandlerNIO... handlers) {
-        val newHandlers = new NIOHandlerMetadata(method, path, handlers);
-        this.handlers.add(newHandlers);
+        rootRouter.addHandler(method, path, handlers);
     }
 
     public void use(final RequestHandlerNIO... handlers) {
-        middlewares.addAll(Arrays.stream(handlers)
-                                 .collect(Collectors.toCollection(ArrayList::new)));
+        rootRouter.use(handlers);
     }
 
     public void use(final String path, final RequestHandlerNIO... handlers) {
-        val newHandlers = new NIOHandlerMetadata(RequestMethod.ALL, path, handlers);
-        this.handlers.add(newHandlers);
+        rootRouter.use(path, handlers);
     }
 
     public void get(final String path, final RequestHandlerNIO... handlers) {
-        val newHandlers = new NIOHandlerMetadata(RequestMethod.GET, path, handlers);
-        this.handlers.add(newHandlers);
+        rootRouter.get(path, handlers);
     }
 
     public void post(final String path, final RequestHandlerNIO... handlers) {
-        val newHandlers = new NIOHandlerMetadata(RequestMethod.POST, path, handlers);
-        this.handlers.add(newHandlers);
+        rootRouter.post(path, handlers);
     }
 
     public void put(final String path, final RequestHandlerNIO... handlers) {
-        val newHandlers = new NIOHandlerMetadata(RequestMethod.PUT, path, handlers);
-        this.handlers.add(newHandlers);
+        rootRouter.put(path, handlers);
     }
 
     public void delete(final String path, final RequestHandlerNIO... handlers) {
-        val newHandlers = new NIOHandlerMetadata(RequestMethod.DELETE, path, handlers);
-        this.handlers.add(newHandlers);
+        rootRouter.delete(path, handlers);
     }
 
     public void start() throws IOException, InterruptedException, ExecutionException, TimeoutException {
@@ -83,7 +86,7 @@ public final class NIOHttpServer {
             @Override
             public void completed(AsynchronousSocketChannel clientSocketChannel, Object attachment) {
                 serverSocketChannel.accept(null, this);
-                new RequestPipeline(clientSocketChannel, middlewares, handlers).run();
+                new RequestPipeline(clientSocketChannel, rootRouter.getMiddlewares(), rootRouter.getHandlers()).run();
             }
 
             @Override

@@ -17,11 +17,11 @@ import java.util.concurrent.CompletableFuture;
 public class RequestPipeline {
     private final AsynchronousSocketChannel clientSocketChannel;
     private final ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
-    private final ArrayList<RequestHandlerNIO> middlewares;
+    private final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> middlewares;
     private final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlers;
 
     public RequestPipeline(final AsynchronousSocketChannel clientSocketChannel,
-                           final ArrayList<RequestHandlerNIO> middlewares,
+                           final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> middlewares,
                            final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlers) {
         this.clientSocketChannel = clientSocketChannel;
         this.middlewares = middlewares;

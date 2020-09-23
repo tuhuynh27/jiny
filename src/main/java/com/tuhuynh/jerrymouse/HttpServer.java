@@ -1,7 +1,7 @@
 package com.tuhuynh.jerrymouse;
 
 import com.tuhuynh.jerrymouse.core.ParserUtils.RequestMethod;
-import com.tuhuynh.jerrymouse.core.RequestBinder;
+import com.tuhuynh.jerrymouse.core.RequestBinder.RequestHandlerBIO;
 import com.tuhuynh.jerrymouse.core.ServerThreadFactory;
 import com.tuhuynh.jerrymouse.core.bio.HttpRouter;
 import com.tuhuynh.jerrymouse.core.bio.RequestPipeline;
@@ -44,31 +44,31 @@ public final class HttpServer {
         rootRouter.getHandlers().addAll(refactoredHandlers);
     }
 
-    public void addHandler(final RequestMethod method, final String path, final RequestBinder.RequestHandlerBIO... handlers) {
+    public void addHandler(final RequestMethod method, final String path, final RequestHandlerBIO... handlers) {
         rootRouter.addHandler(method, path, handlers);
     }
 
-    public void use(final RequestBinder.RequestHandlerBIO... handlers) {
+    public void use(final RequestHandlerBIO... handlers) {
         rootRouter.use(handlers);
     }
 
-    public void use(final String path, final RequestBinder.RequestHandlerBIO... handlers) {
+    public void use(final String path, final RequestHandlerBIO... handlers) {
         rootRouter.addHandler(RequestMethod.ALL, path, handlers);
     }
 
-    public void get(final String path, final RequestBinder.RequestHandlerBIO... handlers) {
+    public void get(final String path, final RequestHandlerBIO... handlers) {
         rootRouter.addHandler(RequestMethod.GET, path, handlers);
     }
 
-    public void post(final String path, final RequestBinder.RequestHandlerBIO... handlers) {
+    public void post(final String path, final RequestHandlerBIO... handlers) {
         rootRouter.addHandler(RequestMethod.POST, path, handlers);
     }
 
-    public void put(final String path, final RequestBinder.RequestHandlerBIO... handlers) {
+    public void put(final String path, final RequestHandlerBIO... handlers) {
         rootRouter.addHandler(RequestMethod.PUT, path, handlers);
     }
 
-    public void delete(final String path, final RequestBinder.RequestHandlerBIO... handlers) {
+    public void delete(final String path, final RequestHandlerBIO... handlers) {
         rootRouter.addHandler(RequestMethod.DELETE, path, handlers);
     }
 
