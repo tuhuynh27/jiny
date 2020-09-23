@@ -6,11 +6,11 @@
 
 **Jerrymouse** features a **lightweight (Servlets-free and no dependency), expressive and unopinionated** pure HTTP Server/Client including request parser, routing, middlewares, proxy-mode and more. If you need a quick start & simple way to write a JVM server, you would love this framework. Unlike others web frameworks, you can structure your application as you want.
 
-## Quick Stat
+## Quick Start
 
 [Get started in 5 minutes.](https://huynhminhtufu.gitbook.io/jerrymouse)
 
-## Changelog
+## Changelogs
 
 [Learn about the latest improvements.](https://huynhminhtufu.gitbook.io/jerrymouse/experimental/changelogs)
 
