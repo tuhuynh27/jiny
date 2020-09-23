@@ -1,8 +1,8 @@
 package com.tuhuynh.crud.handlers;
 
 import com.google.gson.Gson;
-import com.tuhuynh.crud.entities.ResponseObject;
 import com.tuhuynh.crud.entities.Student;
+import com.tuhuynh.crud.utils.ResponseHelper;
 import com.tuhuynh.jerrymouse.core.RequestBinder.RequestContext;
 import com.tuhuynh.jerrymouse.core.RequestBinder.HttpResponse;
 
@@ -28,10 +28,16 @@ public final class CrudHandler {
     public HttpResponse addStudent(final RequestContext ctx) {
         val body = ctx.getBody();
         val newStudent = gson.fromJson(body, Student.class);
+
+        val matched = this.students.stream()
+                .filter(e -> e.getEmail().toLowerCase()
+                        .equals(newStudent.getEmail().toLowerCase()));
+        if (matched.toArray().length > 0) {
+            return ResponseHelper.error("Email is existed");
+        }
+
         this.students.add(newStudent);
-        return HttpResponse
-                .of(ResponseObject.builder().message("Done").build())
-                .transform(gson::toJson);
+        return ResponseHelper.success("Done");
     }
 
     public HttpResponse updateStudent(final RequestContext ctx) {
@@ -39,6 +45,9 @@ public final class CrudHandler {
     }
 
     public HttpResponse deleteStudent(final RequestContext ctx) {
-        throw new RuntimeException("WIP");
+        val email = ctx.getParam().get("email");
+
+        this.students.removeIf(e -> e.getEmail().toLowerCase().equals(email.toLowerCase()));
+        return ResponseHelper.success("Done");
     }
 }
