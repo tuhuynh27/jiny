@@ -1,8 +1,8 @@
 package com.tuhuynh.jerrymouse.core.nio;
 
 import com.tuhuynh.jerrymouse.core.ParserUtils;
-import com.tuhuynh.jerrymouse.core.RequestBinder.NIOHandlerMetadata;
 import com.tuhuynh.jerrymouse.core.RequestBinder.BaseHandlerMetadata;
+import com.tuhuynh.jerrymouse.core.RequestBinder.NIOHandlerMetadata;
 import com.tuhuynh.jerrymouse.core.RequestBinder.RequestHandlerNIO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

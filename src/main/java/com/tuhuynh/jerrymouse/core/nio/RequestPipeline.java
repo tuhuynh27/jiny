@@ -79,19 +79,19 @@ public class RequestPipeline {
                 val responseString = ParserUtils.parseResponse(responseObjectReturned);
 
                 clientSocketChannel.write(MessageCodec.encode(responseString), null,
-                                          new CompletionHandler<Integer, Object>() {
-                                              @SneakyThrows
-                                              @Override
-                                              public void completed(Integer result, Object attachment) {
-                                                  clientSocketChannel.close();
-                                              }
+                        new CompletionHandler<Integer, Object>() {
+                            @SneakyThrows
+                            @Override
+                            public void completed(Integer result, Object attachment) {
+                                clientSocketChannel.close();
+                            }
 
-                                              @SneakyThrows
-                                              @Override
-                                              public void failed(Throwable exc, Object attachment) {
-                                                  System.out.println(exc.getMessage());
-                                              }
-                                          });
+                            @SneakyThrows
+                            @Override
+                            public void failed(Throwable exc, Object attachment) {
+                                System.out.println(exc.getMessage());
+                            }
+                        });
             });
         }
     }

@@ -20,17 +20,16 @@ import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 public final class NIOHttpServer {
-    public static NIOHttpServer port(final int serverPort) {
-        return new NIOHttpServer(serverPort);
-    }
-
     private final int serverPort;
-    private AsynchronousServerSocketChannel serverSocketChannel;
-
     private final HttpRouter rootRouter = new HttpRouter();
+    private AsynchronousServerSocketChannel serverSocketChannel;
 
     private NIOHttpServer(final int serverPort) {
         this.serverPort = serverPort;
+    }
+
+    public static NIOHttpServer port(final int serverPort) {
+        return new NIOHttpServer(serverPort);
     }
 
     public void use(final String path, final HttpRouter router) {
@@ -77,7 +76,7 @@ public final class NIOHttpServer {
 
     public void start() throws IOException, InterruptedException, ExecutionException, TimeoutException {
         val group = AsynchronousChannelGroup.withFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2,
-                                                                 new ServerThreadFactory("event-loop"));
+                new ServerThreadFactory("event-loop"));
         serverSocketChannel = AsynchronousServerSocketChannel.open(group);
         serverSocketChannel.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), serverPort));
         System.out.println("Started NIO HTTP Server on port " + serverPort);

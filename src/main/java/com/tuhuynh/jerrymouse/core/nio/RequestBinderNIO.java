@@ -32,9 +32,9 @@ public final class RequestBinderNIO extends RequestBinder {
             val binder = binderInit(h);
 
             if (binder.isMatchCatchAll() ||
-                (requestContext.getMethod() == h.getMethod() || (h.getMethod() == RequestMethod.ALL))
-                && (binder.getRequestPath().equals(binder.getHandlerPath()) || binder
-                        .isRequestWithHandlerParamsMatched())) {
+                    (requestContext.getMethod() == h.getMethod() || (h.getMethod() == RequestMethod.ALL))
+                            && (binder.getRequestPath().equals(binder.getHandlerPath()) || binder
+                            .isRequestWithHandlerParamsMatched())) {
                 val middlewareMatched = middlewares.stream()
                         .filter(e -> requestContext.getPath().startsWith(e.getPath()))
                         .map(BaseHandlerMetadata::getHandlers)

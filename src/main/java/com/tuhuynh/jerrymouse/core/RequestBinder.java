@@ -16,7 +16,7 @@ public class RequestBinder {
         val indexOfQuestionMark = requestContext.getPath().indexOf('?');
         var requestPath =
                 indexOfQuestionMark == -1 ? requestContext.getPath() : requestContext.getPath().substring(0,
-                                                                                                          indexOfQuestionMark);
+                        indexOfQuestionMark);
         // Remove all last '/' from the requestPath
         while (requestPath.endsWith("/")) {
             requestPath = requestPath.substring(0, requestPath.length() - 1);
@@ -28,19 +28,19 @@ public class RequestBinder {
                 Collectors.joining("/"));
 
         val numOfHandlerParams = handlerPathOriginal.length() - handlerPathOriginal.replace(":", "")
-                                                                                   .length();
+                .length();
         val numOfSlashOfRequestPath = requestPath.length() - requestPath.replace("/", "").length();
         val numOfSlashOfHandlerPath = handlerPathOriginal.length() - handlerPathOriginal.replace("/", "")
-                                                                                        .length();
+                .length();
 
         val requestWithHandlerParamsMatched = numOfHandlerParams > 0 && requestPath.startsWith(handlerPath)
-                                              && numOfSlashOfRequestPath == numOfSlashOfHandlerPath;
+                && numOfSlashOfRequestPath == numOfSlashOfHandlerPath;
 
         val isCatchAll = handlerPath.endsWith("/**");
         val handlerCatchAllPattern = handlerPath.length() > 3 ? handlerPath.substring(0, handlerPath.length()
-                                                                                         - 2) : "";
+                - 2) : "";
         val isMatchCatchAll = isCatchAll && (requestPath.isEmpty() ? "/".startsWith(handlerCatchAllPattern) :
-                                             requestPath.startsWith(handlerCatchAllPattern));
+                requestPath.startsWith(handlerCatchAllPattern));
 
         if (requestWithHandlerParamsMatched) {
             val elementsOfHandlerPath = handlerPathOriginal.split("/");
@@ -55,11 +55,11 @@ public class RequestBinder {
         }
 
         return BinderInitObject.builder()
-                               .requestPath(requestPath)
-                               .handlerPath(handlerPath)
-                               .requestWithHandlerParamsMatched(requestWithHandlerParamsMatched)
-                               .isMatchCatchAll(isMatchCatchAll)
-                               .build();
+                .requestPath(requestPath)
+                .handlerPath(handlerPath)
+                .requestWithHandlerParamsMatched(requestWithHandlerParamsMatched)
+                .isMatchCatchAll(isMatchCatchAll)
+                .build();
     }
 
     public interface RequestHandlerBase {
@@ -139,7 +139,19 @@ public class RequestBinder {
 
     @Getter
     public static final class HttpResponse {
-        public static HttpResponse next() { return new HttpResponse(0, "", true); }
+        private final boolean allowNext;
+        private int httpStatusCode;
+        private Object responseObject;
+
+        private <T> HttpResponse(final int httpStatusCode, final T responseObject, final boolean allowNext) {
+            this.httpStatusCode = httpStatusCode;
+            this.responseObject = responseObject;
+            this.allowNext = allowNext;
+        }
+
+        public static HttpResponse next() {
+            return new HttpResponse(0, "", true);
+        }
 
         public static CompletableFuture<HttpResponse> nextAsync() {
             return CompletableFuture.completedFuture(new HttpResponse(0, "", true));
@@ -188,16 +200,6 @@ public class RequestBinder {
 
         public static CompletableFuture<HttpResponse> createPromise() {
             return new CompletableFuture<>();
-        }
-
-        private int httpStatusCode;
-        private Object responseObject;
-        private final boolean allowNext;
-
-        private <T> HttpResponse(final int httpStatusCode, final T responseObject, final boolean allowNext) {
-            this.httpStatusCode = httpStatusCode;
-            this.responseObject = responseObject;
-            this.allowNext = allowNext;
         }
 
         public HttpResponse transform(RequestTransformer transformer) {

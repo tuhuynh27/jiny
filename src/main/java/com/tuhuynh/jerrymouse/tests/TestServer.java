@@ -27,7 +27,7 @@ public final class TestServer {
         });
 
         server.get("/thread",
-                   ctx -> HttpResponse.of(Thread.currentThread().getName()));
+                ctx -> HttpResponse.of(Thread.currentThread().getName()));
 
         server.get("/random", ctx -> {
             val rand = new Random();
@@ -52,16 +52,16 @@ public final class TestServer {
 
         // Middleware support
         server.get("/protected", // You wanna provide a jwt validator on this endpoint
-                   ctx -> {
-                       val authorizationHeader = ctx.getHeader().get("authorization");
-                       // Check JWT is valid, below is just a sample check
-                       if (!authorizationHeader.startsWith("Bearer")) {
-                           return HttpResponse.reject("Invalid token").status(401);
-                       }
-                       ctx.putHandlerData("username", "tuhuynh");
-                       return HttpResponse.next();
-                   }, // Injected
-                   ctx -> HttpResponse.of("Login success, hello: " + ctx.getData("username")));
+                ctx -> {
+                    val authorizationHeader = ctx.getHeader().get("authorization");
+                    // Check JWT is valid, below is just a sample check
+                    if (!authorizationHeader.startsWith("Bearer")) {
+                        return HttpResponse.reject("Invalid token").status(401);
+                    }
+                    ctx.putHandlerData("username", "tuhuynh");
+                    return HttpResponse.next();
+                }, // Injected
+                ctx -> HttpResponse.of("Login success, hello: " + ctx.getData("username")));
 
         // Global middleware
         server.use(ctx -> {
@@ -74,11 +74,11 @@ public final class TestServer {
         server.get("/meme", ctx -> {
             // Built-in HTTP Client
             val meme = HttpClient.builder()
-                                 .url("https://meme-api.herokuapp.com/gimme")
-                                 .method("GET")
-                                 .build().perform();
+                    .url("https://meme-api.herokuapp.com/gimme")
+                    .method("GET")
+                    .build().perform();
             return HttpResponse.of(meme.getBody())
-                               .status(meme.getStatus());
+                    .status(meme.getStatus());
         });
 
         // Handle error

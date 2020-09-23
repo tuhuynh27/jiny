@@ -8,15 +8,15 @@ import java.util.function.Consumer;
 
 @Getter
 public final class AsyncHelper {
-    public static AsyncHelper make() {
-        CompletableFuture<HttpResponse> completableFuture = new CompletableFuture<>();
-        return new AsyncHelper(completableFuture);
-    }
-
     CompletableFuture<HttpResponse> promise;
 
     private AsyncHelper(final CompletableFuture<HttpResponse> promise) {
         this.promise = promise;
+    }
+
+    public static AsyncHelper make() {
+        CompletableFuture<HttpResponse> completableFuture = new CompletableFuture<>();
+        return new AsyncHelper(completableFuture);
     }
 
     public <T> void resolve(final T t) {

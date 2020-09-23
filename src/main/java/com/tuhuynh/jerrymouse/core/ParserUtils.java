@@ -38,14 +38,14 @@ public final class ParserUtils {
         val queryParamsString = indexOfQuestionMark == -1 ? null : path.substring(indexOfQuestionMark + 1);
 
         return RequestContext.builder()
-                             .method(getMethod(metaArr[0]))
-                             .path(path)
-                             .header(header)
-                             .body(body)
-                             .query(splitQuery(queryParamsString))
-                             .param(new HashMap<>())
-                             .data(new HashMap<>())
-                             .build();
+                .method(getMethod(metaArr[0]))
+                .path(path)
+                .header(header)
+                .body(body)
+                .query(splitQuery(queryParamsString))
+                .param(new HashMap<>())
+                .data(new HashMap<>())
+                .build();
     }
 
     public static String parseResponse(final HttpResponse httpResponse) {

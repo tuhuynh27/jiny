@@ -16,19 +16,18 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 public final class HttpServer {
-    public static HttpServer port(final int serverPort) {
-        return new HttpServer(serverPort);
-    }
-
     private final int serverPort;
     private final Executor executor = Executors.newCachedThreadPool(
             new ServerThreadFactory("request-processor"));
-    private ServerSocket serverSocket;
-
     private final HttpRouter rootRouter = new HttpRouter();
+    private ServerSocket serverSocket;
 
     private HttpServer(final int serverPort) {
         this.serverPort = serverPort;
+    }
+
+    public static HttpServer port(final int serverPort) {
+        return new HttpServer(serverPort);
     }
 
     public void use(final String path, final HttpRouter router) {

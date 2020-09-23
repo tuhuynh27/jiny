@@ -22,7 +22,7 @@ public class ServerThreadFactory implements ThreadFactory {
         val t = new Thread(runnable, name + "-thread-" + counter);
         counter++;
         stats.add(String.format("Created thread %d with name %s on %d \n", t.getId(), t.getName(),
-                                System.currentTimeMillis() / 1000L));
+                System.currentTimeMillis() / 1000L));
         return t;
     }
 

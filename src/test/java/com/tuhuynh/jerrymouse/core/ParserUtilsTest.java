@@ -12,7 +12,7 @@ public class ParserUtilsTest {
     @Test
     @DisplayName("Parse Request Test")
     void parseRequestTest() {
-        final String[] request = { "GET /test HTTP/1.1", "Host: localhost", "User-Agent: Mozilla/5.0" };
+        final String[] request = {"GET /test HTTP/1.1", "Host: localhost", "User-Agent: Mozilla/5.0"};
         val body = "SampleBody";
         val context = ParserUtils.parseRequest(request, body);
         assertEquals("/test", context.getPath(), "Get Path");

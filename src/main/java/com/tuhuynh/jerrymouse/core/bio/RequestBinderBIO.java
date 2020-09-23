@@ -28,9 +28,9 @@ public final class RequestBinderBIO extends RequestBinder {
             val binder = binderInit(h);
 
             if (binder.isMatchCatchAll() ||
-                (requestContext.getMethod() == h.getMethod() || (h.getMethod() == RequestMethod.ALL))
-                && (binder.getRequestPath().equals(binder.getHandlerPath()) || binder
-                        .isRequestWithHandlerParamsMatched())) {
+                    (requestContext.getMethod() == h.getMethod() || (h.getMethod() == RequestMethod.ALL))
+                            && (binder.getRequestPath().equals(binder.getHandlerPath()) || binder
+                            .isRequestWithHandlerParamsMatched())) {
                 try {
                     // Handle middleware function chain
                     val middlewareMatched = middlewares.stream()
