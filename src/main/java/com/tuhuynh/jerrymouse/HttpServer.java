@@ -2,6 +2,7 @@ package com.tuhuynh.jerrymouse;
 
 import com.tuhuynh.jerrymouse.core.ParserUtils.RequestMethod;
 import com.tuhuynh.jerrymouse.core.RequestBinder.RequestHandlerBIO;
+import com.tuhuynh.jerrymouse.core.RequestBinder.RequestTransformer;
 import com.tuhuynh.jerrymouse.core.ServerThreadFactory;
 import com.tuhuynh.jerrymouse.core.bio.HttpRouter;
 import com.tuhuynh.jerrymouse.core.bio.RequestPipeline;
@@ -21,6 +22,8 @@ public final class HttpServer {
             new ServerThreadFactory("request-processor"));
     private final HttpRouter rootRouter = new HttpRouter();
     private ServerSocket serverSocket;
+
+    private RequestTransformer transformer = Object::toString;
 
     private HttpServer(final int serverPort) {
         this.serverPort = serverPort;
@@ -71,6 +74,10 @@ public final class HttpServer {
         rootRouter.addHandler(RequestMethod.DELETE, path, handlers);
     }
 
+    public void setResponseTransformer(RequestTransformer transformer) {
+        this.transformer = transformer;
+    }
+
     public void start() throws IOException {
         serverSocket = new ServerSocket();
         serverSocket.setReuseAddress(true);
@@ -79,7 +86,7 @@ public final class HttpServer {
 
         while (!serverSocket.isClosed()) {
             val socket = serverSocket.accept();
-            executor.execute(new RequestPipeline(socket, rootRouter.getMiddlewares(), rootRouter.getHandlers()));
+            executor.execute(new RequestPipeline(socket, rootRouter.getMiddlewares(), rootRouter.getHandlers(), transformer));
         }
     }
 

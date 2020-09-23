@@ -3,6 +3,7 @@ package com.tuhuynh.jerrymouse.core.nio;
 import com.tuhuynh.jerrymouse.core.ParserUtils;
 import com.tuhuynh.jerrymouse.core.RequestBinder.BaseHandlerMetadata;
 import com.tuhuynh.jerrymouse.core.RequestBinder.RequestHandlerNIO;
+import com.tuhuynh.jerrymouse.core.RequestBinder.RequestTransformer;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.val;
@@ -20,12 +21,16 @@ public class RequestPipeline {
     private final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> middlewares;
     private final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlers;
 
+    private final RequestTransformer transformer;
+
     public RequestPipeline(final AsynchronousSocketChannel clientSocketChannel,
                            final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> middlewares,
-                           final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlers) {
+                           final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlers,
+                           final RequestTransformer transformer) {
         this.clientSocketChannel = clientSocketChannel;
         this.middlewares = middlewares;
         this.handlers = handlers;
+        this.transformer = transformer;
     }
 
     public void run() {
@@ -76,7 +81,7 @@ public class RequestPipeline {
                     .getResponseObject();
 
             responseObject.thenAccept(responseObjectReturned -> {
-                val responseString = ParserUtils.parseResponse(responseObjectReturned);
+                val responseString = ParserUtils.parseResponse(responseObjectReturned, transformer);
 
                 clientSocketChannel.write(MessageCodec.encode(responseString), null,
                         new CompletionHandler<Integer, Object>() {

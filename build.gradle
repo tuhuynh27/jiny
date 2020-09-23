@@ -41,7 +41,7 @@ dependencies {
 }
 
 ext {
-    javaMainClass = 'com.tuhuynh.jerrymouse.tests.TestNIOServerRouter'
+    javaMainClass = 'com.tuhuynh.jerrymouse.tests.TestNIOServer'
 }
 
 application {

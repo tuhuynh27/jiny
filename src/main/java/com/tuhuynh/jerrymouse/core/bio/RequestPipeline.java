@@ -3,6 +3,7 @@ package com.tuhuynh.jerrymouse.core.bio;
 import com.tuhuynh.jerrymouse.core.ParserUtils;
 import com.tuhuynh.jerrymouse.core.RequestBinder.BaseHandlerMetadata;
 import com.tuhuynh.jerrymouse.core.RequestBinder.RequestHandlerBIO;
+import com.tuhuynh.jerrymouse.core.RequestBinder.RequestTransformer;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.val;
@@ -19,6 +20,7 @@ public final class RequestPipeline implements Runnable {
     private final Socket socket;
     private final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> middlewares;
     private final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlers;
+    private final RequestTransformer transformer;
     private BufferedReader in;
     private PrintWriter out;
 
@@ -50,7 +52,7 @@ public final class RequestPipeline implements Runnable {
                 body.toString());
 
         val responseObject = new RequestBinderBIO(requestContext, middlewares, handlers).getResponseObject();
-        val responseString = ParserUtils.parseResponse(responseObject);
+        val responseString = ParserUtils.parseResponse(responseObject, transformer);
 
         out.write(responseString);
     }

@@ -2,6 +2,7 @@ package com.tuhuynh.jerrymouse;
 
 import com.tuhuynh.jerrymouse.core.ParserUtils.RequestMethod;
 import com.tuhuynh.jerrymouse.core.RequestBinder.RequestHandlerNIO;
+import com.tuhuynh.jerrymouse.core.RequestBinder.RequestTransformer;
 import com.tuhuynh.jerrymouse.core.ServerThreadFactory;
 import com.tuhuynh.jerrymouse.core.nio.HttpRouter;
 import com.tuhuynh.jerrymouse.core.nio.RequestPipeline;
@@ -23,6 +24,8 @@ public final class NIOHttpServer {
     private final int serverPort;
     private final HttpRouter rootRouter = new HttpRouter();
     private AsynchronousServerSocketChannel serverSocketChannel;
+
+    private RequestTransformer transformer = Object::toString;
 
     private NIOHttpServer(final int serverPort) {
         this.serverPort = serverPort;
@@ -74,6 +77,10 @@ public final class NIOHttpServer {
         rootRouter.delete(path, handlers);
     }
 
+    public void setResponseTransformer(RequestTransformer transformer) {
+        this.transformer = transformer;
+    }
+
     public void start() throws IOException, InterruptedException, ExecutionException, TimeoutException {
         val group = AsynchronousChannelGroup.withFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2,
                 new ServerThreadFactory("event-loop"));
@@ -85,7 +92,7 @@ public final class NIOHttpServer {
             @Override
             public void completed(AsynchronousSocketChannel clientSocketChannel, Object attachment) {
                 serverSocketChannel.accept(null, this);
-                new RequestPipeline(clientSocketChannel, rootRouter.getMiddlewares(), rootRouter.getHandlers()).run();
+                new RequestPipeline(clientSocketChannel, rootRouter.getMiddlewares(), rootRouter.getHandlers(), transformer).run();
             }
 
             @Override

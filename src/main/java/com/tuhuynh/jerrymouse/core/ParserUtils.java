@@ -2,6 +2,7 @@ package com.tuhuynh.jerrymouse.core;
 
 import com.tuhuynh.jerrymouse.core.RequestBinder.HttpResponse;
 import com.tuhuynh.jerrymouse.core.RequestBinder.RequestContext;
+import com.tuhuynh.jerrymouse.core.RequestBinder.RequestTransformer;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import lombok.var;
@@ -48,7 +49,7 @@ public final class ParserUtils {
                 .build();
     }
 
-    public static String parseResponse(final HttpResponse httpResponse) {
+    public static String parseResponse(final HttpResponse httpResponse, RequestTransformer transformer) {
         var httpStatusText = "";
         switch (httpResponse.getHttpStatusCode()) {
             case 200:
@@ -71,8 +72,10 @@ public final class ParserUtils {
                 break;
         }
 
-        return "HTTP/1.1 " + httpResponse.getHttpStatusCode() + ' ' + httpStatusText + "\n\n" + httpResponse
-                .getResponseObject() + '\n';
+        return "HTTP/1.1 "
+                + httpResponse.getHttpStatusCode() + ' '
+                + httpStatusText + "\n\n"
+                + transformer.render(httpResponse.getResponseObject()) + '\n';
     }
 
     public static HashMap<String, String> splitQuery(final String url) {
