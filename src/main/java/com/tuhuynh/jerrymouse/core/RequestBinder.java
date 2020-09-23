@@ -185,8 +185,8 @@ public class RequestBinder {
         }
 
         public static <T> CompletableFuture<HttpResponse> ofAsync(final T t,
-                                                                  final RequestTransformer transformer,
-                                                                  final int httpStatusCode) {
+                                                                  final int httpStatusCode,
+                                                                  final RequestTransformer transformer) {
             return CompletableFuture.completedFuture(of(t).transform(transformer).status(httpStatusCode));
         }
 
