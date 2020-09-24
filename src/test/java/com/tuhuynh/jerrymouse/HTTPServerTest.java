@@ -26,6 +26,7 @@ public class HTTPServerTest extends HTTPTest {
             });
 
             server.get("/", ctx -> HttpResponse.of("Hello World"));
+            server.post("/transform", ctx -> HttpResponse.of(ctx.getBody()).transform(s -> s + "ed"));
             server.get("/gm", ctx -> HttpResponse.of(ctx.getData("global")));
             server.get("/gm-sub", ctx -> HttpResponse.of(ctx.getData("att")));
             server.post("/echo", ctx -> HttpResponse.of(ctx.getBody()));

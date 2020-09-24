@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DisplayName("core.ParserUtilsTest")
 public class ParserUtilsTest {
     @Test
-    @DisplayName("Parse Request Test")
+    @DisplayName("Parse Request")
     void parseRequestTest() {
         final String[] request = {"GET /test HTTP/1.1", "Host: localhost", "User-Agent: Mozilla/5.0"};
         val body = "SampleBody";
@@ -24,7 +24,7 @@ public class ParserUtilsTest {
     }
 
     @Test
-    @DisplayName("Parse Response Test")
+    @DisplayName("Parse Response")
     void parseResponseTest() {
         val response = HttpResponse.of("Hello World");
         assertEquals(200, response.getHttpStatusCode(), "Get HTTP Status Code");

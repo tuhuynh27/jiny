@@ -18,7 +18,7 @@ public abstract class HTTPTest {
                     && System.getenv("CI").toLowerCase().equals("true");
 
     @Test
-    @DisplayName("Hello World test")
+    @DisplayName("Hello World")
     void helloWorld() throws IOException {
         val res = HttpClient.builder()
                 .url(url + "/").method("GET")
@@ -27,7 +27,16 @@ public abstract class HTTPTest {
     }
 
     @Test
-    @DisplayName("Echo test")
+    @DisplayName("Transformer")
+    void transformer() throws IOException {
+        val res = HttpClient.builder()
+                .url(url + "/transform").method("POST").body("transform")
+                .build().perform();
+        assertEquals(res.getBody(), "transformed");
+    }
+
+    @Test
+    @DisplayName("Echo")
     void echo() throws IOException {
         val res = HttpClient.builder()
                 .url(url + "/echo").method("POST").body("copycat")
@@ -36,7 +45,7 @@ public abstract class HTTPTest {
     }
 
     @Test
-    @DisplayName("Query Params test")
+    @DisplayName("Query Params")
     void queryParams() throws IOException {
         val res = HttpClient.builder()
                 .url(url + "/query?hello=world").method("GET")
@@ -45,7 +54,7 @@ public abstract class HTTPTest {
     }
 
     @Test
-    @DisplayName("Path Params test")
+    @DisplayName("Path Params")
     void pathParams() throws IOException {
         val res = HttpClient.builder()
                 .url(url + "/path/hello/123").method("GET")
@@ -54,7 +63,7 @@ public abstract class HTTPTest {
     }
 
     @Test
-    @DisplayName("Catch All test")
+    @DisplayName("Catch All")
     void catchAll() throws IOException {
         val res = HttpClient.builder()
                 .url(url + "/all/123/456").method("GET")
@@ -63,7 +72,7 @@ public abstract class HTTPTest {
     }
 
     @Test
-    @DisplayName("Middleware test failed")
+    @DisplayName("Middleware failed")
     void middlewareFail() throws IOException {
         val res = HttpClient.builder()
                 .url(url + "/protected").method("GET")
@@ -73,7 +82,7 @@ public abstract class HTTPTest {
     }
 
     @Test
-    @DisplayName("Middleware test success")
+    @DisplayName("Middleware success")
     void middlewareSuccess() throws IOException {
         val headers = new HashMap<String, String>();
         headers.put("Authorization", "Bearer test_token");
