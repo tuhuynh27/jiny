@@ -23,6 +23,10 @@ public final class AsyncHelper {
         promise.complete(HttpResponse.of(t));
     }
 
+    public <T extends Error> void reject(final T t) {
+        promise.completeExceptionally(t);
+    }
+
     public CompletableFuture<Void> then(Consumer<? super HttpResponse> action) {
         return promise.thenAccept(action);
     }
