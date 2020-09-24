@@ -51,5 +51,5 @@ test {
 }
 
 application {
-    mainClassName = 'com.tuhuynh.jerrymouse.proxy.Proxy'
+    mainClassName = 'com.tuhuynh.jerrymouse.proxy.TestProxy'
 }

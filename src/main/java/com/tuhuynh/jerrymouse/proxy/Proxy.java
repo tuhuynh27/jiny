@@ -1,5 +1,7 @@
 package com.tuhuynh.jerrymouse.proxy;
 
+import com.tuhuynh.jerrymouse.core.utils.ParserUtils;
+import lombok.NonNull;
 import lombok.val;
 import lombok.var;
 
@@ -10,22 +12,34 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public final class Proxy {
-    public static void main(String[] args) throws IOException {
-        val serverSocket = new ServerSocket(7777);
+    private final int proxyPort;
+    private final HashMap<String, String> endpointMap = new HashMap<>();
+
+    public static Proxy port(final int proxyPort) {
+        return new Proxy(proxyPort);
+    }
+
+    private Proxy(final int proxyPort) {
+        this.proxyPort = proxyPort;
+    }
+
+    public void use(@NonNull final String path, @NonNull final String endpoint) {
+        endpointMap.put(path, endpoint);
+    }
+
+    public void start() throws IOException {
+        val serverSocket = new ServerSocket(proxyPort);
         while (!Thread.interrupted()) {
             val clientSocket = serverSocket.accept();
-            val serverConnection = new Socket("127.0.0.1", 1234);
-            handle(clientSocket, serverConnection);
+            handle(clientSocket);
         }
     }
 
-    public static void handle(final Socket clientSocket, final Socket serverSocket) throws IOException {
+    public void handle(final Socket clientSocket) throws IOException {
         val clientIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        val clientOut = clientSocket.getOutputStream();
-        val serverIn = serverSocket.getInputStream();
-        val serverOut = new PrintWriter(serverSocket.getOutputStream(), false);
 
         val requestStringArr = new ArrayList<String>();
         String inputLine;
@@ -37,18 +51,44 @@ public final class Proxy {
             body.append((char) clientIn.read());
         }
 
-        val requestStr = String.join("\r\n", requestStringArr) + "\r\n\r\n" + body;
+        // Pick server
+        val requestContext = ParserUtils.parseRequest(requestStringArr.toArray(new String[0]),
+                body.toString());
+        val path = requestContext.getPath();
 
-        serverOut.write(requestStr);
-        serverOut.flush();
+        val matchedKey = endpointMap.keySet().stream()
+                .filter(path::startsWith).findFirst()
+                .orElse(null);
 
-        val reply = new byte[4096];
-        var bytesRead = 0;
-        while (-1 != (bytesRead = serverIn.read(reply))) {
-            clientOut.write(reply, 0, bytesRead);
+        if (matchedKey != null) {
+            val clientOut = clientSocket.getOutputStream();
+
+            val endpoint = endpointMap.get(matchedKey);
+            val serverMetadata = endpoint.split(":");
+            val serverSocket = new Socket(serverMetadata[0], Integer.parseInt(serverMetadata[1]));
+
+            val serverIn = serverSocket.getInputStream();
+            val serverOut = new PrintWriter(serverSocket.getOutputStream(), false);
+
+            // Replace path
+            requestStringArr.set(0, requestStringArr.get(0).replace(matchedKey, ""));
+            val requestStr = String.join("\r\n", requestStringArr) + "\r\n\r\n" + body;
+
+            serverOut.write(requestStr);
+            serverOut.flush();
+
+            val reply = new byte[4096];
+            var bytesRead = 0;
+            while (-1 != (bytesRead = serverIn.read(reply))) {
+                clientOut.write(reply, 0, bytesRead);
+            }
+
+            serverSocket.close();
         }
 
+        val clientOut = new PrintWriter(clientSocket.getOutputStream(), false);
+        clientOut.write("HTTP/1.1 404 NOT FOUND\n\nNot Found\n");
+
         clientSocket.close();
-        serverSocket.close();
     }
 }
