@@ -3,6 +3,7 @@ plugins {
     id 'idea'
     id 'maven-publish'
     id 'com.adarshr.test-logger' version '2.1.0'
+    id 'application'
 }
 
 group 'com.tuhuynh'
@@ -47,4 +48,8 @@ test {
         outputs.upToDateWhen { false }
         showStandardStreams = false
     }
+}
+
+application {
+    mainClassName = 'com.tuhuynh.jerrymouse.proxy.Proxy'
 }
