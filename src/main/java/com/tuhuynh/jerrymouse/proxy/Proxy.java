@@ -61,34 +61,42 @@ public final class Proxy {
                 .orElse(null);
 
         if (matchedKey != null) {
-            val clientOut = clientSocket.getOutputStream();
-
             val endpoint = endpointMap.get(matchedKey);
             val serverMetadata = endpoint.split(":");
-            val serverSocket = new Socket(serverMetadata[0], Integer.parseInt(serverMetadata[1]));
+            try {
+                val serverSocket = new Socket(serverMetadata[0], Integer.parseInt(serverMetadata[1]));
 
-            val serverIn = serverSocket.getInputStream();
-            val serverOut = new PrintWriter(serverSocket.getOutputStream(), false);
+                val serverIn = serverSocket.getInputStream();
+                val serverOut = new PrintWriter(serverSocket.getOutputStream(), false);
 
-            // Replace path
-            requestStringArr.set(0, requestStringArr.get(0).replace(matchedKey, ""));
-            val requestStr = String.join("\r\n", requestStringArr) + "\r\n\r\n" + body;
+                val clientOut = clientSocket.getOutputStream();
 
-            serverOut.write(requestStr);
-            serverOut.flush();
+                // Replace path
+                requestStringArr.set(0, requestStringArr.get(0).replace(matchedKey, ""));
+                val requestStr = String.join("\r\n", requestStringArr) + "\r\n\r\n" + body;
 
-            val reply = new byte[4096];
-            var bytesRead = 0;
-            while (-1 != (bytesRead = serverIn.read(reply))) {
-                clientOut.write(reply, 0, bytesRead);
+                serverOut.write(requestStr);
+                serverOut.flush();
+
+                val reply = new byte[4096];
+                var bytesRead = 0;
+                while (-1 != (bytesRead = serverIn.read(reply))) {
+                    clientOut.write(reply, 0, bytesRead);
+                }
+
+                serverSocket.close();
+            } catch (Exception ignored) {
+                val clientOut = new PrintWriter(clientSocket.getOutputStream(), false);
+                clientOut.write("HTTP/1.1 404 NOT FOUND\n\nNot Found\n");
+                clientSocket.close();
             }
-
-            serverSocket.close();
         }
 
-        val clientOut = new PrintWriter(clientSocket.getOutputStream(), false);
-        clientOut.write("HTTP/1.1 404 NOT FOUND\n\nNot Found\n");
+        if (!clientSocket.isClosed()) {
+            val clientOut = new PrintWriter(clientSocket.getOutputStream(), false);
+            clientOut.write("HTTP/1.1 404 NOT FOUND\n\nNot Found\n");
 
-        clientSocket.close();
+            clientSocket.close();
+        }
     }
 }
