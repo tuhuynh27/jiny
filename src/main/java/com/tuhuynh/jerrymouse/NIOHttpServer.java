@@ -60,6 +60,7 @@ public final class NIOHttpServer extends HttpRouterBase<RequestHandlerNIO> {
     public void stop() throws IOException {
         if (serverSocketChannel.isOpen()) {
             serverSocketChannel.close();
+            System.out.println("Stopped HTTP Server on port " + serverPort);
         }
     }
 }
