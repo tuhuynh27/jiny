@@ -23,14 +23,14 @@ public class NIOHTTPServerTest extends HTTPTest {
             val server = NIOHttpServer.port(1235);
 
             server.use(ctx -> {
-                ctx.putHandlerData("global", "middleware");
+                ctx.getData().put("global", "middleware");
                 return HttpResponse.nextAsync();
             });
 
             server.get("/", ctx -> HttpResponse.ofAsync("Hello World"));
             server.post("/transform", ctx -> HttpResponse.ofAsync(ctx.getBody(), s -> s + "ed"));
-            server.get("/gm", ctx -> HttpResponse.ofAsync(ctx.getData("global")));
-            server.get("/gm-sub", ctx -> HttpResponse.ofAsync(ctx.getData("att")));
+            server.get("/gm", ctx -> HttpResponse.ofAsync(ctx.getData().get("global")));
+            server.get("/gm-sub", ctx -> HttpResponse.ofAsync(ctx.getData().get("att")));
             server.post("/echo", ctx -> HttpResponse.ofAsync(ctx.getBody()));
             server.get("/query", ctx -> {
                 val world = ctx.getQuery().get("hello");
@@ -49,10 +49,10 @@ public class NIOHTTPServerTest extends HTTPTest {
                         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer")) {
                             return HttpResponse.rejectAsync("invalid_token", 401);
                         }
-                        ctx.putHandlerData("username", "tuhuynh");
+                        ctx.getData().put("username", "tuhuynh");
                         return HttpResponse.nextAsync();
                     }, // Injected
-                    ctx -> HttpResponse.ofAsync("success:" + ctx.getData("username")));
+                    ctx -> HttpResponse.ofAsync("success:" + ctx.getData().get("username")));
 
             server.get("/panic", ctx -> {
                 throw new RuntimeException("Panicked!");
@@ -60,11 +60,11 @@ public class NIOHTTPServerTest extends HTTPTest {
 
             val catRouter = new HttpRouter();
             catRouter.use(ctx -> {
-                ctx.putHandlerData("att", "cat");
+                ctx.getData().put("att", "cat");
                 return HttpResponse.nextAsync();
             });
             catRouter.get("/", ctx -> HttpResponse.ofAsync("this is a cat"));
-            catRouter.get("/gm", ctx -> HttpResponse.ofAsync(ctx.getData("att")));
+            catRouter.get("/gm", ctx -> HttpResponse.ofAsync(ctx.getData().get("att")));
             catRouter.post("/echo", ctx -> HttpResponse.ofAsync(ctx.getBody()));
             catRouter.get("/:foo/:bar", ctx -> HttpResponse.ofAsync(ctx.getParam().get("foo") + ":" + ctx.getParam().get("bar")));
             server.use("/cat", catRouter);

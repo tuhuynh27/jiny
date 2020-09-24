@@ -103,14 +103,6 @@ public abstract class RequestBinderBase<T extends RequestHandlerBase> {
         private final HashMap<String, String> query;
         private final HashMap<String, String> param;
         private final HashMap<String, String> data;
-
-        public void putHandlerData(final String key, final String value) {
-            data.put(key, value);
-        }
-
-        public String getData(final String key) {
-            return data.get(key);
-        }
     }
 
     @AllArgsConstructor

@@ -21,14 +21,14 @@ public class HTTPServerTest extends HTTPTest {
             val server = HttpServer.port(1234);
 
             server.use(ctx -> {
-                ctx.putHandlerData("global", "middleware");
+                ctx.getData().put("global", "middleware");
                 return HttpResponse.next();
             });
 
             server.get("/", ctx -> HttpResponse.of("Hello World"));
             server.post("/transform", ctx -> HttpResponse.of(ctx.getBody()).transform(s -> s + "ed"));
-            server.get("/gm", ctx -> HttpResponse.of(ctx.getData("global")));
-            server.get("/gm-sub", ctx -> HttpResponse.of(ctx.getData("att")));
+            server.get("/gm", ctx -> HttpResponse.of(ctx.getData().get("global")));
+            server.get("/gm-sub", ctx -> HttpResponse.of(ctx.getData().get("att")));
             server.post("/echo", ctx -> HttpResponse.of(ctx.getBody()));
             server.get("/query", ctx -> {
                 val world = ctx.getQuery().get("hello");
@@ -47,10 +47,10 @@ public class HTTPServerTest extends HTTPTest {
                         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer")) {
                             return HttpResponse.reject("invalid_token").status(401);
                         }
-                        ctx.putHandlerData("username", "tuhuynh");
+                        ctx.getData().put("username", "tuhuynh");
                         return HttpResponse.next();
                     }, // Injected
-                    ctx -> HttpResponse.of("success:" + ctx.getData("username")));
+                    ctx -> HttpResponse.of("success:" + ctx.getData().get("username")));
 
             server.get("/panic", ctx -> {
                 throw new RuntimeException("Panicked!");
@@ -58,11 +58,11 @@ public class HTTPServerTest extends HTTPTest {
 
             val catRouter = new HttpRouter();
             catRouter.use(ctx -> {
-                ctx.putHandlerData("att", "cat");
+                ctx.getData().put("att", "cat");
                 return HttpResponse.next();
             });
             catRouter.get("/", ctx -> HttpResponse.of("this is a cat"));
-            catRouter.get("/gm", ctx -> HttpResponse.of(ctx.getData("att")));
+            catRouter.get("/gm", ctx -> HttpResponse.of(ctx.getData().get("att")));
             catRouter.post("/echo", ctx -> HttpResponse.of(ctx.getBody()));
             catRouter.get("/:foo/:bar", ctx -> HttpResponse.of(ctx.getParam().get("foo") + ":" + ctx.getParam().get("bar")));
             server.use("/cat", catRouter);

@@ -50,7 +50,7 @@ public final class ParserUtils {
     }
 
     public static String parseResponse(final HttpResponse httpResponse, RequestTransformer transformer) {
-        var httpStatusText = "";
+        var httpStatusText = "UNKNOWN";
         switch (httpResponse.getHttpStatusCode()) {
             case 200:
                 httpStatusText = "OK";
