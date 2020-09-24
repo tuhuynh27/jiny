@@ -1,3 +1,5 @@
+![Node CI](https://github.com/huynhminhtufu/jerrymouse/workflows/Java%20CI%20runner/badge.svg)
+
 <p align="center">
   <img src="https://i.imgur.com/s5JWz5t.png" />
 </p>
