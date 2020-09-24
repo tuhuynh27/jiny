@@ -1,7 +1,7 @@
 package com.tuhuynh.jerrymouse.core;
 
 import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestHandlerBase;
-import com.tuhuynh.jerrymouse.core.utils.ParserUtils.RequestMethod;
+import com.tuhuynh.jerrymouse.core.utils.ParserUtils.HttpMethod;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -96,7 +96,7 @@ public abstract class RequestBinderBase<T extends RequestHandlerBase> {
     @Getter
     @Builder
     public static final class RequestContext {
-        private final RequestMethod method;
+        private final HttpMethod method;
         private final String path;
         private final HashMap<String, String> header;
         private final String body;
@@ -118,7 +118,7 @@ public abstract class RequestBinderBase<T extends RequestHandlerBase> {
     @Getter
     @Setter
     public static class BaseHandlerMetadata<T extends RequestHandlerBase> {
-        public RequestMethod method;
+        public HttpMethod method;
         public String path;
         public T[] handlers;
     }

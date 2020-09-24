@@ -91,25 +91,25 @@ public final class ParserUtils {
         return hashMap;
     }
 
-    private static RequestMethod getMethod(final String originalMethod) {
+    private static HttpMethod getMethod(final String originalMethod) {
         val method = originalMethod.toLowerCase();
         switch (method) {
             case "head":
-                return RequestMethod.HEAD;
+                return HttpMethod.HEAD;
             case "options":
-                return RequestMethod.OPTIONS;
+                return HttpMethod.OPTIONS;
             case "get":
-                return RequestMethod.GET;
+                return HttpMethod.GET;
             case "post":
-                return RequestMethod.POST;
+                return HttpMethod.POST;
             case "put":
-                return RequestMethod.PUT;
+                return HttpMethod.PUT;
             case "patch":
-                return RequestMethod.PATCH;
+                return HttpMethod.PATCH;
             case "delete":
-                return RequestMethod.DELETE;
+                return HttpMethod.DELETE;
             default:
-                return RequestMethod.ALL;
+                return HttpMethod.ALL;
         }
     }
 
@@ -128,7 +128,7 @@ public final class ParserUtils {
         }
     }
 
-    public enum RequestMethod {
+    public enum HttpMethod {
         HEAD,
         OPTIONS,
         GET,

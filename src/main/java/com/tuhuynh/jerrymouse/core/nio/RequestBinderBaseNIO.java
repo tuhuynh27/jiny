@@ -2,7 +2,7 @@ package com.tuhuynh.jerrymouse.core.nio;
 
 import com.tuhuynh.jerrymouse.core.RequestBinderBase;
 import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestHandlerNIO;
-import com.tuhuynh.jerrymouse.core.utils.ParserUtils.RequestMethod;
+import com.tuhuynh.jerrymouse.core.utils.ParserUtils.HttpMethod;
 import lombok.val;
 import lombok.var;
 
@@ -29,7 +29,7 @@ public final class RequestBinderBaseNIO extends RequestBinderBase<RequestHandler
             val binder = binderInit(h);
 
             if (binder.isMatchCatchAll() ||
-                    (requestContext.getMethod() == h.getMethod() || (h.getMethod() == RequestMethod.ALL))
+                    (requestContext.getMethod() == h.getMethod() || (h.getMethod() == HttpMethod.ALL))
                             && (binder.getRequestPath().equals(binder.getHandlerPath()) || binder
                             .isRequestWithHandlerParamsMatched())) {
                 val middlewareMatched = middlewares.stream()

@@ -2,7 +2,7 @@ package com.tuhuynh.jerrymouse.core.bio;
 
 import com.tuhuynh.jerrymouse.core.RequestBinderBase;
 import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestHandlerBIO;
-import com.tuhuynh.jerrymouse.core.utils.ParserUtils.RequestMethod;
+import com.tuhuynh.jerrymouse.core.utils.ParserUtils.HttpMethod;
 import lombok.val;
 import lombok.var;
 
@@ -23,7 +23,7 @@ public final class RequestBinderBaseBIO extends RequestBinderBase<RequestHandler
             val binder = binderInit(h);
 
             if (binder.isMatchCatchAll() ||
-                    (requestContext.getMethod() == h.getMethod() || (h.getMethod() == RequestMethod.ALL))
+                    (requestContext.getMethod() == h.getMethod() || (h.getMethod() == HttpMethod.ALL))
                             && (binder.getRequestPath().equals(binder.getHandlerPath()) || binder
                             .isRequestWithHandlerParamsMatched())) {
                 try {
