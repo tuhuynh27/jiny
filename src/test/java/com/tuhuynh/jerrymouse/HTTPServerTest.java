@@ -4,7 +4,6 @@ import com.tuhuynh.jerrymouse.core.RequestBinder.HttpResponse;
 import com.tuhuynh.jerrymouse.core.bio.HttpRouter;
 import lombok.val;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 
 import java.io.IOException;
@@ -75,10 +74,5 @@ public class HTTPServerTest extends HTTPTest {
 
         // Wait for server to start
         TimeUnit.SECONDS.sleep(3);
-    }
-
-    @BeforeEach
-    void each() throws InterruptedException {
-        TimeUnit.SECONDS.sleep(1);
     }
 }

@@ -1,16 +1,21 @@
 package com.tuhuynh.jerrymouse;
 
 import lombok.val;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class HTTPTest {
     protected String url = "";
+    protected boolean isCI =
+            System.getenv("CI") != null
+                    && System.getenv("CI").toLowerCase().equals("true");
 
     @Test
     @DisplayName("Hello World test")
@@ -132,5 +137,14 @@ public abstract class HTTPTest {
                 .url(url + "/cat/gm").method("GET")
                 .build().perform();
         assertEquals(res.getBody(), "cat");
+    }
+
+    @BeforeEach
+    void each() throws InterruptedException {
+        if (isCI) {
+            TimeUnit.SECONDS.sleep(1);
+        } else {
+            TimeUnit.MILLISECONDS.sleep(100);
+        }
     }
 }

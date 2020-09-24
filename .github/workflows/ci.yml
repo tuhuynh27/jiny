@@ -19,4 +19,4 @@ jobs:
         with:
           java-version: 1.8
       - name: Test with JUnit
-        run: ./gradlew clean test
+        run: CI=true ./gradlew clean test
