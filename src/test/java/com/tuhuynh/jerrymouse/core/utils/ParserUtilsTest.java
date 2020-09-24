@@ -1,7 +1,6 @@
-package com.tuhuynh.jerrymouse.core;
+package com.tuhuynh.jerrymouse.core.utils;
 
 import com.tuhuynh.jerrymouse.core.RequestBinderBase.HttpResponse;
-import com.tuhuynh.jerrymouse.core.utils.ParserUtils;
 import com.tuhuynh.jerrymouse.core.utils.ParserUtils.HttpMethod;
 import lombok.val;
 import org.junit.jupiter.api.DisplayName;
@@ -30,5 +29,15 @@ public class ParserUtilsTest {
         assertEquals(200, response.getHttpStatusCode(), "Get HTTP Status Code");
         val responseString = ParserUtils.parseResponse(response, Object::toString);
         assertEquals("HTTP/1.1 200 OK\n\nHello World\n", responseString, "Get response string");
+    }
+
+    @Test
+    @DisplayName("Split Query")
+    void splitQuery() {
+        val queryStr = "foo=bar&hello=world&x";
+        val result = ParserUtils.splitQuery(queryStr);
+        assertEquals(result.get("foo"), "bar");
+        assertEquals(result.get("hello"), "world");
+        assertEquals(result.get("x"), "");
     }
 }
