@@ -1,59 +1,66 @@
-package com.tuhuynh.jerrymouse.core;
+package com.tuhuynh.jerrymouse;
 
-import com.tuhuynh.jerrymouse.HttpClient;
-import com.tuhuynh.jerrymouse.HttpServer;
 import com.tuhuynh.jerrymouse.core.RequestBinder.HttpResponse;
-import com.tuhuynh.jerrymouse.core.bio.HttpRouter;
+import com.tuhuynh.jerrymouse.core.nio.HttpRouter;
+import lombok.val;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import lombok.val;
-
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class HTTPServerTest {
-    final int port = 1234;
+@DisplayName("api.NIOHttpServerTest")
+public class NIOHTTPServerTest {
+    final int port = 1235;
     final String url = "http://localhost:" + port;
 
+    @BeforeEach
+    void each() throws InterruptedException {
+        TimeUnit.SECONDS.sleep(1);
+    }
+
     @BeforeAll
-    static void startServer() {
+    static void startServer() throws InterruptedException {
         new Thread(() -> {
-            val server = HttpServer.port(1234);
+            val server = NIOHttpServer.port(1235);
 
             server.use(ctx -> {
                 ctx.putHandlerData("global", "middleware");
-                return HttpResponse.next();
+                return HttpResponse.nextAsync();
             });
 
-            server.get("/", ctx -> HttpResponse.of("Hello World"));
-            server.get("/gm", ctx -> HttpResponse.of(ctx.getData("global")));
-            server.get("/gm-sub", ctx -> HttpResponse.of(ctx.getData("att")));
-            server.post("/echo", ctx -> HttpResponse.of(ctx.getBody()));
+            server.get("/", ctx -> HttpResponse.ofAsync("Hello World"));
+            server.get("/gm", ctx -> HttpResponse.ofAsync(ctx.getData("global")));
+            server.get("/gm-sub", ctx -> HttpResponse.ofAsync(ctx.getData("att")));
+            server.post("/echo", ctx -> HttpResponse.ofAsync(ctx.getBody()));
             server.get("/query", ctx -> {
                 val world = ctx.getQuery().get("hello");
-                return HttpResponse.of(world);
+                return HttpResponse.ofAsync(world);
             });
             server.get("/path/:foo/:bar", ctx -> {
                 val foo = ctx.getParam().get("foo");
                 val bar = ctx.getParam().get("bar");
-                return HttpResponse.of(foo + ":" + bar);
+                return HttpResponse.ofAsync(foo + ":" + bar);
             });
-            server.get("/all/**", ctx -> HttpResponse.of(ctx.getPath()));
+            server.get("/all/**", ctx -> HttpResponse.ofAsync(ctx.getPath()));
 
             server.get("/protected",
                     ctx -> {
                         val authorizationHeader = ctx.getHeader().get("authorization");
                         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer")) {
-                            return HttpResponse.reject("invalid_token").status(401);
+                            return HttpResponse.rejectAsync("invalid_token", 401);
                         }
                         ctx.putHandlerData("username", "tuhuynh");
-                        return HttpResponse.next();
+                        return HttpResponse.nextAsync();
                     }, // Injected
-                    ctx -> HttpResponse.of("success:" + ctx.getData("username")));
+                    ctx -> HttpResponse.ofAsync("success:" + ctx.getData("username")));
 
             server.get("/panic", ctx -> {
                 throw new RuntimeException("Panicked!");
@@ -62,19 +69,22 @@ public class HTTPServerTest {
             val catRouter = new HttpRouter();
             catRouter.use(ctx -> {
                 ctx.putHandlerData("att", "cat");
-                return HttpResponse.next();
+                return HttpResponse.nextAsync();
             });
-            catRouter.get("/", ctx -> HttpResponse.of("this is a cat"));
-            catRouter.get("/gm", ctx -> HttpResponse.of(ctx.getData("att")));
-            catRouter.post("/echo", ctx -> HttpResponse.of(ctx.getBody()));
+            catRouter.get("/", ctx -> HttpResponse.ofAsync("this is a cat"));
+            catRouter.get("/gm", ctx -> HttpResponse.ofAsync(ctx.getData("att")));
+            catRouter.post("/echo", ctx -> HttpResponse.ofAsync(ctx.getBody()));
             server.use("/cat", catRouter);
 
             try {
                 server.start();
-            } catch (IOException e) {
+            } catch (IOException | InterruptedException | ExecutionException | TimeoutException e) {
                 e.printStackTrace();
             }
         }).start();
+
+        // Wait for server to start
+        TimeUnit.SECONDS.sleep(3);
     }
 
     @Test
@@ -90,9 +100,9 @@ public class HTTPServerTest {
     @DisplayName("Echo test")
     void echo() throws IOException {
         val res = HttpClient.builder()
-                .url(url + "/echo").method("POST").body("Copycat")
+                .url(url + "/echo").method("POST").body("copycat")
                 .build().perform();
-        assertEquals(res.getBody(), "Copycat");
+        assertEquals(res.getBody(), "copycat");
     }
 
     @Test

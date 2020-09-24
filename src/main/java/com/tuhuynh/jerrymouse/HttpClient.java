@@ -69,6 +69,6 @@ public final class HttpClient {
     @Getter
     public static final class ResponseObject {
         private final String body;
-        private int status;
+        private final int status;
     }
 }

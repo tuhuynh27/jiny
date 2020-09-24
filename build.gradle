@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'idea'
     id 'maven-publish'
+    id 'com.adarshr.test-logger' version '2.1.0'
 }
 
 group 'com.tuhuynh'
@@ -39,15 +40,11 @@ dependencies {
     testImplementation('org.junit.jupiter:junit-jupiter:5.6.2')
 }
 
-ext {
-    javaMainClass = 'com.tuhuynh.jerrymouse.tests.TestNIOServer'
-}
-
 test {
     useJUnitPlatform()
     testLogging {
         events "passed", "skipped", "failed"
-        outputs.upToDateWhen { true }
-        showStandardStreams = true
+        outputs.upToDateWhen { false }
+        showStandardStreams = false
     }
 }
