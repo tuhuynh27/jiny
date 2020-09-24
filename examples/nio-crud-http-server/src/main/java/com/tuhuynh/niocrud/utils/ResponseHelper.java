@@ -1,9 +1,8 @@
 package com.tuhuynh.niocrud.utils;
 
 import com.google.gson.Gson;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.HttpResponse;
 import com.tuhuynh.niocrud.entities.ResponseEntity;
-import com.tuhuynh.jerrymouse.core.RequestBinder.HttpResponse;
-
 import lombok.val;
 
 import java.util.concurrent.CompletableFuture;

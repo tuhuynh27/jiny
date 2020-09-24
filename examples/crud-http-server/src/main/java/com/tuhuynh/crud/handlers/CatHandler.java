@@ -5,9 +5,8 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.tuhuynh.crud.entities.Cat;
 import com.tuhuynh.crud.utils.ResponseHelper;
-import com.tuhuynh.jerrymouse.core.RequestBinder.RequestContext;
-import com.tuhuynh.jerrymouse.core.RequestBinder.HttpResponse;
-
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.HttpResponse;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestContext;
 import lombok.val;
 
 import java.util.ArrayList;

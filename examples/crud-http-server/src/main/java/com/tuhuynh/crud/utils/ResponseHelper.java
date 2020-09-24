@@ -2,8 +2,7 @@ package com.tuhuynh.crud.utils;
 
 import com.google.gson.Gson;
 import com.tuhuynh.crud.entities.ResponseEntity;
-import com.tuhuynh.jerrymouse.core.RequestBinder.HttpResponse;
-
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.HttpResponse;
 import lombok.val;
 
 public final class ResponseHelper {
