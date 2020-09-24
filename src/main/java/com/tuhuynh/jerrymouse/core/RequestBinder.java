@@ -113,7 +113,7 @@ public class RequestBinder {
     @RequiredArgsConstructor
     @Getter
     @Setter
-    public abstract static class BaseHandlerMetadata<T extends RequestHandlerBase> {
+    public static class BaseHandlerMetadata<T extends RequestHandlerBase> {
         public RequestMethod method;
         public String path;
         public T[] handlers;
