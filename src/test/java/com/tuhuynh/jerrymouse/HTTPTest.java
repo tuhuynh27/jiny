@@ -139,6 +139,15 @@ public abstract class HTTPTest {
         assertEquals(res.getBody(), "cat");
     }
 
+    @Test
+    @DisplayName("SubRouter4")
+    void subRouter4() throws IOException {
+        val res = HttpClient.builder()
+                .url(url + "/cat/foo/bar").method("GET")
+                .build().perform();
+        assertEquals(res.getBody(), "foo:bar");
+    }
+
     @BeforeEach
     void each() throws InterruptedException {
         if (isCI) {

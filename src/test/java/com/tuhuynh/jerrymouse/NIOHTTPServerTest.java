@@ -65,6 +65,7 @@ public class NIOHTTPServerTest extends HTTPTest {
             catRouter.get("/", ctx -> HttpResponse.ofAsync("this is a cat"));
             catRouter.get("/gm", ctx -> HttpResponse.ofAsync(ctx.getData("att")));
             catRouter.post("/echo", ctx -> HttpResponse.ofAsync(ctx.getBody()));
+            catRouter.get("/:foo/:bar", ctx -> HttpResponse.ofAsync(ctx.getParam().get("foo") + ":" + ctx.getParam().get("bar")));
             server.use("/cat", catRouter);
 
             try {
