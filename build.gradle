@@ -2,7 +2,6 @@ plugins {
     id 'java'
     id 'idea'
     id 'maven-publish'
-    id 'application'
 }
 
 group 'com.tuhuynh'
@@ -44,15 +43,11 @@ ext {
     javaMainClass = 'com.tuhuynh.jerrymouse.tests.TestNIOServer'
 }
 
-application {
-    mainClassName = javaMainClass
-}
-
 test {
     useJUnitPlatform()
     testLogging {
         events "passed", "skipped", "failed"
-        outputs.upToDateWhen { false }
+        outputs.upToDateWhen { true }
         showStandardStreams = true
     }
 }
