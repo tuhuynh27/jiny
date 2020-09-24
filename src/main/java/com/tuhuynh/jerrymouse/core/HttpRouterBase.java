@@ -6,11 +6,25 @@ import lombok.Getter;
 import lombok.val;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 @Getter
 public abstract class HttpRouterBase<T extends RequestHandlerBase> {
     public final ArrayList<BaseHandlerMetadata<T>> handlers = new ArrayList<>();
     protected final ArrayList<BaseHandlerMetadata<T>> middlewares = new ArrayList<>();
+
+    public final void use(final String path, final HttpRouterBase<T> router) {
+        val refactoredMiddlewares = router.getMiddlewares().stream().peek(e -> {
+            val refactoredPath = path + e.getPath();
+            e.setPath(refactoredPath);
+        }).collect(Collectors.toList());
+        val refactoredHandlers = router.getHandlers().stream().peek(e -> {
+            val refactoredPath = path + e.getPath();
+            e.setPath(refactoredPath);
+        }).collect(Collectors.toList());
+        middlewares.addAll(refactoredMiddlewares);
+        handlers.addAll(refactoredHandlers);
+    }
 
     @SafeVarargs
     public final void addHandler(final ParserUtils.RequestMethod method, final String path,

@@ -1,10 +1,9 @@
 package com.tuhuynh.jerrymouse;
 
-import com.tuhuynh.jerrymouse.core.ParserUtils.RequestMethod;
+import com.tuhuynh.jerrymouse.core.HttpRouterBase;
 import com.tuhuynh.jerrymouse.core.RequestBinder.RequestHandlerBIO;
 import com.tuhuynh.jerrymouse.core.RequestBinder.RequestTransformer;
 import com.tuhuynh.jerrymouse.core.ServerThreadFactory;
-import com.tuhuynh.jerrymouse.core.bio.HttpRouter;
 import com.tuhuynh.jerrymouse.core.bio.RequestPipeline;
 import lombok.val;
 
@@ -14,13 +13,11 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
-public final class HttpServer {
+public final class HttpServer extends HttpRouterBase<RequestHandlerBIO> {
     private final int serverPort;
     private final Executor executor = Executors.newCachedThreadPool(
             new ServerThreadFactory("request-processor"));
-    private final HttpRouter rootRouter = new HttpRouter();
     private ServerSocket serverSocket;
 
     private RequestTransformer transformer = Object::toString;
@@ -31,47 +28,6 @@ public final class HttpServer {
 
     public static HttpServer port(final int serverPort) {
         return new HttpServer(serverPort);
-    }
-
-    public void use(final String path, final HttpRouter router) {
-        val refactoredMiddlewares = router.getMiddlewares().stream().peek(e -> {
-            val refactoredPath = path + e.getPath();
-            e.setPath(refactoredPath);
-        }).collect(Collectors.toList());
-        val refactoredHandlers = router.getHandlers().stream().peek(e -> {
-            val refactoredPath = path + e.getPath();
-            e.setPath(refactoredPath);
-        }).collect(Collectors.toList());
-        rootRouter.getMiddlewares().addAll(refactoredMiddlewares);
-        rootRouter.getHandlers().addAll(refactoredHandlers);
-    }
-
-    public void addHandler(final RequestMethod method, final String path, final RequestHandlerBIO... handlers) {
-        rootRouter.addHandler(method, path, handlers);
-    }
-
-    public void use(final RequestHandlerBIO... handlers) {
-        rootRouter.use(handlers);
-    }
-
-    public void use(final String path, final RequestHandlerBIO... handlers) {
-        rootRouter.addHandler(RequestMethod.ALL, path, handlers);
-    }
-
-    public void get(final String path, final RequestHandlerBIO... handlers) {
-        rootRouter.addHandler(RequestMethod.GET, path, handlers);
-    }
-
-    public void post(final String path, final RequestHandlerBIO... handlers) {
-        rootRouter.addHandler(RequestMethod.POST, path, handlers);
-    }
-
-    public void put(final String path, final RequestHandlerBIO... handlers) {
-        rootRouter.addHandler(RequestMethod.PUT, path, handlers);
-    }
-
-    public void delete(final String path, final RequestHandlerBIO... handlers) {
-        rootRouter.addHandler(RequestMethod.DELETE, path, handlers);
     }
 
     public void setResponseTransformer(RequestTransformer transformer) {
@@ -86,7 +42,7 @@ public final class HttpServer {
 
         while (!serverSocket.isClosed()) {
             val socket = serverSocket.accept();
-            executor.execute(new RequestPipeline(socket, rootRouter.getMiddlewares(), rootRouter.getHandlers(), transformer));
+            executor.execute(new RequestPipeline(socket, middlewares, handlers, transformer));
         }
     }
 

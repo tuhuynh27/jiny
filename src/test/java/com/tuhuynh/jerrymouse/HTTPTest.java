@@ -153,7 +153,7 @@ public abstract class HTTPTest {
         if (isCI) {
             TimeUnit.SECONDS.sleep(1);
         } else {
-            TimeUnit.MILLISECONDS.sleep(100);
+            TimeUnit.MILLISECONDS.sleep(200);
         }
     }
 }
