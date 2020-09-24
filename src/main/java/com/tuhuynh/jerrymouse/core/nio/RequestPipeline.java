@@ -1,9 +1,9 @@
 package com.tuhuynh.jerrymouse.core.nio;
 
-import com.tuhuynh.jerrymouse.core.ParserUtils;
-import com.tuhuynh.jerrymouse.core.RequestBinder.BaseHandlerMetadata;
-import com.tuhuynh.jerrymouse.core.RequestBinder.RequestHandlerNIO;
-import com.tuhuynh.jerrymouse.core.RequestBinder.RequestTransformer;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.BaseHandlerMetadata;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestHandlerNIO;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestTransformer;
+import com.tuhuynh.jerrymouse.core.utils.ParserUtils;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.val;
@@ -77,7 +77,7 @@ public class RequestPipeline {
             body = requestParts.length == 2 ? requestParts[1].trim() : "";
 
             val requestContext = ParserUtils.parseRequest(req, body);
-            val responseObject = new RequestBinderNIO(requestContext, middlewares, handlers)
+            val responseObject = new RequestBinderBaseNIO(requestContext, middlewares, handlers)
                     .getResponseObject();
 
             responseObject.thenAccept(responseObjectReturned -> {

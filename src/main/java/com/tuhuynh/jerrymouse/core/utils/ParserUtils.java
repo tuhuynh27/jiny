@@ -1,8 +1,8 @@
-package com.tuhuynh.jerrymouse.core;
+package com.tuhuynh.jerrymouse.core.utils;
 
-import com.tuhuynh.jerrymouse.core.RequestBinder.HttpResponse;
-import com.tuhuynh.jerrymouse.core.RequestBinder.RequestContext;
-import com.tuhuynh.jerrymouse.core.RequestBinder.RequestTransformer;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.HttpResponse;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestContext;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestTransformer;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import lombok.var;

@@ -1,7 +1,8 @@
 package com.tuhuynh.jerrymouse.core.nio;
 
-import com.tuhuynh.jerrymouse.core.ParserUtils.RequestMethod;
-import com.tuhuynh.jerrymouse.core.RequestBinder;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestHandlerNIO;
+import com.tuhuynh.jerrymouse.core.utils.ParserUtils.RequestMethod;
 import lombok.val;
 import lombok.var;
 
@@ -12,17 +13,13 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public final class RequestBinderNIO extends RequestBinder {
-    private final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> middlewares;
-    private final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlerMetadata;
+public final class RequestBinderBaseNIO extends RequestBinderBase<RequestHandlerNIO> {
     private final CompletableFuture<HttpResponse> isDone = new CompletableFuture<>();
 
-    public RequestBinderNIO(RequestContext requestContext,
-                            final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> middlewares,
-                            final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlerMetadata) {
-        super(requestContext);
-        this.middlewares = middlewares;
-        this.handlerMetadata = handlerMetadata;
+    public RequestBinderBaseNIO(RequestContext requestContext,
+                                final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> middlewares,
+                                final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlerMetadata) {
+        super(requestContext, middlewares, handlerMetadata);
     }
 
     public CompletableFuture<HttpResponse> getResponseObject() throws Exception {

@@ -1,9 +1,9 @@
 package com.tuhuynh.jerrymouse.core.bio;
 
-import com.tuhuynh.jerrymouse.core.ParserUtils;
-import com.tuhuynh.jerrymouse.core.RequestBinder.BaseHandlerMetadata;
-import com.tuhuynh.jerrymouse.core.RequestBinder.RequestHandlerBIO;
-import com.tuhuynh.jerrymouse.core.RequestBinder.RequestTransformer;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.BaseHandlerMetadata;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestHandlerBIO;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestTransformer;
+import com.tuhuynh.jerrymouse.core.utils.ParserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.val;
@@ -51,7 +51,7 @@ public final class RequestPipeline implements Runnable {
         val requestContext = ParserUtils.parseRequest(requestStringArr.toArray(new String[0]),
                 body.toString());
 
-        val responseObject = new RequestBinderBIO(requestContext, middlewares, handlers).getResponseObject();
+        val responseObject = new RequestBinderBaseBIO(requestContext, middlewares, handlers).getResponseObject();
         val responseString = ParserUtils.parseResponse(responseObject, transformer);
 
         out.write(responseString);

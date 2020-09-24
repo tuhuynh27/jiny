@@ -1,29 +1,24 @@
 package com.tuhuynh.jerrymouse.core.bio;
 
-import com.tuhuynh.jerrymouse.core.ParserUtils.RequestMethod;
-import com.tuhuynh.jerrymouse.core.RequestBinder;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestHandlerBIO;
+import com.tuhuynh.jerrymouse.core.utils.ParserUtils.RequestMethod;
 import lombok.val;
 import lombok.var;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public final class RequestBinderBIO extends RequestBinder {
-    private final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> middlewares;
-    private final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlerMetadata;
-
-    public RequestBinderBIO(RequestContext requestContext,
-                            final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> middlewares,
-                            final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlerMetadata) {
-        super(requestContext);
-        this.middlewares = middlewares;
-        this.handlerMetadata = handlerMetadata;
+public final class RequestBinderBaseBIO extends RequestBinderBase<RequestHandlerBIO> {
+    public RequestBinderBaseBIO(final RequestContext requestContext,
+                                final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> middlewares,
+                                final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlerMetadata) {
+        super(requestContext, middlewares, handlerMetadata);
     }
 
-    public HttpResponse getResponseObject() throws IOException {
+    public HttpResponse getResponseObject() {
         for (var h : handlerMetadata) {
             val binder = binderInit(h);
 

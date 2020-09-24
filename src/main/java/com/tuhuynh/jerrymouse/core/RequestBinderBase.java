@@ -1,16 +1,20 @@
 package com.tuhuynh.jerrymouse.core;
 
-import com.tuhuynh.jerrymouse.core.ParserUtils.RequestMethod;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestHandlerBase;
+import com.tuhuynh.jerrymouse.core.utils.ParserUtils.RequestMethod;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public class RequestBinder {
+public abstract class RequestBinderBase<T extends RequestHandlerBase> {
     protected final RequestContext requestContext;
+    protected final ArrayList<BaseHandlerMetadata<T>> middlewares;
+    protected final ArrayList<BaseHandlerMetadata<T>> handlerMetadata;
 
     protected BinderInitObject binderInit(final BaseHandlerMetadata<?> h) {
         val indexOfQuestionMark = requestContext.getPath().indexOf('?');
@@ -117,24 +121,6 @@ public class RequestBinder {
         public RequestMethod method;
         public String path;
         public T[] handlers;
-    }
-
-    @Getter
-    @Setter
-    public static class BIOHandlerMetadata extends BaseHandlerMetadata<RequestHandlerBIO> {
-        public BIOHandlerMetadata(final RequestMethod method, final String path,
-                                  final RequestHandlerBIO[] handlers) {
-            super(method, path, handlers);
-        }
-    }
-
-    @Getter
-    @Setter
-    public static class NIOHandlerMetadata extends BaseHandlerMetadata<RequestHandlerNIO> {
-        public NIOHandlerMetadata(final RequestMethod method, final String path,
-                                  final RequestHandlerNIO[] handlers) {
-            super(method, path, handlers);
-        }
     }
 
     @Getter

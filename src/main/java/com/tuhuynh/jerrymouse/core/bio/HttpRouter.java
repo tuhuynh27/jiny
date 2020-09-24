@@ -1,7 +1,7 @@
 package com.tuhuynh.jerrymouse.core.bio;
 
 import com.tuhuynh.jerrymouse.core.HttpRouterBase;
-import com.tuhuynh.jerrymouse.core.RequestBinder.RequestHandlerBIO;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestHandlerBIO;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor

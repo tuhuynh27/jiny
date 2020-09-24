@@ -1,8 +1,8 @@
 package com.tuhuynh.jerrymouse;
 
 import com.tuhuynh.jerrymouse.core.HttpRouterBase;
-import com.tuhuynh.jerrymouse.core.RequestBinder.RequestHandlerBIO;
-import com.tuhuynh.jerrymouse.core.RequestBinder.RequestTransformer;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestHandlerBIO;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestTransformer;
 import com.tuhuynh.jerrymouse.core.ServerThreadFactory;
 import com.tuhuynh.jerrymouse.core.bio.RequestPipeline;
 import lombok.val;

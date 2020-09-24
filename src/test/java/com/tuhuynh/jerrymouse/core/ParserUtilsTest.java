@@ -1,7 +1,8 @@
 package com.tuhuynh.jerrymouse.core;
 
-import com.tuhuynh.jerrymouse.core.ParserUtils.RequestMethod;
-import com.tuhuynh.jerrymouse.core.RequestBinder.HttpResponse;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.HttpResponse;
+import com.tuhuynh.jerrymouse.core.utils.ParserUtils;
+import com.tuhuynh.jerrymouse.core.utils.ParserUtils.RequestMethod;
 import lombok.val;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
