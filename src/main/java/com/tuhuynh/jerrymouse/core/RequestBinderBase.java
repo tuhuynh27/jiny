@@ -103,6 +103,28 @@ public abstract class RequestBinderBase<T extends RequestHandlerBase> {
         private final HashMap<String, String> query;
         private final HashMap<String, String> param;
         private final HashMap<String, String> data;
+
+        public String headerParam(final String name) {
+            return header.get(name) != null ? header.get(name) : "";
+        }
+
+        public String pathParam(final String name) {
+            return param.get(name) != null ? param.get(name) : "";
+        }
+
+        public String queryParam(final String name) {
+            return query.get(name) != null ? param.get(name) : "";
+        }
+
+        public String dataParam(final String name) {
+            return data.get(name) != null ? data.get(name) : "";
+        }
+
+        public void addDataParam(final String key, final String value) {
+            if (key != null && value != null) {
+                data.put(key, value);
+            }
+        }
     }
 
     @AllArgsConstructor
