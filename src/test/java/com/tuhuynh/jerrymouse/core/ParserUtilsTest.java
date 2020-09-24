@@ -26,7 +26,7 @@ public class ParserUtilsTest {
     void parseResponseTest() {
         val response = HttpResponse.of("Hello World");
         assertEquals(200, response.getHttpStatusCode(), "Get HTTP Status Code");
-        val responseString = ParserUtils.parseResponse(response);
+        val responseString = ParserUtils.parseResponse(response, Object::toString);
         assertEquals("HTTP/1.1 200 OK\n\nHello World\n", responseString, "Get response string");
     }
 }
