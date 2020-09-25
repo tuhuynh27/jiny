@@ -1,4 +1,4 @@
-package com.tuhuynh.jerrymouse.proxy;
+package com.tuhuynh.jerrymouse;
 
 import com.tuhuynh.jerrymouse.core.utils.ParserUtils;
 import lombok.NonNull;
