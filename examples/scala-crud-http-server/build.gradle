@@ -1,0 +1,43 @@
+plugins {
+    id 'idea'
+    id 'scala'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '5.0.0'
+}
+
+group 'com.tuhuynh'
+version '1.0-SNAPSHOT'
+
+repositories {
+    jcenter()
+    mavenCentral()
+    mavenLocal()
+    maven {
+        name = "GitHubPackages"
+        url = uri("https://maven.pkg.github.com/huynhminhtufu/jerrymouse")
+        credentials {
+            username = project.findProperty("github.user") ?: System.getenv("USERNAME")
+            password = project.findProperty("github.token") ?: System.getenv("TOKEN")
+        }
+    }
+}
+
+dependencies {
+    compile 'org.scala-lang:scala-library:2.13.3'
+    compile group: 'com.tuhuynh', name: 'jerrymouse', version: '0.2.1'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    compile group: 'org.mongodb.scala', name: 'mongo-scala-driver_2.13', version: '4.1.0'
+}
+
+def mainClass = 'com.tuhuynh.scala.crud.Main'
+
+application {
+    mainClassName = mainClass
+}
+
+shadowJar {
+    classifier = 'fat'
+    manifest {
+        attributes 'Main-Class': mainClass
+    }
+}
