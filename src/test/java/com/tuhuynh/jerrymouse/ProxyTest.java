@@ -19,30 +19,30 @@ public class ProxyTest {
     static final String url = "http://localhost:8000";
 
     @BeforeAll
-    static void startProxy() throws IOException, InterruptedException {
-        val serverOne = HttpServer.port(1111);
-        serverOne.get("/hello", ctx -> HttpResponse.of("Hello World"));
+    static void startProxy() throws InterruptedException {
+        val serverBIO = HttpServer.port(1111);
+        serverBIO.get("/hello", ctx -> HttpResponse.of("Hello World"));
         new Thread(() -> {
             try {
-                serverOne.start();
+                serverBIO.start();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }).start();
 
-        val serverTwo = NIOHttpServer.port(2222);
-        serverTwo.get("/bye", ctx -> HttpResponse.ofAsync("Bye"));
+        val serverNIO = NIOHttpServer.port(2222);
+        serverNIO.get("/bye", ctx -> HttpResponse.ofAsync("Bye"));
         new Thread(() -> {
             try {
-                serverTwo.start();
+                serverNIO.start();
             } catch (IOException | InterruptedException | ExecutionException | TimeoutException e) {
                 e.printStackTrace();
             }
         }).start();
 
         val proxy = Proxy.port(8000);
-        proxy.use("/one", "localhost:1111");
-        proxy.use("/two", "localhost:2222");
+        proxy.use("/bio", "localhost:1111");
+        proxy.use("/nio", "localhost:2222");
         new Thread(() -> {
             try {
                 proxy.start();
@@ -59,7 +59,7 @@ public class ProxyTest {
     @DisplayName("Hello World")
     void helloWorld() throws IOException {
         val res = HttpClient.builder()
-                .url(url + "/one/hello").method("GET")
+                .url(url + "/bio/hello").method("GET")
                 .build().perform();
         assertEquals(res.getBody(), "Hello World");
     }
@@ -68,7 +68,7 @@ public class ProxyTest {
     @DisplayName("Bye")
     void bye() throws IOException {
         val res = HttpClient.builder()
-                .url(url + "/two/bye").method("GET")
+                .url(url + "/nio/bye").method("GET")
                 .build().perform();
         assertEquals(res.getBody(), "Bye");
     }
