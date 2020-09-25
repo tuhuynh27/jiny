@@ -56,19 +56,19 @@ public final class ParserUtils {
                 httpStatusText = "OK";
                 break;
             case 400:
-                httpStatusText = "BAD REQUEST";
+                httpStatusText = "Bad Request";
                 break;
             case 401:
-                httpStatusText = "UNAUTHORIZED";
+                httpStatusText = "Unauthorized";
                 break;
             case 403:
-                httpStatusText = "FORBIDDEN";
+                httpStatusText = "Forbidden";
                 break;
             case 404:
-                httpStatusText = "NOT FOUND";
+                httpStatusText = "Not Found";
                 break;
             case 500:
-                httpStatusText = "INTERNAL SERVER ERROR";
+                httpStatusText = "Internal Server Error";
                 break;
         }
 

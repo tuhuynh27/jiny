@@ -2,6 +2,7 @@ package com.tuhuynh.jerrymouse.proxy;
 
 import com.tuhuynh.jerrymouse.core.utils.ParserUtils;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.val;
 import lombok.var;
 
@@ -14,16 +15,13 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+@RequiredArgsConstructor
 public final class Proxy {
     private final int proxyPort;
     private final HashMap<String, String> endpointMap = new HashMap<>();
 
     public static Proxy port(final int proxyPort) {
         return new Proxy(proxyPort);
-    }
-
-    private Proxy(final int proxyPort) {
-        this.proxyPort = proxyPort;
     }
 
     public void use(@NonNull final String path, @NonNull final String endpoint) {
@@ -87,14 +85,14 @@ public final class Proxy {
                 serverSocket.close();
             } catch (Exception ignored) {
                 val clientOut = new PrintWriter(clientSocket.getOutputStream(), false);
-                clientOut.write("HTTP/1.1 404 NOT FOUND\n\nNot Found\n");
+                clientOut.write("HTTP/1.1 404 Not Found\n\nNot Found\n");
                 clientSocket.close();
             }
         }
 
         if (!clientSocket.isClosed()) {
             val clientOut = new PrintWriter(clientSocket.getOutputStream(), false);
-            clientOut.write("HTTP/1.1 404 NOT FOUND\n\nNot Found\n");
+            clientOut.write("HTTP/1.1 404 Not Found\n\nNot Found\n");
 
             clientSocket.close();
         }
