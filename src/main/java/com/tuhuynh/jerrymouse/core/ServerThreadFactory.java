@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
 
-public class ServerThreadFactory implements ThreadFactory {
+public final class ServerThreadFactory implements ThreadFactory {
     private int counter;
-    private String name;
-    private List<String> stats;
+    private final String name;
+    private final List<String> stats;
 
     public ServerThreadFactory(String name) {
         counter = 1;

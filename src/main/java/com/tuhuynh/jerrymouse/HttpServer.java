@@ -1,7 +1,7 @@
 package com.tuhuynh.jerrymouse;
 
 import com.tuhuynh.jerrymouse.core.HttpRouterBase;
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestHandlerBIO;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.Handler;
 import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestTransformer;
 import com.tuhuynh.jerrymouse.core.ServerThreadFactory;
 import com.tuhuynh.jerrymouse.core.bio.RequestPipeline;
@@ -14,7 +14,7 @@ import java.net.ServerSocket;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-public final class HttpServer extends HttpRouterBase<RequestHandlerBIO> {
+public final class HttpServer extends HttpRouterBase<Handler> {
     private final int serverPort;
     private final Executor executor = Executors.newCachedThreadPool(
             new ServerThreadFactory("request-processor"));
@@ -30,7 +30,7 @@ public final class HttpServer extends HttpRouterBase<RequestHandlerBIO> {
         return new HttpServer(serverPort);
     }
 
-    public void setResponseTransformer(RequestTransformer transformer) {
+    public void setupResponseTransformer(RequestTransformer transformer) {
         this.transformer = transformer;
     }
 

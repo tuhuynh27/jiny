@@ -1,9 +1,9 @@
 package com.tuhuynh.jerrymouse.core.nio;
 
 import com.tuhuynh.jerrymouse.core.HttpRouterBase;
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestHandlerNIO;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.HandlerNIO;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public class HttpRouter extends HttpRouterBase<RequestHandlerNIO> {
+public class HttpRouter extends HttpRouterBase<HandlerNIO> {
 }

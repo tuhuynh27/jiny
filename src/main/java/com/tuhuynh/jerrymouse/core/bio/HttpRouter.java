@@ -1,9 +1,9 @@
 package com.tuhuynh.jerrymouse.core.bio;
 
 import com.tuhuynh.jerrymouse.core.HttpRouterBase;
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestHandlerBIO;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.Handler;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public final class HttpRouter extends HttpRouterBase<RequestHandlerBIO> {
+public final class HttpRouter extends HttpRouterBase<Handler> {
 }

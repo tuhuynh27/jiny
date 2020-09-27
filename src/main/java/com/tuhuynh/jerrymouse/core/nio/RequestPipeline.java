@@ -1,7 +1,7 @@
 package com.tuhuynh.jerrymouse.core.nio;
 
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.BaseHandlerMetadata;
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestHandlerNIO;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.HandlerMetadata;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.HandlerNIO;
 import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestTransformer;
 import com.tuhuynh.jerrymouse.core.utils.ParserUtils;
 import lombok.NoArgsConstructor;
@@ -18,14 +18,14 @@ import java.util.concurrent.CompletableFuture;
 public class RequestPipeline {
     private final AsynchronousSocketChannel clientSocketChannel;
     private final ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
-    private final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> middlewares;
-    private final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlers;
+    private final ArrayList<HandlerMetadata<HandlerNIO>> middlewares;
+    private final ArrayList<HandlerMetadata<HandlerNIO>> handlers;
 
     private final RequestTransformer transformer;
 
     public RequestPipeline(final AsynchronousSocketChannel clientSocketChannel,
-                           final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> middlewares,
-                           final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlers,
+                           final ArrayList<HandlerMetadata<HandlerNIO>> middlewares,
+                           final ArrayList<HandlerMetadata<HandlerNIO>> handlers,
                            final RequestTransformer transformer) {
         this.clientSocketChannel = clientSocketChannel;
         this.middlewares = middlewares;
@@ -77,7 +77,7 @@ public class RequestPipeline {
             body = requestParts.length == 2 ? requestParts[1].trim() : "";
 
             val requestContext = ParserUtils.parseRequest(req, body);
-            val responseObject = new RequestBinderBaseNIO(requestContext, middlewares, handlers)
+            val responseObject = new RequestBinderNIO(requestContext, middlewares, handlers)
                     .getResponseObject();
 
             responseObject.thenAccept(responseObjectReturned -> {

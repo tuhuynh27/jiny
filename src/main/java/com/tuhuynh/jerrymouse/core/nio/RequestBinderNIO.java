@@ -1,7 +1,7 @@
 package com.tuhuynh.jerrymouse.core.nio;
 
 import com.tuhuynh.jerrymouse.core.RequestBinderBase;
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestHandlerNIO;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.HandlerNIO;
 import com.tuhuynh.jerrymouse.core.utils.ParserUtils.HttpMethod;
 import lombok.val;
 import lombok.var;
@@ -13,12 +13,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public final class RequestBinderBaseNIO extends RequestBinderBase<RequestHandlerNIO> {
+public final class RequestBinderNIO extends RequestBinderBase<HandlerNIO> {
     private final CompletableFuture<HttpResponse> isDone = new CompletableFuture<>();
 
-    public RequestBinderBaseNIO(RequestContext requestContext,
-                                final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> middlewares,
-                                final ArrayList<BaseHandlerMetadata<RequestHandlerNIO>> handlerMetadata) {
+    public RequestBinderNIO(RequestContext requestContext,
+                            final ArrayList<HandlerMetadata<HandlerNIO>> middlewares,
+                            final ArrayList<HandlerMetadata<HandlerNIO>> handlerMetadata) {
         super(requestContext, middlewares, handlerMetadata);
     }
 
@@ -34,7 +34,7 @@ public final class RequestBinderBaseNIO extends RequestBinderBase<RequestHandler
                             .isRequestWithHandlerParamsMatched())) {
                 val middlewareMatched = middlewares.stream()
                         .filter(e -> requestContext.getPath().startsWith(e.getPath()))
-                        .map(BaseHandlerMetadata::getHandlers)
+                        .map(HandlerMetadata::getHandlers)
                         .flatMap(e -> Arrays.stream(e).distinct())
                         .collect(Collectors.toList());
                 val handlers = Arrays.asList(h.handlers);
@@ -53,7 +53,7 @@ public final class RequestBinderBaseNIO extends RequestBinderBase<RequestHandler
         return isDone;
     }
 
-    private void resolvePromiseChain(final LinkedList<RequestHandlerNIO> handlerQueue) throws Exception {
+    private void resolvePromiseChain(final LinkedList<HandlerNIO> handlerQueue) throws Exception {
         if (handlerQueue.size() == 1) {
             try {
                 handlerQueue.removeFirst().handleFunc(requestContext).thenAccept(isDone::complete);

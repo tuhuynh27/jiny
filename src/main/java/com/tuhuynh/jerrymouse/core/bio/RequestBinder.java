@@ -1,7 +1,7 @@
 package com.tuhuynh.jerrymouse.core.bio;
 
 import com.tuhuynh.jerrymouse.core.RequestBinderBase;
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestHandlerBIO;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.Handler;
 import com.tuhuynh.jerrymouse.core.utils.ParserUtils.HttpMethod;
 import lombok.val;
 import lombok.var;
@@ -11,10 +11,10 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public final class RequestBinderBaseBIO extends RequestBinderBase<RequestHandlerBIO> {
-    public RequestBinderBaseBIO(final RequestContext requestContext,
-                                final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> middlewares,
-                                final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlerMetadata) {
+public final class RequestBinder extends RequestBinderBase<Handler> {
+    public RequestBinder(final RequestContext requestContext,
+                         final ArrayList<HandlerMetadata<Handler>> middlewares,
+                         final ArrayList<HandlerMetadata<Handler>> handlerMetadata) {
         super(requestContext, middlewares, handlerMetadata);
     }
 
@@ -30,7 +30,7 @@ public final class RequestBinderBaseBIO extends RequestBinderBase<RequestHandler
                     // Handle middleware function chain
                     val middlewareMatched = middlewares.stream()
                             .filter(e -> requestContext.getPath().startsWith(e.getPath()))
-                            .map(BaseHandlerMetadata::getHandlers)
+                            .map(HandlerMetadata::getHandlers)
                             .flatMap(e -> Arrays.stream(e).distinct())
                             .collect(Collectors.toList());
                     val handlers = Arrays.asList(h.handlers);

@@ -1,6 +1,6 @@
 package com.tuhuynh.jerrymouse.core;
 
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestHandlerBase;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.HandlerBase;
 import com.tuhuynh.jerrymouse.core.utils.ParserUtils.HttpMethod;
 import lombok.*;
 
@@ -11,12 +11,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public abstract class RequestBinderBase<T extends RequestHandlerBase> {
+public abstract class RequestBinderBase<T extends HandlerBase> {
     protected final RequestContext requestContext;
-    protected final ArrayList<BaseHandlerMetadata<T>> middlewares;
-    protected final ArrayList<BaseHandlerMetadata<T>> handlerMetadata;
+    protected final ArrayList<HandlerMetadata<T>> middlewares;
+    protected final ArrayList<HandlerMetadata<T>> handlerMetadata;
 
-    protected BinderInitObject binderInit(final BaseHandlerMetadata<?> h) {
+    protected BinderInitObject binderInit(final HandlerMetadata<?> h) {
         val indexOfQuestionMark = requestContext.getPath().indexOf('?');
         var requestPath =
                 indexOfQuestionMark == -1 ? requestContext.getPath() : requestContext.getPath().substring(0,
@@ -66,16 +66,16 @@ public abstract class RequestBinderBase<T extends RequestHandlerBase> {
                 .build();
     }
 
-    public interface RequestHandlerBase {
+    public interface HandlerBase {
     }
 
     @FunctionalInterface
-    public interface RequestHandlerBIO extends RequestHandlerBase {
+    public interface Handler extends HandlerBase {
         HttpResponse handleFunc(RequestContext requestContext) throws Exception;
     }
 
     @FunctionalInterface
-    public interface RequestHandlerNIO extends RequestHandlerBase {
+    public interface HandlerNIO extends HandlerBase {
         CompletableFuture<HttpResponse> handleFunc(RequestContext requestContext) throws Exception;
     }
 
@@ -131,7 +131,7 @@ public abstract class RequestBinderBase<T extends RequestHandlerBase> {
     @RequiredArgsConstructor
     @Getter
     @Setter
-    public static class BaseHandlerMetadata<T extends RequestHandlerBase> {
+    public static class HandlerMetadata<T extends HandlerBase> {
         public HttpMethod method;
         public String path;
         public T[] handlers;

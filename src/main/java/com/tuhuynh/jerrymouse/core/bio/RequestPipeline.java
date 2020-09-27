@@ -1,7 +1,7 @@
 package com.tuhuynh.jerrymouse.core.bio;
 
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.BaseHandlerMetadata;
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestHandlerBIO;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.HandlerMetadata;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.Handler;
 import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestTransformer;
 import com.tuhuynh.jerrymouse.core.utils.ParserUtils;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +18,8 @@ import java.util.ArrayList;
 @RequiredArgsConstructor
 public final class RequestPipeline implements Runnable {
     private final Socket socket;
-    private final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> middlewares;
-    private final ArrayList<BaseHandlerMetadata<RequestHandlerBIO>> handlers;
+    private final ArrayList<HandlerMetadata<Handler>> middlewares;
+    private final ArrayList<HandlerMetadata<Handler>> handlers;
     private final RequestTransformer transformer;
     private BufferedReader in;
     private PrintWriter out;
@@ -51,7 +51,7 @@ public final class RequestPipeline implements Runnable {
         val requestContext = ParserUtils.parseRequest(requestStringArr.toArray(new String[0]),
                 body.toString());
 
-        val responseObject = new RequestBinderBaseBIO(requestContext, middlewares, handlers).getResponseObject();
+        val responseObject = new RequestBinder(requestContext, middlewares, handlers).getResponseObject();
         val responseString = ParserUtils.parseResponse(responseObject, transformer);
 
         out.write(responseString);

@@ -1,7 +1,7 @@
 package com.tuhuynh.jerrymouse;
 
 import com.tuhuynh.jerrymouse.core.HttpRouterBase;
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestHandlerNIO;
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.HandlerNIO;
 import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestTransformer;
 import com.tuhuynh.jerrymouse.core.ServerThreadFactory;
 import com.tuhuynh.jerrymouse.core.nio.RequestPipeline;
@@ -18,7 +18,7 @@ import java.nio.channels.CompletionHandler;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
-public final class NIOHttpServer extends HttpRouterBase<RequestHandlerNIO> {
+public final class NIOHttpServer extends HttpRouterBase<HandlerNIO> {
     private final int serverPort;
     private AsynchronousServerSocketChannel serverSocketChannel;
 
@@ -32,7 +32,7 @@ public final class NIOHttpServer extends HttpRouterBase<RequestHandlerNIO> {
         return new NIOHttpServer(serverPort);
     }
 
-    public void setResponseTransformer(RequestTransformer transformer) {
+    public void setupResponseTransformer(RequestTransformer transformer) {
         this.transformer = transformer;
     }
 
