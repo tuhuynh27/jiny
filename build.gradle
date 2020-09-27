@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'scala'
     id 'idea'
     id 'maven-publish'
     id 'com.adarshr.test-logger' version '2.1.0'
@@ -11,7 +12,9 @@ version '0.2.2'
 sourceCompatibility = 1.8
 
 repositories {
+    jcenter()
     mavenCentral()
+    mavenLocal()
 }
 
 publishing {
@@ -33,6 +36,7 @@ publishing {
 }
 
 dependencies {
+    compile 'org.scala-lang:scala-library:2.13.3'
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
     testCompileOnly 'org.projectlombok:lombok:1.18.12'
@@ -48,3 +52,9 @@ test {
         showStandardStreams = false
     }
 }
+
+// Scala integration
+sourceSets.main.scala.srcDir "src/main/java"
+sourceSets.main.java.srcDirs = []
+sourceSets.test.scala.srcDir "src/test/java"
+sourceSets.test.java.srcDirs = []
