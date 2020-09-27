@@ -19,3 +19,7 @@ class AsyncHelper(val promise: CompletableFuture[HttpResponse] = new Completable
 
   def submit(): CompletableFuture[HttpResponse] = promise
 }
+
+object AsyncHelper {
+  def make(): AsyncHelper = new AsyncHelper()
+}

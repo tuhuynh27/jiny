@@ -1,6 +1,7 @@
 package com.tuhuynh.jerrymouse;
 
 import com.tuhuynh.jerrymouse.core.RequestBinderBase.HttpResponse;
+import com.tuhuynh.jerrymouse.core.nio.AsyncHelper;
 import com.tuhuynh.jerrymouse.core.nio.HttpRouterNIO;
 import lombok.val;
 import org.junit.jupiter.api.BeforeAll;
@@ -31,7 +32,11 @@ public class NIOHTTPServerTest extends HTTPTest {
             server.post("/transform", ctx -> HttpResponse.ofAsync(ctx.getBody(), s -> s + "ed"));
             server.get("/gm", ctx -> HttpResponse.ofAsync(ctx.getData().get("global")));
             server.get("/gm-sub", ctx -> HttpResponse.ofAsync(ctx.getData().get("att")));
-            server.post("/echo", ctx -> HttpResponse.ofAsync(ctx.getBody()));
+            server.post("/echo", ctx -> {
+                val async = AsyncHelper.make();
+                async.resolve(ctx.getBody());
+                return async.submit();
+            });
             server.get("/query", ctx -> {
                 val world = ctx.getQuery().get("hello");
                 return HttpResponse.ofAsync(world);
