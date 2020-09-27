@@ -24,7 +24,7 @@ repositories {
 
 dependencies {
     compile 'org.scala-lang:scala-library:2.13.3'
-    compile group: 'com.tuhuynh', name: 'jerrymouse', version: '0.2.1'
+    compile group: 'com.tuhuynh', name: 'jerrymouse', version: '0.2.2'
     implementation 'com.google.code.gson:gson:2.8.6'
     compile group: 'org.mongodb.scala', name: 'mongo-scala-driver_2.13', version: '4.1.0'
 }

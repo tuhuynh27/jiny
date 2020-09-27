@@ -1,16 +1,16 @@
 package com.tuhuynh.scala.crud.handlers
 
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.{HttpResponse, RequestHandlerBIO}
+import com.tuhuynh.jerrymouse.core.RequestBinderBase.{HttpResponse, Handler}
 import com.tuhuynh.scala.crud.entities.Mouse
 import com.tuhuynh.scala.crud.factories.app.AppFactory
 import org.mongodb.scala.MongoCollection
 
 object MouseHandler {
-  val getMouses: RequestHandlerBIO = _ => {
+  val getMouses: Handler = _ => {
     val mouses = collection.find()
     HttpResponse.of(mouses)
   }
-  val addMouse: RequestHandlerBIO = ctx => {
+  val addMouse: Handler = ctx => {
     val body = ctx.getBody
     val newMouse: Mouse = gson.fromJson(body, classOf[Mouse])
     collection.insertOne(Mouse.apply(newMouse.name, newMouse.owner))
