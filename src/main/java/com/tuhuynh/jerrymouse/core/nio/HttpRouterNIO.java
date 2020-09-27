@@ -5,5 +5,5 @@ import com.tuhuynh.jerrymouse.core.RequestBinderBase.HandlerNIO;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public class HttpRouter extends HttpRouterBase<HandlerNIO> {
+public class HttpRouterNIO extends HttpRouterBase<HandlerNIO> {
 }

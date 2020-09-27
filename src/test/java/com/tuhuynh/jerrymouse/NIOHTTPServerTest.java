@@ -1,7 +1,7 @@
 package com.tuhuynh.jerrymouse;
 
 import com.tuhuynh.jerrymouse.core.RequestBinderBase.HttpResponse;
-import com.tuhuynh.jerrymouse.core.nio.HttpRouter;
+import com.tuhuynh.jerrymouse.core.nio.HttpRouterNIO;
 import lombok.val;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -58,7 +58,7 @@ public class NIOHTTPServerTest extends HTTPTest {
                 throw new RuntimeException("Panicked!");
             });
 
-            val catRouter = new HttpRouter();
+            val catRouter = new HttpRouterNIO();
             catRouter.use(ctx -> {
                 ctx.getData().put("att", "cat");
                 return HttpResponse.nextAsync();
