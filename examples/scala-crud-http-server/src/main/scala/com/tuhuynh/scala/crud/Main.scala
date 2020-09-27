@@ -7,7 +7,7 @@ import com.tuhuynh.scala.crud.routers.{CatRouter, MouseRouter}
 
 object Main extends App {
   val server = HttpServer.port(1234)
-  server.setResponseTransformer(s => AppFactory.getGson.toJson(s))
+  server.setupResponseTransformer(s => AppFactory.getGson.toJson(s))
 
   server.get("/", _ => HttpResponse.of("Hello Scala"))
   server.use("/cat", CatRouter.getRouter)
