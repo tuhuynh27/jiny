@@ -3,6 +3,7 @@
 - Scala
 - CRUD
 - MongoDB integration
+- Reverse proxy to bind 2 BIO, NIO server ports into 1 port
 
 ## Develop
 
