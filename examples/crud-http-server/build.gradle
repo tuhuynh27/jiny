@@ -28,6 +28,8 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
 
     compile group: 'org.mongodb', name: 'mongodb-driver-sync', version: '4.1.0-beta2'
+
+    compile group: 'com.github.jknack', name: 'handlebars', version: '4.2.0'
 }
 
 ext {

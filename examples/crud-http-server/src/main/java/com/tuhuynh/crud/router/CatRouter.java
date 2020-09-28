@@ -12,6 +12,7 @@ public final class CatRouter {
         val router = new HttpRouter();
         router.get("/", catHandler::getCats);
         router.post("/", catHandler::addCat);
+        router.get("/index", catHandler::index);
         return router;
     }
 }

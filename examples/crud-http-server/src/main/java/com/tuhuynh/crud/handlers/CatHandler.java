@@ -1,5 +1,6 @@
 package com.tuhuynh.crud.handlers;
 
+import com.github.jknack.handlebars.Handlebars;
 import com.google.gson.Gson;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -9,6 +10,7 @@ import com.tuhuynh.jerrymouse.core.RequestBinderBase.HttpResponse;
 import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestContext;
 import lombok.val;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class CatHandler {
@@ -30,5 +32,11 @@ public class CatHandler {
         val newCat = gson.fromJson(body, Cat.class);
         catCollection.insertOne(newCat);
         return ResponseHelper.success("Done");
+    }
+
+    public HttpResponse index(RequestContext ctx) throws IOException {
+        val hb = new Handlebars();
+        val template = hb.compileInline("<b>Hello {{this}}</b>");
+        return HttpResponse.of(template.apply(ctx.getQuery().get("name")));
     }
 }
