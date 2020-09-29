@@ -19,6 +19,7 @@ module.exports = {
     ['meta', { name: 'theme-color', content: '#D96565' }],
     ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }],
     ['meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'black' }],
+    ['meta', { property: 'og:image', content: "/preview.png" }],
     ['link', { rel: "apple-touch-icon", sizes: "180x180", href: "/jiny.png"}],
     ['link', { rel: "icon", type: "image/png", sizes: "32x32", href: "/jiny.png"}],
     ['link', { rel: "icon", type: "image/png", sizes: "16x16", href: "/jiny.png"}],
@@ -31,20 +32,24 @@ module.exports = {
    */
   themeConfig: {
     logo: 'https://i.imgur.com/OpG00Ct.png',
-    repo: '',
+    repo: 'https://github.com/huynhminhtufu/jiny',
     editLinks: false,
-    docsDir: '',
-    editLinkText: '',
+    docsDir: 'docs',
+    editLinkText: 'Edit this page on Github',
     lastUpdated: false,
     nav: [
       {
-        text: 'Guide',
-        link: '/guide/',
+        text: 'Docs',
+        items: [
+          { text: 'Guide', link: '/guide/' },
+          { text: 'Cookbook', link: '/cookbook/' },
+          { text: 'Example', link: 'https://github.com/huynhminhtufu/jiny/tree/master/examples' },
+        ]
       },
       {
-        text: 'Github',
-        link: 'https://github.com/huynhminhtufu/jiny',
-      }
+        text: 'Author',
+        link: '/author/',
+      },
     ],
     sidebar: {
       '/guide/': [
@@ -75,7 +80,10 @@ module.exports = {
           children: [
             'advance/project-structure',
             'advance/project-structure-scala',
-            ['https://github.com/huynhminhtufu/jiny/tree/master/examples', 'See examples']
+            ['https://github.com/huynhminhtufu/jiny/tree/master/examples', 'See examples'],
+            'advance/proxy',
+            'advance/production',
+            'advance/benchmark',
           ]
         },
         {
@@ -89,7 +97,9 @@ module.exports = {
             'nio-apis/reactor',
           ]
         },
-      ]
+        'changelogs',
+        'roadmap',
+      ],
     }
   },
 

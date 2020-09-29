@@ -45,7 +45,7 @@ server.get("/all/**", ctx -> HttpResponse.of(ctx.getPath()));
 
 Use the `HttpRouter` class to create modular, mountable route handlers. An `HttpRouter` instance is a complete middleware and routing system; for this reason, it is often referred to as a “mini-server”.
 
-```
+```java
 val catRouter = new HttpRouter();
 
 catRouter.use(ctx -> {
@@ -60,7 +60,7 @@ catRouter.get("/heh", ctx -> HttpResponse.of("Heh"));
 
 Then mount this `catRouter` to `server`
 
-```
+```java
 val server = HttpServer.port(1234);
 server.use("/test", catRouter);
 ```

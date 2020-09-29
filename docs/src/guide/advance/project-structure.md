@@ -36,7 +36,7 @@ class WebhookRouter {
     public static HttpRouter getRouter() {
         val router = new HttpRouter();
         server.get("/dict", webhookHandler::showDict);
-        server.post("/dict", commonHandler:jwtMiddleware,
+        server.post("/dict", commonHandler::jwtMiddleware,
                              webhookHandler::setDict);
         return router;
     }

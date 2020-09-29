@@ -1,7 +1,7 @@
 {
   "name": "jiny",
   "version": "0.0.1",
-  "description": "Jiny Docs",
+  "description": "Lightweight, modern, simple Java HTTP Server/Client for rapid development in the API era",
   "main": "index.js",
   "authors": {
     "name": "Tu Huynh",
