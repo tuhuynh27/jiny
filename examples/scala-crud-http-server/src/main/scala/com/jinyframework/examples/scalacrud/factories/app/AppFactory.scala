@@ -1,7 +1,7 @@
-package com.tuhuynh.scala.crud.factories.app
+package com.jinyframework.examples.scalacrud.factories.app
 
 import com.google.gson.Gson
-import com.tuhuynh.scala.crud.storages.Mongo
+import com.jinyframework.examples.scalacrud.storages.Mongo
 import org.mongodb.scala.{MongoClient, MongoDatabase}
 
 object AppFactory {

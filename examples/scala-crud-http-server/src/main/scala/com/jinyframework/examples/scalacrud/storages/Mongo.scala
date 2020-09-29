@@ -1,6 +1,6 @@
-package com.tuhuynh.scala.crud.storages
+package com.jinyframework.examples.scalacrud.storages
 
-import com.tuhuynh.scala.crud.entities.Mouse
+import com.jinyframework.examples.scalacrud.entities.Mouse
 import org.bson.codecs.configuration.CodecRegistries.{fromProviders, fromRegistries}
 import org.bson.codecs.configuration.CodecRegistry
 import org.mongodb.scala.MongoClient.DEFAULT_CODEC_REGISTRY

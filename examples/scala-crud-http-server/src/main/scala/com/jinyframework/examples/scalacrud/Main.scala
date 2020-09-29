@@ -1,6 +1,6 @@
-package com.tuhuynh.scala.crud
+package com.jinyframework.examples.scalacrud
 
-import com.tuhuynh.jerrymouse.Proxy
+import com.jinyframework.Proxy
 
 object Main extends App {
   new Thread(ServerBootstrap).start() // Port 1234

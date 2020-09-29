@@ -1,7 +1,7 @@
-package com.tuhuynh.scala.crud.routers
+package com.jinyframework.examples.scalacrud.routers
 
-import com.tuhuynh.jerrymouse.core.bio.HttpRouter
-import com.tuhuynh.scala.crud.handlers.MouseHandler
+import com.jinyframework.core.bio.HttpRouter
+import com.jinyframework.examples.scalacrud.handlers.MouseHandler
 
 object MouseRouter {
   def getRouter: HttpRouter = {

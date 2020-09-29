@@ -1,8 +1,8 @@
-package com.tuhuynh.scala.crud.handlers
+package com.jinyframework.examples.scalacrud.handlers
 
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.{HttpResponse, Handler}
-import com.tuhuynh.scala.crud.entities.Mouse
-import com.tuhuynh.scala.crud.factories.app.AppFactory
+import com.jinyframework.core.RequestBinderBase.{Handler, HttpResponse}
+import com.jinyframework.examples.scalacrud.entities.Mouse
+import com.jinyframework.examples.scalacrud.factories.app.AppFactory
 import org.mongodb.scala.MongoCollection
 
 object MouseHandler {

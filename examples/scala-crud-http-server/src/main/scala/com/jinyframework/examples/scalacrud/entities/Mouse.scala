@@ -1,4 +1,4 @@
-package com.tuhuynh.scala.crud.entities
+package com.jinyframework.examples.scalacrud.entities
 
 import org.mongodb.scala.bson.ObjectId
 

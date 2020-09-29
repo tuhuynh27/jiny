@@ -1,7 +1,7 @@
-package com.tuhuynh.scala.crud
+package com.jinyframework.examples.scalacrud
 
-import com.tuhuynh.jerrymouse.NIOHttpServer
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.HttpResponse
+import com.jinyframework.NIOHttpServer
+import com.jinyframework.core.RequestBinderBase.HttpResponse
 
 object ServerBootstrapNIO extends Runnable {
   private val server: NIOHttpServer = NIOHttpServer.port(1235)

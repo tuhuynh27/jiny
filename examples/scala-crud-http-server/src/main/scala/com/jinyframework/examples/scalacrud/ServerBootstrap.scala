@@ -1,9 +1,9 @@
-package com.tuhuynh.scala.crud
+package com.jinyframework.examples.scalacrud
 
-import com.tuhuynh.jerrymouse.HttpServer
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.HttpResponse
-import com.tuhuynh.scala.crud.factories.app.AppFactory
-import com.tuhuynh.scala.crud.routers.{CatRouter, MouseRouter}
+import com.jinyframework.HttpServer
+import com.jinyframework.core.RequestBinderBase.HttpResponse
+import com.jinyframework.examples.scalacrud.factories.app.AppFactory
+import com.jinyframework.examples.scalacrud.routers.{CatRouter, MouseRouter}
 
 object ServerBootstrap extends Runnable {
   private val server: HttpServer = HttpServer.port(1234)
