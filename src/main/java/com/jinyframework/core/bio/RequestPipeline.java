@@ -1,9 +1,9 @@
-package com.tuhuynh.jerrymouse.core.bio;
+package com.jinyframework.core.bio;
 
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.HandlerMetadata;
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.Handler;
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestTransformer;
-import com.tuhuynh.jerrymouse.core.utils.ParserUtils;
+import com.jinyframework.core.RequestBinderBase.Handler;
+import com.jinyframework.core.RequestBinderBase.HandlerMetadata;
+import com.jinyframework.core.RequestBinderBase.RequestTransformer;
+import com.jinyframework.core.utils.ParserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.val;

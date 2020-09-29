@@ -1,7 +1,7 @@
-package com.tuhuynh.jerrymouse;
+package com.jinyframework;
 
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.HttpResponse;
-import com.tuhuynh.jerrymouse.core.bio.HttpRouter;
+import com.jinyframework.core.RequestBinderBase.HttpResponse;
+import com.jinyframework.core.bio.HttpRouter;
 import lombok.val;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;

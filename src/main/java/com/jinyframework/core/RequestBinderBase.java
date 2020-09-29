@@ -1,7 +1,7 @@
-package com.tuhuynh.jerrymouse.core;
+package com.jinyframework.core;
 
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.HandlerBase;
-import com.tuhuynh.jerrymouse.core.utils.ParserUtils.HttpMethod;
+import com.jinyframework.core.RequestBinderBase.HandlerBase;
+import com.jinyframework.core.utils.ParserUtils.HttpMethod;
 import lombok.*;
 
 import java.util.ArrayList;

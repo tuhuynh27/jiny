@@ -1,4 +1,4 @@
-package com.tuhuynh.jerrymouse;
+package com.jinyframework;
 
 import lombok.Builder;
 import lombok.Getter;

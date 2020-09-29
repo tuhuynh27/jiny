@@ -1,8 +1,8 @@
-package com.tuhuynh.jerrymouse.core.nio;
+package com.jinyframework.core.nio;
 
-import com.tuhuynh.jerrymouse.core.RequestBinderBase;
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.HandlerNIO;
-import com.tuhuynh.jerrymouse.core.utils.ParserUtils.HttpMethod;
+import com.jinyframework.core.RequestBinderBase;
+import com.jinyframework.core.RequestBinderBase.HandlerNIO;
+import com.jinyframework.core.utils.ParserUtils.HttpMethod;
 import lombok.val;
 import lombok.var;
 

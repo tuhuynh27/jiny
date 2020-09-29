@@ -1,7 +1,7 @@
-package com.tuhuynh.jerrymouse;
+package com.jinyframework;
 
-import com.tuhuynh.jerrymouse.core.ServerThreadFactory;
-import com.tuhuynh.jerrymouse.core.utils.ParserUtils;
+import com.jinyframework.core.utils.ParserUtils;
+import com.jinyframework.core.ServerThreadFactory;
 import lombok.*;
 
 import java.io.BufferedReader;
