@@ -1,13 +1,13 @@
-package com.tuhuynh.crud.handlers;
+package com.jinyframework.examples.crud.handlers;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.google.gson.Gson;
+import com.jinyframework.examples.crud.entities.Cat;
+import com.jinyframework.examples.crud.utils.ResponseHelper;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
-import com.tuhuynh.crud.entities.Cat;
-import com.tuhuynh.crud.utils.ResponseHelper;
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.HttpResponse;
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestContext;
+import com.jinyframework.core.RequestBinderBase.HttpResponse;
+import com.jinyframework.core.RequestBinderBase.RequestContext;
 import lombok.val;
 
 import java.io.IOException;
@@ -34,7 +34,7 @@ public class CatHandler {
         return ResponseHelper.success("Done");
     }
 
-    public HttpResponse index(RequestContext ctx) throws IOException {
+    public HttpResponse template(RequestContext ctx) throws IOException {
         val hb = new Handlebars();
         val template = hb.compileInline("<b>Hello {{this}}</b>");
         return HttpResponse.of(template.apply(ctx.getQuery().get("name")));

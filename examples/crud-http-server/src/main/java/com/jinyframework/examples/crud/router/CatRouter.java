@@ -1,8 +1,8 @@
-package com.tuhuynh.crud.router;
+package com.jinyframework.examples.crud.router;
 
-import com.tuhuynh.crud.handlers.CatHandler;
-import com.tuhuynh.crud.storage.MongoDB;
-import com.tuhuynh.jerrymouse.core.bio.HttpRouter;
+import com.jinyframework.examples.crud.storage.MongoDB;
+import com.jinyframework.examples.crud.handlers.CatHandler;
+import com.jinyframework.core.bio.HttpRouter;
 import lombok.val;
 
 public final class CatRouter {
@@ -12,7 +12,7 @@ public final class CatRouter {
         val router = new HttpRouter();
         router.get("/", catHandler::getCats);
         router.post("/", catHandler::addCat);
-        router.get("/index", catHandler::index);
+        router.get("/template", catHandler::template);
         return router;
     }
 }

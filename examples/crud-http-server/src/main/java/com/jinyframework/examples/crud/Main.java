@@ -1,8 +1,8 @@
-package com.tuhuynh.crud;
+package com.jinyframework.examples.crud;
 
-import com.tuhuynh.crud.router.CatRouter;
-import com.tuhuynh.jerrymouse.HttpServer;
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.HttpResponse;
+import com.jinyframework.examples.crud.router.CatRouter;
+import com.jinyframework.HttpServer;
+import com.jinyframework.core.RequestBinderBase.HttpResponse;
 import lombok.val;
 
 import java.io.IOException;

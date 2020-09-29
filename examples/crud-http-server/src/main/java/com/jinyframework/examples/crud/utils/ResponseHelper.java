@@ -1,8 +1,8 @@
-package com.tuhuynh.crud.utils;
+package com.jinyframework.examples.crud.utils;
 
 import com.google.gson.Gson;
-import com.tuhuynh.crud.entities.ResponseEntity;
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.HttpResponse;
+import com.jinyframework.examples.crud.entities.ResponseEntity;
+import com.jinyframework.core.RequestBinderBase.HttpResponse;
 import lombok.val;
 
 public final class ResponseHelper {

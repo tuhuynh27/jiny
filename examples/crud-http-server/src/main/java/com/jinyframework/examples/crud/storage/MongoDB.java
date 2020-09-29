@@ -1,4 +1,4 @@
-package com.tuhuynh.crud.storage;
+package com.jinyframework.examples.crud.storage;
 
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;

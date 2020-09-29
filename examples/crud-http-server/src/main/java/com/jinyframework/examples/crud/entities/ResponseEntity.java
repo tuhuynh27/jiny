@@ -1,4 +1,4 @@
-package com.tuhuynh.crud.entities;
+package com.jinyframework.examples.crud.entities;
 
 import lombok.Builder;
 import lombok.Getter;

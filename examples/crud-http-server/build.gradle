@@ -5,14 +5,14 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '5.0.0'
 }
 
-group 'com.tuhuynh'
+group 'com.jinyframework'
 version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
     maven {
         name = "GitHubPackages"
-        url = uri("https://maven.pkg.github.com/huynhminhtufu/jerrymouse")
+        url = uri("https://maven.pkg.github.com/huynhminhtufu/jiny")
         credentials {
             username = project.findProperty("github.user") ?: System.getenv("USERNAME")
             password = project.findProperty("github.token") ?: System.getenv("TOKEN")
@@ -24,7 +24,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
-    compile group: 'com.tuhuynh', name: 'jerrymouse', version: '0.2.2'
+    compile group: 'com.jinyframework', name: 'jiny', version: '0.2.2'
     implementation 'com.google.code.gson:gson:2.8.6'
 
     compile group: 'org.mongodb', name: 'mongodb-driver-sync', version: '4.1.0-beta2'
@@ -33,7 +33,7 @@ dependencies {
 }
 
 ext {
-    javaMainClass = 'com.tuhuynh.crud.Main'
+    javaMainClass = 'com.jinyframework.examples.crud.Main'
 }
 
 application {
