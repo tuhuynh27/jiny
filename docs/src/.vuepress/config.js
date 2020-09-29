@@ -39,12 +39,8 @@ module.exports = {
     lastUpdated: false,
     nav: [
       {
-        text: 'Docs',
-        items: [
-          { text: 'Guide', link: '/guide/' },
-          { text: 'Cookbook', link: '/cookbook/' },
-          { text: 'Example', link: 'https://github.com/huynhminhtufu/jiny/tree/master/examples' },
-        ]
+        text: 'Guide',
+        link: '/guide/',
       },
       {
         text: 'Author',
