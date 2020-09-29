@@ -1,9 +1,5 @@
 ![Java CI](https://github.com/huynhminhtufu/jiny/workflows/Java%20CI%20runner/badge.svg)
 
-<p align="center">
-  <img src="https://i.imgur.com/s5JWz5t.png" />
-</p>
-
 # **Jiny** - Lightweight Java HTTP Server/Client
 
 **Jiny** features a **lightweight (Servlet-free and no dependency), expressive and unopinionated** pure HTTP Server/Client including request parser, routing, middlewares, proxy-mode and more. If you need a quick start & simple way to write a JVM server, you would love this framework. Unlike others web frameworks, you can structure your application as you want.
