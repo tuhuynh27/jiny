@@ -1,14 +1,14 @@
-package com.tuhuynh.niocrud.handlers;
+package com.jinyframework.examples.niocrud.handlers;
 
 import com.google.gson.Gson;
+import com.jinyframework.examples.niocrud.entities.Cat;
 import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.reactivestreams.client.MongoClient;
 import com.mongodb.reactivestreams.client.MongoCollection;
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.HttpResponse;
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestContext;
-import com.tuhuynh.jerrymouse.core.nio.AsyncHelper;
-import com.tuhuynh.niocrud.entities.Cat;
-import com.tuhuynh.niocrud.utils.ResponseHelper;
+import com.jinyframework.core.RequestBinderBase.HttpResponse;
+import com.jinyframework.core.RequestBinderBase.RequestContext;
+import com.jinyframework.core.nio.AsyncHelper;
+import com.jinyframework.examples.niocrud.utils.ResponseHelper;
 import lombok.val;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;

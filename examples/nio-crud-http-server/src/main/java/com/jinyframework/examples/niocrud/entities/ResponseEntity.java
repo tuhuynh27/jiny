@@ -1,4 +1,4 @@
-package com.tuhuynh.niocrud.entities;
+package com.jinyframework.examples.niocrud.entities;
 
 import lombok.Builder;
 import lombok.Getter;

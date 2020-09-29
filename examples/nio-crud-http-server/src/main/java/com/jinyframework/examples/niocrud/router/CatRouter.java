@@ -1,12 +1,12 @@
-package com.tuhuynh.niocrud.router;
+package com.jinyframework.examples.niocrud.router;
 
-import com.tuhuynh.jerrymouse.core.nio.HttpRouterNIO;
-import com.tuhuynh.niocrud.handlers.CatHandler;
-import com.tuhuynh.niocrud.storage.MongoDB;
+import com.jinyframework.core.nio.HttpRouterNIO;
+import com.jinyframework.examples.niocrud.handlers.CatHandler;
+import com.jinyframework.examples.niocrud.storage.MongoDB;
 import lombok.val;
 
 public final class CatRouter {
-    public static HttpRouter getRouter() {
+    public static HttpRouterNIO getRouter() {
         val mongoClient = MongoDB.init();
         val catHandler = new CatHandler(mongoClient);
         val router = new HttpRouterNIO();

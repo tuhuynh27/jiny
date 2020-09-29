@@ -1,8 +1,8 @@
-package com.tuhuynh.niocrud;
+package com.jinyframework.examples.niocrud;
 
-import com.tuhuynh.jerrymouse.NIOHttpServer;
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.HttpResponse;
-import com.tuhuynh.niocrud.router.CatRouter;
+import com.jinyframework.NIOHttpServer;
+import com.jinyframework.core.RequestBinderBase.HttpResponse;
+import com.jinyframework.examples.niocrud.router.CatRouter;
 import lombok.val;
 
 import java.io.IOException;

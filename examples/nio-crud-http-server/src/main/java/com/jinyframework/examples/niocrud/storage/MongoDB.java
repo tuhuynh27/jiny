@@ -1,4 +1,4 @@
-package com.tuhuynh.niocrud.storage;
+package com.jinyframework.examples.niocrud.storage;
 
 import com.mongodb.MongoClientSettings;
 import com.mongodb.reactivestreams.client.MongoClient;
