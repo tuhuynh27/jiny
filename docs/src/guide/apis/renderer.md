@@ -28,3 +28,17 @@ import com.google.gson.Gson;
 val server = HttpServer.port(1234);
 server.setupResponseTransformer(gson::toJson);
 ```
+
+## Template Engine
+
+You can use a template engine as a custom render:
+
+```java
+import com.github.jknack.handlebars.Handlebars;
+
+public HttpResponse index(RequestContext ctx) throws IOException {
+    val hb = new Handlebars();
+    val template = hb.compileInline("<b>Hello {{this}}</b>");
+    return HttpResponse.of(template.apply(ctx.getQuery().get("name")));
+}
+```

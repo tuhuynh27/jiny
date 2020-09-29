@@ -1,8 +1,8 @@
 # Quick Start
 
- You have your REST API ready to serve JSON in less than ten lines of code:
+You have your REST API ready to serve JSON in less than ten lines of code
  
- Java
+Java
  
  ```java
 import com.jinyframework.*;

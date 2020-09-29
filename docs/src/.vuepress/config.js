@@ -18,7 +18,10 @@ module.exports = {
   head: [
     ['meta', { name: 'theme-color', content: '#D96565' }],
     ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }],
-    ['meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'black' }]
+    ['meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'black' }],
+    ['link', { rel: "apple-touch-icon", sizes: "180x180", href: "/jiny.png"}],
+    ['link', { rel: "icon", type: "image/png", sizes: "32x32", href: "/jiny.png"}],
+    ['link', { rel: "icon", type: "image/png", sizes: "16x16", href: "/jiny.png"}],
   ],
 
   /**
@@ -72,6 +75,7 @@ module.exports = {
           children: [
             'advance/project-structure',
             'advance/project-structure-scala',
+            ['https://github.com/huynhminhtufu/jiny/tree/master/examples', 'See examples']
           ]
         },
         {

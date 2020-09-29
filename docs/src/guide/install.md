@@ -7,7 +7,7 @@
 ## Gradle Project
 
 ::: details Why use GitHubPackages
-The framework is being hosted on Github Repository now, so it requires a Github Authentication to download it, soon it will be moved to Maven Central :smirk:
+The framework is being hosted on Github Package now, so it requires a Github Authentication to download it, soon it will be moved to Maven Central :smirk:
 :::
 
 `build.gradle`
