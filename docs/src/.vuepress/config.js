@@ -4,7 +4,7 @@ module.exports = {
   /**
    * Ref：https://v1.vuepress.vuejs.org/config/#title
    */
-  title: 'Vuepress Docs Boilerplate',
+  title: 'Jiny Framework',
   /**
    * Ref：https://v1.vuepress.vuejs.org/config/#description
    */
@@ -16,7 +16,7 @@ module.exports = {
    * ref：https://v1.vuepress.vuejs.org/config/#head
    */
   head: [
-    ['meta', { name: 'theme-color', content: '#3eaf7c' }],
+    ['meta', { name: 'theme-color', content: '#D96565' }],
     ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }],
     ['meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'black' }]
   ],
@@ -27,6 +27,7 @@ module.exports = {
    * ref：https://v1.vuepress.vuejs.org/theme/default-theme-config.html
    */
   themeConfig: {
+    logo: 'https://i.imgur.com/OpG00Ct.png',
     repo: '',
     editLinks: false,
     docsDir: '',
@@ -38,25 +39,42 @@ module.exports = {
         link: '/guide/',
       },
       {
-        text: 'Config',
-        link: '/config/'
-      },
-      {
-        text: 'VuePress',
-        link: 'https://v1.vuepress.vuejs.org'
+        text: 'Github',
+        link: 'https://github.com/huynhminhtufu/jiny',
       }
     ],
     sidebar: {
       '/guide/': [
         {
-          title: 'Guide',
+          title: 'Essentials',
           collapsable: false,
           children: [
             '',
-            'using-vue',
+            'install',
+            'quick-start'
           ]
-        }
-      ],
+        },
+        {
+          title: 'APIs',
+          collapsable: false,
+          children: [
+            'apis/routes',
+            'apis/httpresponse',
+            'apis/context',
+            'apis/middlewares',
+            'apis/error-handler',
+            'apis/renderer'
+          ]
+        },
+        {
+          title: 'Advance',
+          collapsable: false,
+          children: [
+            'advance/project-structure',
+            'advance/project-structure-scala',
+          ]
+        },
+      ]
     }
   },
 
@@ -66,5 +84,5 @@ module.exports = {
   plugins: [
     '@vuepress/plugin-back-to-top',
     '@vuepress/plugin-medium-zoom',
-  ]
+  ],
 }
