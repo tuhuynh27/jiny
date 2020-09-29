@@ -1,10 +1,10 @@
-package com.tuhuynh.jerrymouse;
+package com.jinyframework;
 
-import com.tuhuynh.jerrymouse.core.HttpRouterBase;
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.Handler;
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.RequestTransformer;
-import com.tuhuynh.jerrymouse.core.ServerThreadFactory;
-import com.tuhuynh.jerrymouse.core.bio.RequestPipeline;
+import com.jinyframework.core.RequestBinderBase.Handler;
+import com.jinyframework.core.RequestBinderBase.RequestTransformer;
+import com.jinyframework.core.HttpRouterBase;
+import com.jinyframework.core.ServerThreadFactory;
+import com.jinyframework.core.bio.RequestPipeline;
 import lombok.val;
 
 import java.io.IOException;

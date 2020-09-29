@@ -1,6 +1,6 @@
-package com.tuhuynh.jerrymouse.core.nio;
+package com.jinyframework.core.nio;
 
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.HttpResponse;
+import com.jinyframework.core.RequestBinderBase.HttpResponse;
 import lombok.Getter;
 
 import java.util.concurrent.CompletableFuture;

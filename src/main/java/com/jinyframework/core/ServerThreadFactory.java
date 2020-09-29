@@ -1,4 +1,4 @@
-package com.tuhuynh.jerrymouse.core;
+package com.jinyframework.core;
 
 import lombok.val;
 

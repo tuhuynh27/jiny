@@ -1,8 +1,8 @@
-package com.tuhuynh.jerrymouse.core.bio;
+package com.jinyframework.core.bio;
 
-import com.tuhuynh.jerrymouse.core.RequestBinderBase;
-import com.tuhuynh.jerrymouse.core.RequestBinderBase.Handler;
-import com.tuhuynh.jerrymouse.core.utils.ParserUtils.HttpMethod;
+import com.jinyframework.core.RequestBinderBase;
+import com.jinyframework.core.RequestBinderBase.Handler;
+import com.jinyframework.core.utils.ParserUtils.HttpMethod;
 import lombok.val;
 import lombok.var;
 
