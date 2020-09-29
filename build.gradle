@@ -5,7 +5,7 @@ plugins {
     id 'com.adarshr.test-logger' version '2.1.0'
 }
 
-group 'com.tuhuynh'
+group 'com.jinyframework'
 version '0.2.2'
 
 sourceCompatibility = 1.8
