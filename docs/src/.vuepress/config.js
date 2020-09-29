@@ -74,6 +74,17 @@ module.exports = {
             'advance/project-structure-scala',
           ]
         },
+        {
+          title: 'NIO APIs',
+          collapsable: false,
+          children: [
+            'nio-apis/',
+            'nio-apis/async-helper',
+            'nio-apis/thread-pool',
+            'nio-apis/completablefuture',
+            'nio-apis/reactor',
+          ]
+        },
       ]
     }
   },
