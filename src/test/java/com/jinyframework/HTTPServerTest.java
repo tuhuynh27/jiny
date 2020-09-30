@@ -63,7 +63,7 @@ public class HTTPServerTest extends HTTPTest {
             });
             catRouter.get("/", ctx -> HttpResponse.of("this is a cat"));
             catRouter.get("/gm", ctx -> HttpResponse.of(ctx.getData().get("att")));
-            catRouter.post("/echo", ctx -> HttpResponse.of(ctx.getBody()));
+            catRouter.post("/test", ctx -> HttpResponse.of("ok"));
             catRouter.get("/:foo/:bar", ctx -> HttpResponse.of(ctx.getParam().get("foo") + ":" + ctx.getParam().get("bar")));
             server.use("/cat", catRouter);
 

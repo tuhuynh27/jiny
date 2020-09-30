@@ -134,9 +134,9 @@ public abstract class HTTPTest {
     @DisplayName("SubRouter2")
     void subRouter2() throws IOException {
         val res = HttpClient.builder()
-                .url(url + "/cat/echo").method("POST").body("copycat")
+                .url(url + "/cat/test").method("POST")
                 .build().perform();
-        assertEquals(res.getBody(), "copycat");
+        assertEquals(res.getBody(), "ok");
     }
 
     @Test
