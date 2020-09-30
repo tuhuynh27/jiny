@@ -19,3 +19,7 @@ shadowJar {
 ## Boilerplates
 
 [See Examples](https://github.com/huynhminhtufu/jiny/tree/master/examples)
+
+## Health Checks and Graceful Shutdown
+
+(WIP)

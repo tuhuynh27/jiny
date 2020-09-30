@@ -1,6 +1,6 @@
 # Reactor
 
-You can also use NIO mode with Reactive Streams systems such as Reactor or RxJava:
+You can also use NIO mode with Reactive Streams systems such as [Reactor](https://projectreactor.io/) or [RxJava](http://reactivex.io/):
 
 ```java
 server.get("/", ctx -> Mono.fromCallable(System::currentTimeMillis)
@@ -23,4 +23,4 @@ server.get("/blocking", ctx ->
 server.start();
 ```
 
-Or you can use EA's async-await to wrap the async code, improve the readability.
+Or you can use [EA's async-await](https://github.com/electronicarts/ea-async) to wrap the async code, improve the readability.

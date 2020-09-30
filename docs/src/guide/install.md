@@ -5,7 +5,16 @@
 - JDK 1.8 or higher
 - Gradle/Maven build configuration
 
-## Gradle Project
+## Gradle Project (Recommended)
+
+::: details I don't know Gradle, how to start with it?
+First, [install Gradle](https://gradle.org/install/), if you're on Mac:
+```shell script
+brew install gradle
+gradle init
+```
+And then you have a Gradle build template with `build.gradle` file
+:::
 
 `build.gradle`
 

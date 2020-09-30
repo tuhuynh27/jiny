@@ -1,41 +1,54 @@
 # Quick Start
 
 You have your REST API ready to serve JSON in less than ten lines of code
- 
-Java
- 
+
+:::: tabs
+
+::: tab Java
  ```java
 import com.jinyframework.*;
+import com.google.gson.Gson;
 
-class Main {
-    static void main(String[] args) throws IOException {
+public class Main {
+    public static void main(String args[]) {
         val server = HTTPServer.port(1234);
+        val gson = new Gson();
+        server.setupResponseTransformer(gson::toJson);
         server.get("/ping", ctx -> HttpResponse.of("Pong"));
-        server.start(); // Listen and serve on localhost:1234
+        server.start();
     }
 } 
 ```
+:::
 
-Scala
 
+::: tab Scala
 ```scala
 import com.jinyframework.*
+import your.server.factories.app.AppFactory
 
 object Main extends App {
   val server = HttpServer.port(1234)
-  server.get("/**", ctx => HttpResponse.of(ctx.getPath))
+  server.setupResponseTransformer(s => AppFactory.getGson.toJson(s))
+  server.get("/ping", ctx => HttpResponse.of("Pong))
   server.start()
 }
 ```
+:::
 
-Kotlin
-
+::: tab Kotlin
 ```kotlin
 import com.jinyframework.*
+import com.google.gson.Gson;
 
 fun main(args: Array<String>) {
     val server: HttpServer = HTTPServer.port(1234)
+    val gson = new Gson()
+    server.setupResponseTransformer(gson::toJson);
     server.get("/ping", ctx -> HttpResponse.of("Pong"))
-    server.start() // Listen and serve on localhost:1234
+    server.start()
 }
 ```
+:::
+
+::::

@@ -7,7 +7,7 @@
 - Add proxy mode feature
 - Rename some methods
 
-### 0.2.1 (Current)
+### 0.2.1
 - Update global transformer
 - Add full unit tests
 

@@ -9,3 +9,80 @@
 
 .author-avatar
   max-width 100px!important
+
+@require '~vuepress-plugin-tabs/dist/themes/default.styl'
+
+.tabs-component
+  margin 0
+
+.tabs-component-tabs
+  @media only screen and (max-width: 768px)
+    display none
+
+.tabs-component-panels
+  padding 0
+  border 0
+
+.tabs-component-panels
+  padding 0
+
+.tabs-component-tab
+  border solid 1px #fff
+
+  .author-box {
+    display: flex;
+    flex-direction: column;
+  }
+
+.author-box > div {
+  padding: 5px;
+  margin: auto;
+  text-align: center;
+}
+
+.author-box a {
+  text-decoration: none;
+  font-weight: bolder;
+  color: #00B900;
+}
+
+.author-box a:hover {
+  text-decoration: underline;
+}
+
+.author-box ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: center;
+}
+
+.author-box ul li {
+  display: inline-block;
+  margin-left: 15px;
+}
+
+.author-box ul li:first-child {
+  margin-left: 0;
+}
+
+.author-box ul li a {
+  color: #515151;
+  display: block;
+  padding: 5px;
+  font-size: 18px;
+  -webkit-transition: all 350ms cubic-bezier(0.13, 0.43, 0.54, 1.82);
+  -o-transition: all 350ms cubic-bezier(0.13, 0.43, 0.54, 1.82);
+  transition: all 350ms cubic-bezier(0.13, 0.43, 0.54, 1.82);
+}
+
+.author-box ul li a:hover {
+  color: #333030;
+  -webkit-transform: scale(1.4);
+  -ms-transform: scale(1.4);
+  transform: scale(1.4);
+}
+
+.author-box svg {
+  color: #000;
+}
