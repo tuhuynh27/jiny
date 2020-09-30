@@ -1,4 +1,8 @@
-![Java CI](https://github.com/huynhminhtufu/jiny/workflows/Java%20CI%20runner/badge.svg)
+![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/huynhminhtufu/jiny/Java%20CI%20runner/master?label=test&style=flat-square)
+![Lines of code](https://img.shields.io/tokei/lines/github/huynhminhtufu/jiny?style=flat-square)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/huynhminhtufu/jiny?style=flat-square)
+![GitHub](https://img.shields.io/github/license/huynhminhtufu/jiny?style=flat-square)
+![Maven Central](https://img.shields.io/maven-central/v/com.jinyframework/jiny?style=flat-square)
 
 # **Jiny** - Lightweight Java HTTP Server/Client
 
@@ -10,7 +14,7 @@
 
 ## Changelogs
 
-[Learn about the latest improvements.](https://jinyframework.com/experimental/changelogs)
+[Learn about the latest improvements.](https://jinyframework.com/guide/changelogs.html)
 
 ## Want to help?
 

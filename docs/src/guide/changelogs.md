@@ -1,6 +1,11 @@
 # Changelogs
 
-[Github Package](https://github.com/huynhminhtufu/jiny/packages/418228)
+![Maven Central](https://img.shields.io/maven-central/v/com.jinyframework/jiny?style=flat-square)
+
+### 0.2.2 (Current)
+
+- Add proxy mode feature
+- Rename some methods
 
 ### 0.2.1 (Current)
 - Update global transformer
