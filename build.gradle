@@ -8,7 +8,7 @@ plugins {
 }
 
 group 'com.jinyframework'
-version '0.2.2'
+version '0.2.3'
 
 sourceCompatibility = 1.8
 
@@ -65,7 +65,7 @@ publishing {
             def snapshotsRepoUrl = 'https://oss.sonatype.org/content/repositories/snapshots'
             url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             credentials {
-                username = project.findProperty("sonatypeUsernamer") ?: System.getenv("sonatypeUsernamer")
+                username = project.findProperty("sonatypeUsername") ?: System.getenv("sonatypeUsernamer")
                 password = project.findProperty("sonatypePassword") ?: System.getenv("sonatypePassword")
             }
         }

@@ -2,7 +2,12 @@
 
 ![Maven Central](https://img.shields.io/maven-central/v/com.jinyframework/jiny?style=flat-square)
 
-### 0.2.2 (Current)
+### 0.2.3 (Current)
+
+- Add SLF4J facade logging
+- Fix proxy issues
+
+### 0.2.2
 
 - Add proxy mode feature
 - Rename some methods
