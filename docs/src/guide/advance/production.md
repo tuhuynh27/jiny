@@ -1,5 +1,16 @@
 # Production Use
 
+## Logging
+
+Recommended to use logback
+
+```groovy
+dependencies {
+    compile group: 'ch.qos.logback', name:'logback-classic', version: '1.0.9'
+    compile group: 'ch.qos.logback', name:'logback-core', version: '1.0.9'
+}
+```
+
 ## Build
 
 Suggestion: use `com.github.johnrengelman.shadow` to build Gradle project to JAR executable file:
