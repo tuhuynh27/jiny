@@ -1,6 +1,7 @@
 package com.jinyframework;
 
 import com.jinyframework.core.ServerThreadFactory;
+import com.jinyframework.core.utils.Intro;
 import com.jinyframework.core.utils.ParserUtils;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,7 @@ import java.util.concurrent.Executors;
 @RequiredArgsConstructor
 public final class Proxy {
     private final int proxyPort;
-    private final Executor executor = Executors.newCachedThreadPool(
+    private final Executor executor = Executors.newSingleThreadExecutor(
             new ServerThreadFactory("proxy-processor"));
     private final HashMap<String, String> endpointMap = new HashMap<>();
 
@@ -33,6 +34,7 @@ public final class Proxy {
     }
 
     public void start() throws IOException {
+        Intro.begin();
         val serverSocket = new ServerSocket(proxyPort);
         log.info("Started Jiny HTTP Server on port " + proxyPort);
         while (!Thread.interrupted()) {
@@ -45,34 +47,42 @@ public final class Proxy {
     public class ProxyHandler implements Runnable {
         private final Socket clientSocket;
 
+        // TODO: Resolve proxy keep alive issue
+
         @SneakyThrows
         @Override
         public void run() {
-            val clientIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            try {
+                val clientIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                val requestStringArr = new ArrayList<String>();
+                String inputLine;
+                while (!(inputLine = clientIn.readLine()).isEmpty()) {
+                    requestStringArr.add(inputLine);
+                }
+                val body = new StringBuilder();
+                while (clientIn.ready()) {
+                    body.append((char) clientIn.read());
+                }
 
-            val requestStringArr = new ArrayList<String>();
-            String inputLine;
-            while (!(inputLine = clientIn.readLine()).isEmpty()) {
-                requestStringArr.add(inputLine);
-            }
-            val body = new StringBuilder();
-            while (clientIn.ready()) {
-                body.append((char) clientIn.read());
-            }
+                // Pick server
+                val requestContext = ParserUtils.parseRequest(requestStringArr.toArray(new String[0]),
+                        body.toString());
+                val path = requestContext.getPath();
 
-            // Pick server
-            val requestContext = ParserUtils.parseRequest(requestStringArr.toArray(new String[0]),
-                    body.toString());
-            val path = requestContext.getPath();
+                // TODO: Improve matching algorithm, this is native
+                var matchedKey = endpointMap.keySet().stream()
+                        .filter(path::startsWith).findFirst()
+                        .orElse(null);
 
-            val matchedKey = endpointMap.keySet().stream()
-                    .filter(path::startsWith).findFirst()
-                    .orElse(null);
+                if (matchedKey == null) {
+                    if (endpointMap.get("/") != null) {
+                        matchedKey = "/";
+                    }
+                }
 
-            if (matchedKey != null) {
-                val endpoint = endpointMap.get(matchedKey);
-                val serverMetadata = endpoint.split(":");
-                try {
+                if (matchedKey != null) {
+                    val endpoint = endpointMap.get(matchedKey);
+                    val serverMetadata = endpoint.split(":");
                     val serverSocket = new Socket(serverMetadata[0], Integer.parseInt(serverMetadata[1]));
 
                     val serverIn = serverSocket.getInputStream();
@@ -81,7 +91,10 @@ public final class Proxy {
                     val clientOut = clientSocket.getOutputStream();
 
                     // Replace path
-                    requestStringArr.set(0, requestStringArr.get(0).replace(matchedKey, ""));
+                    if (!path.toLowerCase().equals(matchedKey.toLowerCase())) {
+                        requestStringArr.set(0, requestStringArr.get(0).replace(matchedKey, ""));
+                    }
+
                     val requestStr = String.join("\r\n", requestStringArr) + "\r\n\r\n" + body;
 
                     serverOut.write(requestStr);
@@ -93,18 +106,26 @@ public final class Proxy {
                         clientOut.write(reply, 0, bytesRead);
                     }
 
+                    clientOut.flush();
+                    clientOut.close();
+                    serverIn.close();
+
                     serverSocket.close();
-                } catch (Exception ignored) {
+                }
+
+                if (!clientSocket.isClosed()) {
                     val clientOut = new PrintWriter(clientSocket.getOutputStream(), false);
                     clientOut.write("HTTP/1.1 404 Not Found\n\nNot Found\n");
-                    clientSocket.close();
+                    clientOut.flush();
                 }
-            }
-
-            if (!clientSocket.isClosed()) {
-                val clientOut = new PrintWriter(clientSocket.getOutputStream(), false);
-                clientOut.write("HTTP/1.1 404 Not Found\n\nNot Found\n");
-
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+                if (!clientSocket.isClosed()) {
+                    val clientOut = new PrintWriter(clientSocket.getOutputStream(), false);
+                    clientOut.write("HTTP/1.1 500 Internal Server Error\n\nProxy Error: " + e.getMessage() + "\n");
+                    clientOut.flush();
+                }
+            } finally {
                 clientSocket.close();
             }
         }
