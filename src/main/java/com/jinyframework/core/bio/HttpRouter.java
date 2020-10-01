@@ -1,7 +1,7 @@
 package com.jinyframework.core.bio;
 
-import com.jinyframework.core.RequestBinderBase.Handler;
 import com.jinyframework.core.HttpRouterBase;
+import com.jinyframework.core.RequestBinderBase.Handler;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor

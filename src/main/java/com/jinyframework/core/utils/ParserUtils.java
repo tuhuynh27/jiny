@@ -4,6 +4,7 @@ import com.jinyframework.core.RequestBinderBase.HttpResponse;
 import com.jinyframework.core.RequestBinderBase.RequestContext;
 import com.jinyframework.core.RequestBinderBase.RequestTransformer;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import lombok.var;
 
@@ -13,6 +14,7 @@ import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
+@Slf4j
 @NoArgsConstructor
 public final class ParserUtils {
     private static final Pattern HEADER_PATTERN = Pattern.compile(": ");
@@ -123,7 +125,7 @@ public final class ParserUtils {
                     URLDecoder.decode(value, "UTF-8")
             );
         } catch (UnsupportedEncodingException e) {
-            System.out.println(e.getMessage());
+            log.error(e.getMessage(), e);
             return new SimpleImmutableEntry<>("", "");
         }
     }

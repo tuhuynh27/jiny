@@ -6,6 +6,7 @@ import com.jinyframework.core.RequestBinderBase.RequestTransformer;
 import com.jinyframework.core.utils.ParserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
 import java.io.BufferedReader;
@@ -15,6 +16,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
+@Slf4j
 @RequiredArgsConstructor
 public final class RequestPipeline implements Runnable {
     private final Socket socket;
@@ -47,6 +49,9 @@ public final class RequestPipeline implements Runnable {
         while (in.ready()) {
             body.append((char) in.read());
         }
+
+        // Log incoming requests
+        log.info(String.valueOf(requestStringArr));
 
         val requestContext = ParserUtils.parseRequest(requestStringArr.toArray(new String[0]),
                 body.toString());

@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.concurrent.ThreadFactory;
 
 public final class ServerThreadFactory implements ThreadFactory {
-    private int counter;
     private final String name;
     private final List<String> stats;
+    private int counter;
 
     public ServerThreadFactory(String name) {
         counter = 1;

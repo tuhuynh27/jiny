@@ -1,10 +1,12 @@
 package com.jinyframework;
 
+import com.jinyframework.core.HttpRouterBase;
 import com.jinyframework.core.RequestBinderBase.Handler;
 import com.jinyframework.core.RequestBinderBase.RequestTransformer;
-import com.jinyframework.core.HttpRouterBase;
 import com.jinyframework.core.ServerThreadFactory;
 import com.jinyframework.core.bio.RequestPipeline;
+import com.jinyframework.core.utils.Intro;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
 import java.io.IOException;
@@ -14,6 +16,7 @@ import java.net.ServerSocket;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+@Slf4j
 public final class HttpServer extends HttpRouterBase<Handler> {
     private final int serverPort;
     private final Executor executor = Executors.newCachedThreadPool(
@@ -35,10 +38,11 @@ public final class HttpServer extends HttpRouterBase<Handler> {
     }
 
     public void start() throws IOException {
+        Intro.begin();
         serverSocket = new ServerSocket();
         serverSocket.setReuseAddress(true);
         serverSocket.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), serverPort));
-        System.out.println("Started HTTP Server on port " + serverPort);
+        log.info("Started Jiny HTTP Server on port " + serverPort);
 
         while (!serverSocket.isClosed()) {
             val socket = serverSocket.accept();
@@ -49,7 +53,8 @@ public final class HttpServer extends HttpRouterBase<Handler> {
     public void stop() throws IOException {
         if (!serverSocket.isClosed()) {
             serverSocket.close();
-            System.out.println("Stopped HTTP Server on port " + serverPort);
+
+            log.info("Stopped Jiny HTTP Server on port " + serverPort);
         }
     }
 }

@@ -3,6 +3,7 @@ package com.jinyframework.core.bio;
 import com.jinyframework.core.RequestBinderBase;
 import com.jinyframework.core.RequestBinderBase.Handler;
 import com.jinyframework.core.utils.ParserUtils.HttpMethod;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import lombok.var;
 
@@ -11,6 +12,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Slf4j
 public final class RequestBinder extends RequestBinderBase<Handler> {
     public RequestBinder(final RequestContext requestContext,
                          final ArrayList<HandlerMetadata<Handler>> middlewares,
@@ -53,7 +55,7 @@ public final class RequestBinder extends RequestBinderBase<Handler> {
                         }
                     }
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                    log.error(e.getMessage(), e);
                     return HttpResponse.of(e.getMessage()).status(500);
                 }
             }

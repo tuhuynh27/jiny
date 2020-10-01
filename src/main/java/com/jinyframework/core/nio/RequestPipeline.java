@@ -6,6 +6,7 @@ import com.jinyframework.core.RequestBinderBase.RequestTransformer;
 import com.jinyframework.core.utils.ParserUtils;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import lombok.var;
 
@@ -15,6 +16,7 @@ import java.nio.channels.CompletionHandler;
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
+@Slf4j
 public class RequestPipeline {
     private final AsynchronousSocketChannel clientSocketChannel;
     private final ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
@@ -39,12 +41,10 @@ public class RequestPipeline {
                 try {
                     write(msg);
                 } catch (Exception e) {
-                    e.getStackTrace();
+                    log.error(e.getMessage(), e);
                 }
             });
             byteBuffer.clear();
-        } else {
-            System.out.println("DCM");
         }
     }
 
@@ -60,8 +60,8 @@ public class RequestPipeline {
             }
 
             @Override
-            public void failed(Throwable exc, Object attachment) {
-                System.out.println(exc.getMessage());
+            public void failed(Throwable e, Object attachment) {
+                log.error(e.getMessage(), e);
             }
         });
 
@@ -75,6 +75,8 @@ public class RequestPipeline {
         if (requestParts.length > 0) {
             req = requestParts[0].trim().split("\n");
             body = requestParts.length == 2 ? requestParts[1].trim() : "";
+
+            // TODO: Log incoming requests
 
             val requestContext = ParserUtils.parseRequest(req, body);
             val responseObject = new RequestBinderNIO(requestContext, middlewares, handlers)
@@ -93,8 +95,8 @@ public class RequestPipeline {
 
                             @SneakyThrows
                             @Override
-                            public void failed(Throwable exc, Object attachment) {
-                                System.out.println(exc.getMessage());
+                            public void failed(Throwable e, Object attachment) {
+                                log.error(e.getMessage(), e);
                             }
                         });
             });

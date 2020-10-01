@@ -1,11 +1,13 @@
 package com.jinyframework;
 
+import com.jinyframework.core.HttpRouterBase;
 import com.jinyframework.core.RequestBinderBase.HandlerNIO;
 import com.jinyframework.core.RequestBinderBase.RequestTransformer;
-import com.jinyframework.core.HttpRouterBase;
 import com.jinyframework.core.ServerThreadFactory;
 import com.jinyframework.core.nio.RequestPipeline;
+import com.jinyframework.core.utils.Intro;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
 import java.io.IOException;
@@ -18,6 +20,7 @@ import java.nio.channels.CompletionHandler;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
+@Slf4j
 public final class NIOHttpServer extends HttpRouterBase<HandlerNIO> {
     private final int serverPort;
     private AsynchronousServerSocketChannel serverSocketChannel;
@@ -37,11 +40,12 @@ public final class NIOHttpServer extends HttpRouterBase<HandlerNIO> {
     }
 
     public void start() throws IOException, InterruptedException, ExecutionException, TimeoutException {
+        Intro.begin();
         val group = AsynchronousChannelGroup.withFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2,
                 new ServerThreadFactory("event-loop"));
         serverSocketChannel = AsynchronousServerSocketChannel.open(group);
         serverSocketChannel.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), serverPort));
-        System.out.println("Started NIO HTTP Server on port " + serverPort);
+        log.info("Started NIO HTTP Server on port " + serverPort);
         serverSocketChannel.accept(null, new CompletionHandler<AsynchronousSocketChannel, Object>() {
             @SneakyThrows
             @Override
@@ -51,8 +55,8 @@ public final class NIOHttpServer extends HttpRouterBase<HandlerNIO> {
             }
 
             @Override
-            public void failed(Throwable exc, Object attachment) {
-                System.out.println(exc.getMessage());
+            public void failed(Throwable e, Object attachment) {
+                log.error(e.getMessage(), e);
             }
         });
     }
@@ -60,7 +64,7 @@ public final class NIOHttpServer extends HttpRouterBase<HandlerNIO> {
     public void stop() throws IOException {
         if (serverSocketChannel.isOpen()) {
             serverSocketChannel.close();
-            System.out.println("Stopped HTTP Server on port " + serverPort);
+            log.info("Stopped Jiny HTTP Server on port " + serverPort);
         }
     }
 }

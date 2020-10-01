@@ -1,8 +1,9 @@
 package com.jinyframework;
 
-import com.jinyframework.core.utils.ParserUtils;
 import com.jinyframework.core.ServerThreadFactory;
+import com.jinyframework.core.utils.ParserUtils;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.util.HashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+@Slf4j
 @RequiredArgsConstructor
 public final class Proxy {
     private final int proxyPort;
@@ -32,6 +34,7 @@ public final class Proxy {
 
     public void start() throws IOException {
         val serverSocket = new ServerSocket(proxyPort);
+        log.info("Started Jiny HTTP Server on port " + proxyPort);
         while (!Thread.interrupted()) {
             val clientSocket = serverSocket.accept();
             executor.execute(new ProxyHandler(clientSocket));

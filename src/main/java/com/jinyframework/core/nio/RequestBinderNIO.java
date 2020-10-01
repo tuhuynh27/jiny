@@ -3,6 +3,7 @@ package com.jinyframework.core.nio;
 import com.jinyframework.core.RequestBinderBase;
 import com.jinyframework.core.RequestBinderBase.HandlerNIO;
 import com.jinyframework.core.utils.ParserUtils.HttpMethod;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import lombok.var;
 
@@ -13,6 +14,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Slf4j
 public final class RequestBinderNIO extends RequestBinderBase<HandlerNIO> {
     private final CompletableFuture<HttpResponse> isDone = new CompletableFuture<>();
 
@@ -58,7 +60,7 @@ public final class RequestBinderNIO extends RequestBinderBase<HandlerNIO> {
             try {
                 handlerQueue.removeFirst().handleFunc(requestContext).thenAccept(isDone::complete);
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                log.error(e.getMessage(), e);
                 isDone.complete(HttpResponse.of(e.getMessage()).status(500));
             }
         } else {
@@ -68,7 +70,7 @@ public final class RequestBinderNIO extends RequestBinderBase<HandlerNIO> {
                         try {
                             resolvePromiseChain(handlerQueue);
                         } catch (Exception e) {
-                            System.out.println(e.getMessage());
+                            log.error(e.getMessage(), e);
                             isDone.complete(HttpResponse.of(e.getMessage()).status(500));
                         }
                     } else {
@@ -76,7 +78,7 @@ public final class RequestBinderNIO extends RequestBinderBase<HandlerNIO> {
                     }
                 });
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                log.error(e.getMessage(), e);
                 isDone.complete(HttpResponse.of(e.getMessage()).status(500));
             }
         }
