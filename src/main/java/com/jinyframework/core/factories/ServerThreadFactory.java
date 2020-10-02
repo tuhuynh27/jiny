@@ -26,7 +26,6 @@ public final class ServerThreadFactory implements ThreadFactory {
         val info = String.format("Created thread %d with name %s on %d \n", t.getId(), t.getName(),
                 System.currentTimeMillis() / 1000L);
         stats.add(info);
-        log.info(info);
         return t;
     }
 

@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 @DisplayName("api.NIOHttpServerTest")
 public class NIOHTTPServerTest extends HTTPTest {
     private static final NIOHttpServer server = NIOHttpServer.port(1235);
+
     public NIOHTTPServerTest() {
         this.url = "http://localhost:1235";
     }

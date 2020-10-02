@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 @DisplayName("api.HttpServerTest")
 public class HTTPServerTest extends HTTPTest {
     private static final HttpServer server = HttpServer.port(1234);
+
     public HTTPServerTest() {
         this.url = "http://localhost:1234";
     }
