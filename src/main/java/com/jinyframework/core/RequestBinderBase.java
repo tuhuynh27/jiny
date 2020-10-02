@@ -4,17 +4,17 @@ import com.jinyframework.core.RequestBinderBase.HandlerBase;
 import com.jinyframework.core.utils.ParserUtils.HttpMethod;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public abstract class RequestBinderBase<T extends HandlerBase> {
     protected final RequestContext requestContext;
-    protected final ArrayList<HandlerMetadata<T>> middlewares;
-    protected final ArrayList<HandlerMetadata<T>> handlerMetadata;
+    protected final List<HandlerMetadata<T>> middlewares;
+    protected final List<HandlerMetadata<T>> handlerMetadata;
 
     protected BinderInitObject binderInit(@NonNull final HandlerMetadata<?> h) {
         val indexOfQuestionMark = requestContext.getPath().indexOf('?');
@@ -98,11 +98,11 @@ public abstract class RequestBinderBase<T extends HandlerBase> {
     public static final class RequestContext {
         private final HttpMethod method;
         private final String path;
-        private final HashMap<String, String> header;
+        private final Map<String, String> header;
         private final String body;
-        private final HashMap<String, String> query;
-        private final HashMap<String, String> param;
-        private final HashMap<String, String> data;
+        private final Map<String, String> query;
+        private final Map<String, String> param;
+        private final Map<String, String> data;
 
         public String headerParam(@NonNull final String name) {
             return header.get(name) != null ? header.get(name) : "";

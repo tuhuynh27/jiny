@@ -14,6 +14,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -23,7 +24,7 @@ public final class HttpProxy {
     private final int proxyPort;
     private final Executor executor = Executors.newSingleThreadExecutor(
             new ServerThreadFactory("proxy-processor"));
-    private final HashMap<String, String> endpointMap = new HashMap<>();
+    private final Map<String, String> endpointMap = new HashMap<>();
 
     public static HttpProxy port(final int proxyPort) {
         return new HttpProxy(proxyPort);

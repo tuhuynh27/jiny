@@ -16,13 +16,14 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
 public final class RequestPipeline implements RequestPipelineBase, Runnable {
     private final Socket socket;
-    private final ArrayList<HandlerMetadata<Handler>> middlewares;
-    private final ArrayList<HandlerMetadata<Handler>> handlers;
+    private final List<HandlerMetadata<Handler>> middlewares;
+    private final List<HandlerMetadata<Handler>> handlers;
     private final RequestTransformer transformer;
 
     @SneakyThrows

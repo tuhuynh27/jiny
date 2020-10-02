@@ -7,9 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import lombok.var;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -19,8 +19,8 @@ public final class RequestBinderNIO extends RequestBinderBase<HandlerNIO> {
     private final CompletableFuture<HttpResponse> isDone = new CompletableFuture<>();
 
     public RequestBinderNIO(RequestContext requestContext,
-                            final ArrayList<HandlerMetadata<HandlerNIO>> middlewares,
-                            final ArrayList<HandlerMetadata<HandlerNIO>> handlerMetadata) {
+                            final List<HandlerMetadata<HandlerNIO>> middlewares,
+                            final List<HandlerMetadata<HandlerNIO>> handlerMetadata) {
         super(requestContext, middlewares, handlerMetadata);
     }
 

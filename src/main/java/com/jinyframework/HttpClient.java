@@ -13,14 +13,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Builder
 public final class HttpClient {
     private final String url;
     private final String method;
-    private final HashMap<String, String> headers;
+    private final Map<String, String> headers;
     private final String body;
 
     public ResponseObject perform() throws IOException {

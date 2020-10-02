@@ -9,12 +9,13 @@ import lombok.NonNull;
 import lombok.val;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
 public abstract class HttpRouterBase<T extends HandlerBase> {
-    protected final ArrayList<HandlerMetadata<T>> handlers = new ArrayList<>();
-    protected final ArrayList<HandlerMetadata<T>> middlewares = new ArrayList<>();
+    protected final List<HandlerMetadata<T>> handlers = new ArrayList<>();
+    protected final List<HandlerMetadata<T>> middlewares = new ArrayList<>();
     protected RequestTransformer transformer = Object::toString;
 
     public void setupResponseTransformer(RequestTransformer transformer) {

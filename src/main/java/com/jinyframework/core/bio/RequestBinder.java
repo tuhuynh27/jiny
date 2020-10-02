@@ -7,16 +7,16 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import lombok.var;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Slf4j
 public final class RequestBinder extends RequestBinderBase<Handler> {
     public RequestBinder(final RequestContext requestContext,
-                         final ArrayList<HandlerMetadata<Handler>> middlewares,
-                         final ArrayList<HandlerMetadata<Handler>> handlerMetadata) {
+                         final List<HandlerMetadata<Handler>> middlewares,
+                         final List<HandlerMetadata<Handler>> handlerMetadata) {
         super(requestContext, middlewares, handlerMetadata);
     }
 

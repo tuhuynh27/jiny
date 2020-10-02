@@ -13,6 +13,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 @Slf4j
@@ -81,7 +82,7 @@ public final class ParserUtils {
                 + transformer.render(httpResponse.getResponseObject()) + '\n';
     }
 
-    public HashMap<String, String> splitQuery(final String url) {
+    public Map<String, String> splitQuery(final String url) {
         if (url == null || url.isEmpty()) {
             return new HashMap<>();
         }

@@ -14,21 +14,21 @@ import lombok.var;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 public final class RequestPipelineNIO implements RequestPipelineBase {
     private final AsynchronousSocketChannel clientSocketChannel;
     private final ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
-    private final ArrayList<HandlerMetadata<HandlerNIO>> middlewares;
-    private final ArrayList<HandlerMetadata<HandlerNIO>> handlers;
+    private final List<HandlerMetadata<HandlerNIO>> middlewares;
+    private final List<HandlerMetadata<HandlerNIO>> handlers;
 
     private final RequestTransformer transformer;
 
     public RequestPipelineNIO(final AsynchronousSocketChannel clientSocketChannel,
-                              final ArrayList<HandlerMetadata<HandlerNIO>> middlewares,
-                              final ArrayList<HandlerMetadata<HandlerNIO>> handlers,
+                              final List<HandlerMetadata<HandlerNIO>> middlewares,
+                              final List<HandlerMetadata<HandlerNIO>> handlers,
                               final RequestTransformer transformer) {
         this.clientSocketChannel = clientSocketChannel;
         this.middlewares = middlewares;
