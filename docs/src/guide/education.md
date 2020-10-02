@@ -72,7 +72,7 @@ Jiny’s documentation is example-based rather than technical, which allows new 
 Jiny standard mode is designed to be simple and blocking, as this is the easiest programming model to reason about. However, you can still switch to use with Future, ComplatableFuture or Reactive Programming since Jiny also support asynchronous mode out-of-the-box.
 
 :::tip What is Async Mode?
-[See NIO APIs](http://localhost:8080/guide/nio-apis)
+[See NIO APIs](https://jinyframework.com/guide/nio-apis/)
 :::
 
 ## Interoperable

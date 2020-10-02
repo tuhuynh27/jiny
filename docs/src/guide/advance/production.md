@@ -33,4 +33,17 @@ shadowJar {
 
 ## Health Checks and Graceful Shutdown
 
+Add shutdown hook
+
+```java
+Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                server.stop();
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+            }
+        }));
+        log.info("Added shutdown hook");
+```
+
 (WIP)

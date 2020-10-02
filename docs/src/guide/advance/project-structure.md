@@ -6,7 +6,7 @@ Suggested project structure for project using Jiny framework
 
 ```java
 class WebhookHandler {
-    private HashMap<String, String> teachDict;
+    private Map<String, String> teachDict;
     
     public WebhookHandler() throws IOException {
         val data = read(); // Read data from persistence disk
