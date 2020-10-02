@@ -165,7 +165,7 @@ public abstract class HTTPTest {
         // No sleep
 
         if (isCI) {
-            TimeUnit.MILLISECONDS.sleep(500);
+            TimeUnit.MILLISECONDS.sleep(1000);
         }
     }
 }
