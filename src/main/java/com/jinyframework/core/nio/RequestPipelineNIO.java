@@ -5,12 +5,9 @@ import com.jinyframework.core.RequestBinderBase.HandlerNIO;
 import com.jinyframework.core.RequestBinderBase.RequestTransformer;
 import com.jinyframework.core.RequestPipelineBase;
 import com.jinyframework.core.utils.ParserUtils;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
+import lombok.*;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
-import lombok.var;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
@@ -43,7 +40,7 @@ public final class RequestPipelineNIO implements RequestPipelineBase {
     }
 
     private CompletableFuture<String> read() {
-        CompletableFuture<String> promise = new CompletableFuture<>();
+        val promise = new CompletableFuture<String>();
 
         clientSocketChannel.read(byteBuffer, null, new CompletionHandler<Integer, Object>() {
             @Override
@@ -55,6 +52,7 @@ public final class RequestPipelineNIO implements RequestPipelineBase {
 
             @Override
             public void failed(Throwable e, Object attachment) {
+                promise.completeExceptionally(e);
                 log.error(e.getMessage(), e);
             }
         });
@@ -62,13 +60,11 @@ public final class RequestPipelineNIO implements RequestPipelineBase {
         return promise;
     }
 
-    private void write(final String msg) throws Exception {
-        String[] req;
-        var body = "";
+    private void write(@NonNull final String msg) throws Exception {
         val requestParts = msg.split("\n\r");
         if (requestParts.length > 0) {
-            req = requestParts[0].trim().split("\n");
-            body = requestParts.length == 2 ? requestParts[1].trim() : "";
+            val req = requestParts[0].trim().split("\n");
+            val body = requestParts.length == 2 ? requestParts[1].trim() : "";
 
             // TODO: Log incoming requests
 
@@ -90,6 +86,7 @@ public final class RequestPipelineNIO implements RequestPipelineBase {
                             @SneakyThrows
                             @Override
                             public void failed(Throwable e, Object attachment) {
+                                clientSocketChannel.close();
                                 log.error(e.getMessage(), e);
                             }
                         });

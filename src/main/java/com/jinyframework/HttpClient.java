@@ -28,8 +28,8 @@ public final class HttpClient {
         conn.setRequestProperty("Accept", "application/json");
         if (headers != null) {
             for (val header : headers.entrySet()) {
-                String key = header.getKey();
-                String value = header.getValue();
+                val key = header.getKey();
+                val value = header.getValue();
                 if (key != null && value != null) {
                     conn.setRequestProperty(key, value);
                 }
@@ -39,7 +39,7 @@ public final class HttpClient {
         if (body != null && !body.isEmpty()) {
             conn.setDoOutput(true);
             @Cleanup OutputStream os = conn.getOutputStream();
-            byte[] input = body.getBytes(StandardCharsets.UTF_8);
+            val input = body.getBytes(StandardCharsets.UTF_8);
             os.write(input, 0, input.length);
             os.flush();
         }
@@ -50,7 +50,7 @@ public final class HttpClient {
         @Cleanup val in = new BufferedReader(
                 new InputStreamReader(!isError ? conn.getInputStream() : conn.getErrorStream()));
         val responseStringArr = new ArrayList<String>();
-        String decodedString;
+        var decodedString = "";
         while ((decodedString = in.readLine()) != null) {
             responseStringArr.add(decodedString);
         }
