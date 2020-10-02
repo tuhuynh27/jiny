@@ -103,7 +103,7 @@ test {
     testLogging {
         events "passed", "skipped", "failed"
         outputs.upToDateWhen { false }
-        showStandardStreams = false
+        showStandardStreams = true
     }
 }
 
