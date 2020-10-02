@@ -25,5 +25,5 @@ asyncCall(result -> {
     async.reject(err);
 });
 
-return async.submit() // Return the CompletableFuture object
+return async.submit(); // Return the CompletableFuture object
 ```
