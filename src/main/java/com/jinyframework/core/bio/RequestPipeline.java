@@ -45,8 +45,8 @@ public final class RequestPipeline implements RequestPipelineBase, Runnable {
         // Log incoming requests
         log.info(String.valueOf(requestStringArr));
 
-        val requestContext = ParserUtils.parseRequest(requestStringArr.toArray(new String[0]),
-                body.toString());
+        val requestContext = ParserUtils
+                .parseRequest(requestStringArr.toArray(new String[0]), body.toString());
 
         val responseObject = new RequestBinder(requestContext, middlewares, handlers).getResponseObject();
         val responseString = ParserUtils.parseResponse(responseObject, transformer);

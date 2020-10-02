@@ -14,6 +14,7 @@ import java.net.URLDecoder;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 @Slf4j
@@ -117,7 +118,7 @@ public final class ParserUtils {
         }
     }
 
-    private SimpleImmutableEntry<String, String> splitQueryParameter(@NonNull String it) {
+    private Entry<String, String> splitQueryParameter(@NonNull String it) {
         val idx = it.indexOf('=');
         val key = idx > 0 ? it.substring(0, idx) : it;
         val value = idx > 0 && it.length() > idx + 1 ? it.substring(idx + 1) : "";

@@ -2,6 +2,7 @@ package com.jinyframework.core.nio;
 
 import com.jinyframework.core.RequestBinderBase.HttpResponse;
 import lombok.Getter;
+import lombok.val;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -15,7 +16,7 @@ public final class AsyncHelper {
     }
 
     public static AsyncHelper make() {
-        CompletableFuture<HttpResponse> completableFuture = new CompletableFuture<>();
+        val completableFuture = new CompletableFuture<HttpResponse>();
         return new AsyncHelper(completableFuture);
     }
 

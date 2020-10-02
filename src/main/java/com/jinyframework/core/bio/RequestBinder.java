@@ -42,7 +42,7 @@ public final class RequestBinder extends RequestBinderBase<Handler> {
                             .collect(Collectors.toList());
 
                     val size = handlersAndMiddlewares.size();
-                    for (int i = 0; i < size; i++) {
+                    for (var i = 0; i < size; i++) {
                         val isLastItem = (i == size - 1);
                         val resultFromPreviousHandler = handlersAndMiddlewares.get(i).handleFunc(
                                 requestContext);
