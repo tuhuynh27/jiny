@@ -2,9 +2,8 @@ package com.jinyframework;
 
 import com.jinyframework.core.HttpRouterBase;
 import com.jinyframework.core.RequestBinderBase.HandlerNIO;
-import com.jinyframework.core.RequestBinderBase.RequestTransformer;
 import com.jinyframework.core.factories.ServerThreadFactory;
-import com.jinyframework.core.nio.RequestPipeline;
+import com.jinyframework.core.nio.RequestPipelineNIO;
 import com.jinyframework.core.utils.Intro;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -17,15 +16,11 @@ import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 @Slf4j
 public final class NIOHttpServer extends HttpRouterBase<HandlerNIO> {
     private final int serverPort;
     private AsynchronousServerSocketChannel serverSocketChannel;
-
-    private RequestTransformer transformer = Object::toString;
 
     private NIOHttpServer(final int serverPort) {
         this.serverPort = serverPort;
@@ -35,11 +30,7 @@ public final class NIOHttpServer extends HttpRouterBase<HandlerNIO> {
         return new NIOHttpServer(serverPort);
     }
 
-    public void setupResponseTransformer(RequestTransformer transformer) {
-        this.transformer = transformer;
-    }
-
-    public void start() throws IOException, InterruptedException, ExecutionException, TimeoutException {
+    public void start() throws IOException {
         Intro.begin();
         val group = AsynchronousChannelGroup.withFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2,
                 new ServerThreadFactory("event-loop"));
@@ -51,7 +42,7 @@ public final class NIOHttpServer extends HttpRouterBase<HandlerNIO> {
             @Override
             public void completed(AsynchronousSocketChannel clientSocketChannel, Object attachment) {
                 serverSocketChannel.accept(null, this);
-                new RequestPipeline(clientSocketChannel, middlewares, handlers, transformer).run();
+                new RequestPipelineNIO(clientSocketChannel, middlewares, handlers, transformer).run();
             }
 
             @Override

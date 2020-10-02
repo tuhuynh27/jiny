@@ -8,14 +8,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("api.ProxyTest")
-public class ProxyTest {
+@DisplayName("api.HttpProxyTest")
+public class HttpProxyTest {
     static final String url = "http://localhost:8000";
 
     @BeforeAll
@@ -35,12 +33,12 @@ public class ProxyTest {
         new Thread(() -> {
             try {
                 serverNIO.start();
-            } catch (IOException | InterruptedException | ExecutionException | TimeoutException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }).start();
 
-        val proxy = Proxy.port(8000);
+        val proxy = HttpProxy.port(8000);
         proxy.use("/bio", "localhost:1111");
         proxy.use("/nio", "localhost:2222");
         new Thread(() -> {

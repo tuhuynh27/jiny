@@ -19,14 +19,14 @@ import java.util.concurrent.Executors;
 
 @Slf4j
 @RequiredArgsConstructor
-public final class Proxy {
+public final class HttpProxy {
     private final int proxyPort;
     private final Executor executor = Executors.newSingleThreadExecutor(
             new ServerThreadFactory("proxy-processor"));
     private final HashMap<String, String> endpointMap = new HashMap<>();
 
-    public static Proxy port(final int proxyPort) {
-        return new Proxy(proxyPort);
+    public static HttpProxy port(final int proxyPort) {
+        return new HttpProxy(proxyPort);
     }
 
     public void use(@NonNull final String path, @NonNull final String endpoint) {
@@ -117,7 +117,7 @@ public final class Proxy {
                 log.error(e.getMessage(), e);
                 if (!clientSocket.isClosed()) {
                     val clientOut = new PrintWriter(clientSocket.getOutputStream(), false);
-                    clientOut.write("HTTP/1.1 500 Internal Server Error\n\nProxy Error: " + e.getMessage() + "\n");
+                    clientOut.write("HTTP/1.1 500 Internal Server Error\n\nHttpProxy Error: " + e.getMessage() + "\n");
                     clientOut.flush();
                 }
             } finally {

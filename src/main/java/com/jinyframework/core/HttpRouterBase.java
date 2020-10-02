@@ -2,6 +2,7 @@ package com.jinyframework.core;
 
 import com.jinyframework.core.RequestBinderBase.HandlerBase;
 import com.jinyframework.core.RequestBinderBase.HandlerMetadata;
+import com.jinyframework.core.RequestBinderBase.RequestTransformer;
 import com.jinyframework.core.utils.ParserUtils.HttpMethod;
 import lombok.Getter;
 import lombok.NonNull;
@@ -14,6 +15,11 @@ import java.util.stream.Collectors;
 public abstract class HttpRouterBase<T extends HandlerBase> {
     protected final ArrayList<HandlerMetadata<T>> handlers = new ArrayList<>();
     protected final ArrayList<HandlerMetadata<T>> middlewares = new ArrayList<>();
+    protected RequestTransformer transformer = Object::toString;
+
+    public void setupResponseTransformer(RequestTransformer transformer) {
+        this.transformer = transformer;
+    }
 
     public final void use(@NonNull final String path, @NonNull final HttpRouterBase<T> router) {
         val refactoredMiddlewares = router.getMiddlewares().stream().peek(e -> {

@@ -1,6 +1,6 @@
 package com.jinyframework.core.utils;
 
-public class Intro {
+public final class Intro {
     private static Intro instance;
 
     private Intro() {

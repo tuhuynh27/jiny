@@ -62,7 +62,9 @@ public final class HttpClient {
             sb.append(s);
         }
 
-        return ResponseObject.builder().status(responseStatus).body(sb.toString()).build();
+        return ResponseObject.builder()
+                .status(responseStatus)
+                .body(sb.toString()).build();
     }
 
     @Builder

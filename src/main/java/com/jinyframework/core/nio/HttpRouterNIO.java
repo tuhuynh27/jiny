@@ -5,5 +5,5 @@ import com.jinyframework.core.RequestBinderBase.HandlerNIO;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public class HttpRouterNIO extends HttpRouterBase<HandlerNIO> {
+public final class HttpRouterNIO extends HttpRouterBase<HandlerNIO> {
 }

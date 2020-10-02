@@ -7,9 +7,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 @DisplayName("api.NIOHttpServerTest")
 public class NIOHTTPServerTest extends HTTPTest {
@@ -71,7 +69,7 @@ public class NIOHTTPServerTest extends HTTPTest {
 
             try {
                 server.start();
-            } catch (IOException | InterruptedException | ExecutionException | TimeoutException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }).start();
