@@ -21,22 +21,22 @@ public class NIOHTTPServerTest extends HTTPTest {
             val server = NIOHttpServer.port(1235);
 
             server.use(ctx -> {
-                ctx.getData().put("global", "middleware");
+                ctx.setDataParam("global", "middleware");
                 return HttpResponse.nextAsync();
             });
 
             server.get("/", ctx -> HttpResponse.ofAsync("Hello World"));
             server.post("/transform", ctx -> HttpResponse.ofAsync(ctx.getBody(), s -> s + "ed"));
-            server.get("/gm", ctx -> HttpResponse.ofAsync(ctx.getData().get("global")));
-            server.get("/gm-sub", ctx -> HttpResponse.ofAsync(ctx.getData().get("att")));
+            server.get("/gm", ctx -> HttpResponse.ofAsync(ctx.dataParam("global")));
+            server.get("/gm-sub", ctx -> HttpResponse.ofAsync(ctx.dataParam("att")));
             server.post("/echo", ctx -> HttpResponse.ofAsync(ctx.getBody()));
             server.get("/query", ctx -> {
-                val world = ctx.getQuery().get("hello");
+                val world = ctx.queryParam("hello");
                 return HttpResponse.ofAsync(world);
             });
             server.get("/path/:foo/:bar", ctx -> {
-                val foo = ctx.getParam().get("foo");
-                val bar = ctx.getParam().get("bar");
+                val foo = ctx.pathParam("foo");
+                val bar = ctx.pathParam("bar");
                 return HttpResponse.ofAsync(foo + ":" + bar);
             });
             server.get("/all/**", ctx -> HttpResponse.ofAsync(ctx.getPath()));
@@ -58,13 +58,13 @@ public class NIOHTTPServerTest extends HTTPTest {
 
             val catRouter = new HttpRouterNIO();
             catRouter.use(ctx -> {
-                ctx.getData().put("att", "cat");
+                ctx.setDataParam("att", "cat");
                 return HttpResponse.nextAsync();
             });
             catRouter.get("/", ctx -> HttpResponse.ofAsync("this is a cat"));
-            catRouter.get("/gm", ctx -> HttpResponse.ofAsync(ctx.getData().get("att")));
-            catRouter.post("/test", ctx -> HttpResponse.ofAsync("ok"));
-            catRouter.get("/:foo/:bar", ctx -> HttpResponse.ofAsync(ctx.getParam().get("foo") + ":" + ctx.getParam().get("bar")));
+            catRouter.get("/gm", ctx -> HttpResponse.ofAsync(ctx.dataParam("att")));
+            catRouter.post("/test", ctx -> HttpResponse.ofAsync(ctx.getBody()));
+            catRouter.get("/:foo/:bar", ctx -> HttpResponse.ofAsync(ctx.pathParam("foo") + ":" + ctx.pathParam("bar")));
             server.use("/cat", catRouter);
 
             try {

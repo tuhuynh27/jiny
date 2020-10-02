@@ -5,6 +5,7 @@ import com.jinyframework.core.RequestBinderBase.HandlerNIO;
 import com.jinyframework.core.RequestBinderBase.RequestTransformer;
 import com.jinyframework.core.RequestPipelineBase;
 import com.jinyframework.core.utils.ParserUtils;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
+@RequiredArgsConstructor
 public final class RequestPipelineNIO implements RequestPipelineBase {
     private final AsynchronousSocketChannel clientSocketChannel;
     private final ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
@@ -25,16 +27,6 @@ public final class RequestPipelineNIO implements RequestPipelineBase {
     private final List<HandlerMetadata<HandlerNIO>> handlers;
 
     private final RequestTransformer transformer;
-
-    public RequestPipelineNIO(final AsynchronousSocketChannel clientSocketChannel,
-                              final List<HandlerMetadata<HandlerNIO>> middlewares,
-                              final List<HandlerMetadata<HandlerNIO>> handlers,
-                              final RequestTransformer transformer) {
-        this.clientSocketChannel = clientSocketChannel;
-        this.middlewares = middlewares;
-        this.handlers = handlers;
-        this.transformer = transformer;
-    }
 
     @Override
     public void run() {

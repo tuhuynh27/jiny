@@ -1,9 +1,6 @@
 package com.jinyframework;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.val;
+import lombok.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -39,28 +36,29 @@ public final class HttpClient {
 
         if (body != null && !body.isEmpty()) {
             conn.setDoOutput(true);
-            try (OutputStream os = conn.getOutputStream()) {
-                byte[] input = body.getBytes(StandardCharsets.UTF_8);
-                os.write(input, 0, input.length);
-            }
+            @Cleanup OutputStream os = conn.getOutputStream();
+            byte[] input = body.getBytes(StandardCharsets.UTF_8);
+            os.write(input, 0, input.length);
+            os.flush();
         }
 
         val responseStatus = conn.getResponseCode();
         val isError = responseStatus >= 400;
 
-        val in = new BufferedReader(
+        @Cleanup val in = new BufferedReader(
                 new InputStreamReader(!isError ? conn.getInputStream() : conn.getErrorStream()));
         val responseStringArr = new ArrayList<String>();
         String decodedString;
         while ((decodedString = in.readLine()) != null) {
             responseStringArr.add(decodedString);
         }
-        in.close();
 
         val sb = new StringBuilder();
         for (val s : responseStringArr) {
             sb.append(s);
         }
+
+        conn.disconnect();
 
         return ResponseObject.builder()
                 .status(responseStatus)

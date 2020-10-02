@@ -116,9 +116,9 @@ public abstract class HTTPTest {
     @DisplayName("Global Middleware not from subRouter")
     void globalMiddlewareNotFromSubRouter() throws IOException {
         val res = HttpClient.builder()
-                .url(url + "/gm").method("GET")
+                .url(url + "/gm-sub").method("GET")
                 .build().perform();
-        assertEquals(res.getBody(), "middleware");
+        assertEquals(res.getBody(), "");
     }
 
     @Test
@@ -135,8 +135,9 @@ public abstract class HTTPTest {
     void subRouter2() throws IOException {
         val res = HttpClient.builder()
                 .url(url + "/cat/test").method("POST")
+                .body("catTest")
                 .build().perform();
-        assertEquals(res.getBody(), "ok");
+        assertEquals(res.getBody(), "catTest");
     }
 
     @Test
@@ -162,7 +163,7 @@ public abstract class HTTPTest {
         if (isCI) {
             TimeUnit.SECONDS.sleep(1);
         } else {
-            TimeUnit.MILLISECONDS.sleep(200);
+            TimeUnit.MILLISECONDS.sleep(100);
         }
     }
 }

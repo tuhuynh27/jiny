@@ -113,7 +113,7 @@ public abstract class RequestBinderBase<T extends HandlerBase> {
         }
 
         public String queryParam(@NonNull final String name) {
-            return query.get(name) != null ? param.get(name) : "";
+            return query.get(name) != null ? query.get(name) : "";
         }
 
         public String dataParam(@NonNull final String name) {
