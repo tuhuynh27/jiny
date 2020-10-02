@@ -5,11 +5,8 @@ import com.jinyframework.core.RequestBinderBase.HandlerMetadata;
 import com.jinyframework.core.RequestBinderBase.RequestTransformer;
 import com.jinyframework.core.RequestPipelineBase;
 import com.jinyframework.core.utils.ParserUtils;
-import lombok.Cleanup;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -33,7 +30,7 @@ public final class RequestPipeline implements RequestPipelineBase, Runnable {
         @Cleanup val out = new PrintWriter(socket.getOutputStream(), false);
 
         val requestStringArr = new ArrayList<String>();
-        String inputLine;
+        var inputLine = "";
         while (!(inputLine = in.readLine()).isEmpty()) {
             requestStringArr.add(inputLine);
         }

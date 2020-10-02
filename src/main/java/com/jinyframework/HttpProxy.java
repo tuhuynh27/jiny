@@ -105,6 +105,7 @@ public final class HttpProxy {
                     while (-1 != (bytesRead = serverIn.read(reply))) {
                         clientOut.write(reply, 0, bytesRead);
                     }
+                    clientOut.flush();
 
                     serverSocket.close();
                 }
