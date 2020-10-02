@@ -3,14 +3,15 @@ package com.jinyframework.core.bio;
 import com.jinyframework.core.RequestBinderBase.Handler;
 import com.jinyframework.core.RequestBinderBase.HandlerMetadata;
 import com.jinyframework.core.RequestBinderBase.RequestTransformer;
+import com.jinyframework.core.RequestPipelineBase;
 import com.jinyframework.core.utils.ParserUtils;
+import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -18,28 +19,18 @@ import java.util.ArrayList;
 
 @Slf4j
 @RequiredArgsConstructor
-public final class RequestPipeline implements Runnable {
+public final class RequestPipeline implements RequestPipelineBase, Runnable {
     private final Socket socket;
     private final ArrayList<HandlerMetadata<Handler>> middlewares;
     private final ArrayList<HandlerMetadata<Handler>> handlers;
     private final RequestTransformer transformer;
-    private BufferedReader in;
-    private PrintWriter out;
 
     @SneakyThrows
     @Override
     public void run() {
-        init();
-        process();
-        clean();
-    }
+        @Cleanup val in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        @Cleanup val out = new PrintWriter(socket.getOutputStream(), false);
 
-    private void init() throws IOException {
-        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        out = new PrintWriter(socket.getOutputStream(), false);
-    }
-
-    private void process() throws IOException {
         val requestStringArr = new ArrayList<String>();
         String inputLine;
         while (!(inputLine = in.readLine()).isEmpty()) {
@@ -60,9 +51,7 @@ public final class RequestPipeline implements Runnable {
         val responseString = ParserUtils.parseResponse(responseObject, transformer);
 
         out.write(responseString);
-    }
 
-    public void clean() throws IOException {
         out.flush();
         socket.close();
     }

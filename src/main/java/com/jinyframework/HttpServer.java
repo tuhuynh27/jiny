@@ -3,7 +3,7 @@ package com.jinyframework;
 import com.jinyframework.core.HttpRouterBase;
 import com.jinyframework.core.RequestBinderBase.Handler;
 import com.jinyframework.core.RequestBinderBase.RequestTransformer;
-import com.jinyframework.core.ServerThreadFactory;
+import com.jinyframework.core.factories.ServerThreadFactory;
 import com.jinyframework.core.bio.RequestPipeline;
 import com.jinyframework.core.utils.Intro;
 import lombok.extern.slf4j.Slf4j;

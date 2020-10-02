@@ -1,6 +1,6 @@
 package com.jinyframework;
 
-import com.jinyframework.core.ServerThreadFactory;
+import com.jinyframework.core.factories.ServerThreadFactory;
 import com.jinyframework.core.utils.Intro;
 import com.jinyframework.core.utils.ParserUtils;
 import lombok.*;
@@ -53,7 +53,7 @@ public final class Proxy {
         @Override
         public void run() {
             try {
-                val clientIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                @Cleanup val clientIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 val requestStringArr = new ArrayList<String>();
                 String inputLine;
                 while (!(inputLine = clientIn.readLine()).isEmpty()) {
@@ -85,10 +85,9 @@ public final class Proxy {
                     val serverMetadata = endpoint.split(":");
                     val serverSocket = new Socket(serverMetadata[0], Integer.parseInt(serverMetadata[1]));
 
-                    val serverIn = serverSocket.getInputStream();
-                    val serverOut = new PrintWriter(serverSocket.getOutputStream(), false);
-
-                    val clientOut = clientSocket.getOutputStream();
+                    @Cleanup val clientOut = clientSocket.getOutputStream();
+                    @Cleanup val serverIn = serverSocket.getInputStream();
+                    @Cleanup val serverOut = new PrintWriter(serverSocket.getOutputStream(), false);
 
                     // Replace path
                     if (!path.toLowerCase().equals(matchedKey.toLowerCase())) {
@@ -105,10 +104,6 @@ public final class Proxy {
                     while (-1 != (bytesRead = serverIn.read(reply))) {
                         clientOut.write(reply, 0, bytesRead);
                     }
-
-                    clientOut.flush();
-                    clientOut.close();
-                    serverIn.close();
 
                     serverSocket.close();
                 }

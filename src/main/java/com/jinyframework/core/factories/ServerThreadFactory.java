@@ -1,4 +1,4 @@
-package com.jinyframework.core;
+package com.jinyframework.core.factories;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;

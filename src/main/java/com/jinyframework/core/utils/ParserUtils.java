@@ -3,7 +3,8 @@ package com.jinyframework.core.utils;
 import com.jinyframework.core.RequestBinderBase.HttpResponse;
 import com.jinyframework.core.RequestBinderBase.RequestContext;
 import com.jinyframework.core.RequestBinderBase.RequestTransformer;
-import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import lombok.var;
@@ -15,11 +16,11 @@ import java.util.HashMap;
 import java.util.regex.Pattern;
 
 @Slf4j
-@NoArgsConstructor
+@UtilityClass
 public final class ParserUtils {
-    private static final Pattern HEADER_PATTERN = Pattern.compile(": ");
+    private final Pattern HEADER_PATTERN = Pattern.compile(": ");
 
-    public static RequestContext parseRequest(final String[] request, final String body) {
+    public RequestContext parseRequest(@NonNull final String[] request, @NonNull final String body) {
         val metaArr = request[0].split(" ");
 
         val header = new HashMap<String, String>();
@@ -51,7 +52,7 @@ public final class ParserUtils {
                 .build();
     }
 
-    public static String parseResponse(final HttpResponse httpResponse, RequestTransformer transformer) {
+    public String parseResponse(@NonNull final HttpResponse httpResponse, @NonNull RequestTransformer transformer) {
         var httpStatusText = "UNKNOWN";
         switch (httpResponse.getHttpStatusCode()) {
             case 200:
@@ -80,7 +81,7 @@ public final class ParserUtils {
                 + transformer.render(httpResponse.getResponseObject()) + '\n';
     }
 
-    public static HashMap<String, String> splitQuery(final String url) {
+    public HashMap<String, String> splitQuery(final String url) {
         if (url == null || url.isEmpty()) {
             return new HashMap<>();
         }
@@ -93,7 +94,7 @@ public final class ParserUtils {
         return hashMap;
     }
 
-    private static HttpMethod getMethod(final String originalMethod) {
+    private HttpMethod getMethod(@NonNull final String originalMethod) {
         val method = originalMethod.toLowerCase();
         switch (method) {
             case "head":
@@ -115,7 +116,7 @@ public final class ParserUtils {
         }
     }
 
-    private static SimpleImmutableEntry<String, String> splitQueryParameter(String it) {
+    private SimpleImmutableEntry<String, String> splitQueryParameter(@NonNull String it) {
         val idx = it.indexOf('=');
         val key = idx > 0 ? it.substring(0, idx) : it;
         val value = idx > 0 && it.length() > idx + 1 ? it.substring(idx + 1) : "";

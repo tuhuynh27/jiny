@@ -16,7 +16,7 @@ public abstract class RequestBinderBase<T extends HandlerBase> {
     protected final ArrayList<HandlerMetadata<T>> middlewares;
     protected final ArrayList<HandlerMetadata<T>> handlerMetadata;
 
-    protected BinderInitObject binderInit(final HandlerMetadata<?> h) {
+    protected BinderInitObject binderInit(@NonNull final HandlerMetadata<?> h) {
         val indexOfQuestionMark = requestContext.getPath().indexOf('?');
         var requestPath =
                 indexOfQuestionMark == -1 ? requestContext.getPath() : requestContext.getPath().substring(0,

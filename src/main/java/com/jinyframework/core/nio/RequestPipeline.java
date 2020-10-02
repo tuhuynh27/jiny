@@ -3,9 +3,11 @@ package com.jinyframework.core.nio;
 import com.jinyframework.core.RequestBinderBase.HandlerMetadata;
 import com.jinyframework.core.RequestBinderBase.HandlerNIO;
 import com.jinyframework.core.RequestBinderBase.RequestTransformer;
+import com.jinyframework.core.RequestPipelineBase;
 import com.jinyframework.core.utils.ParserUtils;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import lombok.var;
@@ -17,7 +19,7 @@ import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
-public class RequestPipeline {
+public final class RequestPipeline implements RequestPipelineBase {
     private final AsynchronousSocketChannel clientSocketChannel;
     private final ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
     private final ArrayList<HandlerMetadata<HandlerNIO>> middlewares;
@@ -35,6 +37,7 @@ public class RequestPipeline {
         this.transformer = transformer;
     }
 
+    @Override
     public void run() {
         if (clientSocketChannel != null && clientSocketChannel.isOpen()) {
             read().thenAccept(msg -> {
@@ -103,13 +106,13 @@ public class RequestPipeline {
         }
     }
 
-    @NoArgsConstructor
-    public static final class MessageCodec {
-        public static ByteBuffer encode(final String msg) {
+    @UtilityClass
+    public final class MessageCodec {
+        public ByteBuffer encode(final String msg) {
             return ByteBuffer.wrap(msg.getBytes());
         }
 
-        public static String decode(final ByteBuffer buffer) {
+        public String decode(final ByteBuffer buffer) {
             return new String(buffer.array(), buffer.arrayOffset(), buffer.remaining());
         }
     }

@@ -3,7 +3,7 @@ package com.jinyframework;
 import com.jinyframework.core.HttpRouterBase;
 import com.jinyframework.core.RequestBinderBase.HandlerNIO;
 import com.jinyframework.core.RequestBinderBase.RequestTransformer;
-import com.jinyframework.core.ServerThreadFactory;
+import com.jinyframework.core.factories.ServerThreadFactory;
 import com.jinyframework.core.nio.RequestPipeline;
 import com.jinyframework.core.utils.Intro;
 import lombok.SneakyThrows;
