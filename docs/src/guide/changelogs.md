@@ -2,7 +2,13 @@
 
 ![Maven Central](https://img.shields.io/maven-central/v/com.jinyframework/jiny?style=flat-square)
 
-### 0.2.3 (Current)
+### 0.2.4 (Current)
+
+- Add NPE handled methods
+- Fix HTTP client issue
+- Refactor code
+
+### 0.2.3
 
 - Add SLF4J facade logging
 - Fix proxy issues
