@@ -30,7 +30,9 @@ public final class HttpClient {
             for (val header : headers.entrySet()) {
                 String key = header.getKey();
                 String value = header.getValue();
-                conn.setRequestProperty(key, value);
+                if (key != null && value != null) {
+                    conn.setRequestProperty(key, value);
+                }
             }
         }
 

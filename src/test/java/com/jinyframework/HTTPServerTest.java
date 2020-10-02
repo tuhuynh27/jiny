@@ -3,6 +3,7 @@ package com.jinyframework;
 import com.jinyframework.core.RequestBinderBase.HttpResponse;
 import com.jinyframework.core.bio.HttpRouter;
 import lombok.val;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 
@@ -11,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 @DisplayName("api.HttpServerTest")
 public class HTTPServerTest extends HTTPTest {
+    private static final HttpServer server = HttpServer.port(1234);
     public HTTPServerTest() {
         this.url = "http://localhost:1234";
     }
@@ -18,8 +20,6 @@ public class HTTPServerTest extends HTTPTest {
     @BeforeAll
     static void startServer() throws InterruptedException {
         new Thread(() -> {
-            val server = HttpServer.port(1234);
-
             server.use(ctx -> {
                 ctx.setDataParam("global", "middleware");
                 return HttpResponse.next();
@@ -76,5 +76,10 @@ public class HTTPServerTest extends HTTPTest {
 
         // Wait for server to start
         TimeUnit.SECONDS.sleep(3);
+    }
+
+    @AfterAll
+    static void stopServer() throws IOException {
+        server.stop();
     }
 }

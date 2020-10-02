@@ -160,10 +160,12 @@ public abstract class HTTPTest {
 
     @BeforeEach
     void each() throws InterruptedException {
+        // Do something on CI if (isCI)
+        // TimeUnit.SECONDS.sleep(1);
+        // No sleep
+
         if (isCI) {
-            TimeUnit.SECONDS.sleep(1);
-        } else {
-            TimeUnit.MILLISECONDS.sleep(100);
+            TimeUnit.MILLISECONDS.sleep(500);
         }
     }
 }

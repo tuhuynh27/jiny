@@ -3,6 +3,7 @@ package com.jinyframework;
 import com.jinyframework.core.RequestBinderBase.HttpResponse;
 import com.jinyframework.core.nio.HttpRouterNIO;
 import lombok.val;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 
@@ -11,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 @DisplayName("api.NIOHttpServerTest")
 public class NIOHTTPServerTest extends HTTPTest {
+    private static final NIOHttpServer server = NIOHttpServer.port(1235);
     public NIOHTTPServerTest() {
         this.url = "http://localhost:1235";
     }
@@ -18,8 +20,6 @@ public class NIOHTTPServerTest extends HTTPTest {
     @BeforeAll
     static void startServer() throws InterruptedException {
         new Thread(() -> {
-            val server = NIOHttpServer.port(1235);
-
             server.use(ctx -> {
                 ctx.setDataParam("global", "middleware");
                 return HttpResponse.nextAsync();
@@ -76,5 +76,10 @@ public class NIOHTTPServerTest extends HTTPTest {
 
         // Wait for server to start
         TimeUnit.SECONDS.sleep(3);
+    }
+
+    @AfterAll
+    static void stopServer() throws IOException {
+        server.stop();
     }
 }
