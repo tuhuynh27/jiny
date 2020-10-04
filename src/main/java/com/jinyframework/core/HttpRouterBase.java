@@ -18,10 +18,6 @@ public abstract class HttpRouterBase<T extends HandlerBase> {
     protected final List<HandlerMetadata<T>> middlewares = new ArrayList<>();
     protected RequestTransformer transformer = Object::toString;
 
-    public void setupResponseTransformer(RequestTransformer transformer) {
-        this.transformer = transformer;
-    }
-
     public final void use(@NonNull final String path, @NonNull final HttpRouterBase<T> router) {
         val refactoredMiddlewares = router.getMiddlewares().stream().peek(e -> {
             val refactoredPath = path + e.getPath();

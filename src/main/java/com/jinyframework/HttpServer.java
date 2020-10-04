@@ -2,9 +2,11 @@ package com.jinyframework;
 
 import com.jinyframework.core.HttpRouterBase;
 import com.jinyframework.core.RequestBinderBase.Handler;
+import com.jinyframework.core.RequestBinderBase.RequestTransformer;
 import com.jinyframework.core.bio.RequestPipeline;
 import com.jinyframework.core.factories.ServerThreadFactory;
 import com.jinyframework.core.utils.Intro;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
@@ -22,12 +24,17 @@ public final class HttpServer extends HttpRouterBase<Handler> {
             new ServerThreadFactory("request-processor"));
     private ServerSocket serverSocket;
 
-    private HttpServer(final int serverPort) {
+    private HttpServer(@NonNull final int serverPort) {
         this.serverPort = serverPort;
     }
 
-    public static HttpServer port(final int serverPort) {
+    public static HttpServer port(@NonNull final int serverPort) {
         return new HttpServer(serverPort);
+    }
+
+    public HttpServer useTransformer(@NonNull final RequestTransformer transformer) {
+        this.transformer = transformer;
+        return this;
     }
 
     public void start() throws IOException {
@@ -36,11 +43,8 @@ public final class HttpServer extends HttpRouterBase<Handler> {
         serverSocket.setReuseAddress(true);
         serverSocket.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), serverPort));
         log.info("Started Jiny HTTP Server on port " + serverPort);
-
-        while (!serverSocket.isClosed() && !Thread.interrupted()) {
-            val socket = serverSocket.accept();
-            executor.execute(new RequestPipeline(socket, middlewares, handlers, transformer));
-        }
+        val socket = serverSocket.accept();
+        executor.execute(new RequestPipeline(socket, middlewares, handlers, transformer));
     }
 
     public void stop() throws IOException {

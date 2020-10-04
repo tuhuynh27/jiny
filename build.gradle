@@ -1,5 +1,5 @@
 plugins {
-    // id 'application'
+    id 'application'
     id 'idea'
     id 'java-library'
     id 'signing'
@@ -94,8 +94,8 @@ dependencies {
     compile group: 'org.slf4j', name:'slf4j-api', version: '1.7.2'
 
     // Implementations:
-    // compile group: 'ch.qos.logback', name:'logback-classic', version: '1.0.9'
-    // compile group: 'ch.qos.logback', name:'logback-core', version: '1.0.9'
+    compile group: 'ch.qos.logback', name:'logback-classic', version: '1.0.9'
+    compile group: 'ch.qos.logback', name:'logback-core', version: '1.0.9'
 }
 
 test {
@@ -107,6 +107,6 @@ test {
     }
 }
 
-//application {
-//    mainClassName = 'com.jinyframework.Test'
-//}
+application {
+    mainClassName = 'com.jinyframework.Test'
+}

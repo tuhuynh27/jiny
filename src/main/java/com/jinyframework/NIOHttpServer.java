@@ -2,9 +2,11 @@ package com.jinyframework;
 
 import com.jinyframework.core.HttpRouterBase;
 import com.jinyframework.core.RequestBinderBase.HandlerNIO;
+import com.jinyframework.core.RequestBinderBase.RequestTransformer;
 import com.jinyframework.core.factories.ServerThreadFactory;
 import com.jinyframework.core.nio.RequestPipelineNIO;
 import com.jinyframework.core.utils.Intro;
+import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -22,12 +24,17 @@ public final class NIOHttpServer extends HttpRouterBase<HandlerNIO> {
     private final int serverPort;
     private AsynchronousServerSocketChannel serverSocketChannel;
 
-    private NIOHttpServer(final int serverPort) {
+    private NIOHttpServer(@NonNull final int serverPort) {
         this.serverPort = serverPort;
     }
 
-    public static NIOHttpServer port(final int serverPort) {
+    public static NIOHttpServer port(@NonNull final int serverPort) {
         return new NIOHttpServer(serverPort);
+    }
+
+    public NIOHttpServer useTransformer(@NonNull final RequestTransformer transformer) {
+        this.transformer = transformer;
+        return this;
     }
 
     public void start() throws IOException {
