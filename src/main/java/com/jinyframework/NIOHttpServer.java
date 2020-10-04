@@ -40,6 +40,9 @@ public final class NIOHttpServer extends HttpRouterBase<HandlerNIO> {
     }
 
     public NIOHttpServer setNumOfEventLoopThread(final int maxThread) throws IOException {
+        if (maxThread < 1) {
+            throw new ArithmeticException("maxThread cannot lower than 1");
+        }
         this.maxThread = maxThread;
         return this;
     }

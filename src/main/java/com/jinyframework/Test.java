@@ -9,7 +9,7 @@ public final class Test {
     public static void main(String[] args) throws IOException {
         val server = NIOHttpServer
                 .port(1234)
-                .setNumOfEventLoopThread(9999)
+                .setNumOfEventLoopThread(1)
                 .setThreadDebugMode(true)
                 .useTransformer(t -> t + "1");
         server.use("/", ctx -> HttpResponse.ofAsync("Hello World!"));
