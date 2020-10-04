@@ -22,13 +22,15 @@ import java.nio.channels.CompletionHandler;
 @Slf4j
 public final class NIOHttpServer extends HttpRouterBase<HandlerNIO> {
     private final int serverPort;
+    private final ServerThreadFactory threadFactory = new ServerThreadFactory("event-loop");
     private AsynchronousServerSocketChannel serverSocketChannel;
+    private int maxThread = Runtime.getRuntime().availableProcessors() * 2;
 
-    private NIOHttpServer(@NonNull final int serverPort) {
+    private NIOHttpServer(final int serverPort) {
         this.serverPort = serverPort;
     }
 
-    public static NIOHttpServer port(@NonNull final int serverPort) {
+    public static NIOHttpServer port(final int serverPort) {
         return new NIOHttpServer(serverPort);
     }
 
@@ -37,13 +39,22 @@ public final class NIOHttpServer extends HttpRouterBase<HandlerNIO> {
         return this;
     }
 
+    public NIOHttpServer setNumOfEventLoopThread(final int maxThread) throws IOException {
+        this.maxThread = maxThread;
+        return this;
+    }
+
+    public NIOHttpServer setThreadDebugMode(final boolean isDebug) {
+        threadFactory.setDebug(isDebug);
+        return this;
+    }
+
     public void start() throws IOException {
         Intro.begin();
-        val group = AsynchronousChannelGroup.withFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2,
-                new ServerThreadFactory("event-loop"));
+        val group = AsynchronousChannelGroup.withFixedThreadPool(maxThread, threadFactory);
         serverSocketChannel = AsynchronousServerSocketChannel.open(group);
         serverSocketChannel.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), serverPort));
-        log.info("Started NIO HTTP Server on port " + serverPort);
+        log.info("Started NIO HTTP Server on port " + serverPort + " using " + maxThread + " event loop thread(s)");
         serverSocketChannel.accept(null, new CompletionHandler<AsynchronousSocketChannel, Object>() {
             @SneakyThrows
             @Override

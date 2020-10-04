@@ -20,20 +20,25 @@ import java.util.concurrent.Executors;
 @Slf4j
 public final class HttpServer extends HttpRouterBase<Handler> {
     private final int serverPort;
-    private final Executor executor = Executors.newCachedThreadPool(
-            new ServerThreadFactory("request-processor"));
+    private final ServerThreadFactory threadFactory = new ServerThreadFactory("request-processor");
+    private final Executor executor = Executors.newCachedThreadPool(threadFactory);
     private ServerSocket serverSocket;
 
-    private HttpServer(@NonNull final int serverPort) {
+    private HttpServer(final int serverPort) {
         this.serverPort = serverPort;
     }
 
-    public static HttpServer port(@NonNull final int serverPort) {
+    public static HttpServer port(final int serverPort) {
         return new HttpServer(serverPort);
     }
 
     public HttpServer useTransformer(@NonNull final RequestTransformer transformer) {
         this.transformer = transformer;
+        return this;
+    }
+
+    public HttpServer setThreadDebugMode(final boolean isDebug) {
+        threadFactory.setDebug(isDebug);
         return this;
     }
 
