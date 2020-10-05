@@ -37,8 +37,9 @@ public final class RequestPipeline implements RequestPipelineBase, Runnable {
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new PrintWriter(socket.getOutputStream(), false);
 
-        while (!socket.isClosed()) { // TODO: Keep-Alive check
-            process();
+        var canContinue = true;
+        while (canContinue) {
+            canContinue = process();
         }
 
         in.close();
@@ -46,7 +47,7 @@ public final class RequestPipeline implements RequestPipelineBase, Runnable {
         socket.close();
     }
 
-    public void process() throws IOException {
+    public boolean process() throws IOException {
         val requestStringArr = new ArrayList<String>();
         var inputLine = "";
         var isFirstLine = true;
@@ -70,7 +71,7 @@ public final class RequestPipeline implements RequestPipelineBase, Runnable {
             }
 
             if (requestStringArr.size() == 0) {
-                return;
+                return false;
             }
 
             val body = new StringBuilder();
@@ -88,10 +89,15 @@ public final class RequestPipeline implements RequestPipelineBase, Runnable {
 
             out.write(responseString);
             out.flush();
+
+            return true;
         } catch (SocketException | SocketTimeoutException ignored) {
             socket.close();
+            return false;
         } catch (Exception e) {
+            socket.close();
             log.error(e.getMessage(), e);
+            return false;
         }
     }
 }
