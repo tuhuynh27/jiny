@@ -81,7 +81,7 @@ public final class RequestPipelineNIO implements RequestPipelineBase {
                             @SneakyThrows
                             @Override
                             public void completed(Integer result, Object attachment) {
-                                clientSocketChannel.close();
+                                run(); // TODO: Keep-Alive check
                             }
 
                             @SneakyThrows
