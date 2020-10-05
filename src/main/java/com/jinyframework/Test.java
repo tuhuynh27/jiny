@@ -10,7 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @Slf4j
 public final class Test {
     public static void main(String[] args) throws IOException {
-        val server = NIOHttpServer
+        val server = HttpServer
                 .port(1234)
                 .setThreadDebugMode(false);
 
@@ -22,15 +22,26 @@ public final class Test {
             }
         }));
 
-        server.get("/", ctx -> HttpResponse.ofAsync("Hello World!"));
-        server.post("/echo", ctx -> HttpResponse.ofAsync(ctx.getBody()));
+        new Thread(() -> {
+            System.out.println("YO!");
+            try {
+                Thread.sleep(60000);
+            } catch (InterruptedException e) {
+                log.error(e.getMessage(), e);
+            }
+            System.gc();
+            System.out.println("YOO!");
+        }).start();
+
+        server.get("/", ctx -> HttpResponse.of("Hello World!"));
+        server.post("/echo", ctx -> HttpResponse.of(ctx.getBody()));
         server.get("/random", ctx -> {
             final int random = ThreadLocalRandom.current().nextInt(1, 100000000 + 1);
-            return HttpResponse.ofAsync("Random number: " + random);
+            return HttpResponse.of("Random number: " + random);
         });
         server.get("/fibo", ctx -> {
             final int fibo = fibonacci(35);
-            return HttpResponse.ofAsync("Fibo number: " + fibo);
+            return HttpResponse.of("Fibo number: " + fibo);
         });
         server.start();
     }

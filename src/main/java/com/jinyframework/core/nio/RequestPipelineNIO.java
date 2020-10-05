@@ -31,7 +31,7 @@ public final class RequestPipelineNIO implements RequestPipelineBase {
     public void run() {
         read().thenAccept(msg -> {
             process(msg).thenAccept(done -> {
-               run(); // TODO: Keep-Alive check
+                run(); // TODO: Keep-Alive check
             });
         });
     }
