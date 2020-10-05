@@ -12,6 +12,7 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
@@ -34,6 +35,13 @@ public final class RequestPipelineNIO implements RequestPipelineBase {
             read().thenAccept(msg -> {
                 try {
                     process(msg);
+                }
+                catch (IOException ignored) {
+                    try {
+                        clientSocketChannel.close();
+                    } catch (IOException e) {
+                        log.error(e.getMessage(), e);
+                    }
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                 }
@@ -56,7 +64,6 @@ public final class RequestPipelineNIO implements RequestPipelineBase {
             @Override
             public void failed(Throwable e, Object attachment) {
                 promise.completeExceptionally(e);
-                log.error(e.getMessage(), e);
             }
         });
 
@@ -81,14 +88,15 @@ public final class RequestPipelineNIO implements RequestPipelineBase {
                             @SneakyThrows
                             @Override
                             public void completed(Integer result, Object attachment) {
-                                run(); // TODO: Keep-Alive check
+                                if (clientSocketChannel.isOpen()) {
+                                    run(); // TODO: Keep-Alive check
+                                }
                             }
 
                             @SneakyThrows
                             @Override
-                            public void failed(Throwable e, Object attachment) {
+                            public void failed(Throwable ignored, Object attachment) {
                                 clientSocketChannel.close();
-                                log.error(e.getMessage(), e);
                             }
                         });
             });
