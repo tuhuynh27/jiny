@@ -12,7 +12,7 @@ public final class Test {
     public static void main(String[] args) throws IOException {
         val server = HttpServer
                 .port(1234)
-                .setThreadDebugMode(false);
+                .setThreadDebugMode(true);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {

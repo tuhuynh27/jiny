@@ -11,9 +11,9 @@ import lombok.var;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.AbstractMap.SimpleImmutableEntry;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
@@ -59,8 +59,24 @@ public final class ParserUtils {
     }
 
     public String parseResponse(@NonNull final HttpResponse httpResponse, @NonNull RequestTransformer transformer) {
-        var httpStatusText = "UNKNOWN";
-        switch (httpResponse.getHttpStatusCode()) {
+        val body = transformer.render(httpResponse.getResponseObject());
+
+        val dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
+        val date = new Date();
+
+        val headers = new LinkedHashMap<String, String>();
+        headers.put("X-Powered-By", "Jiny");
+        headers.put("Content-Type", "text/plain; charset=utf-8");
+        headers.put("Content-Length", String.valueOf(body.length() + 1));
+        headers.put("Date", dateFormat.format(date));
+        headers.put("Connection", "Keep-Alive");
+
+        return httpResponseStringBuilder(httpResponse.getHttpStatusCode(), headers, body);
+    }
+
+    public String httpResponseStringBuilder(final int statusCode, @NonNull final Map<String, String> headers, final String body) {
+        var httpStatusText = "";
+        switch (statusCode) {
             case 200:
                 httpStatusText = "OK";
                 break;
@@ -81,11 +97,16 @@ public final class ParserUtils {
                 break;
         }
 
-        return "HTTP/1.1 " + httpResponse.getHttpStatusCode() + ' ' + httpStatusText + "\n"
-                + "Connection: Close\n"
-                + "Server: Jiny\n"
-                + "\n\n" // Body begin
-                + transformer.render(httpResponse.getResponseObject()) + '\n';
+        final StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("HTTP/1.1 ").append(statusCode).append(" ").append(httpStatusText).append("\n");
+        for (val header : headers.entrySet()) {
+            stringBuilder.append(header.getKey())
+                    .append(": ")
+                    .append(header.getValue())
+                    .append("\n");
+        }
+        stringBuilder.append("\n").append(body).append("\n");
+        return stringBuilder.toString();
     }
 
     public Map<String, String> splitQuery(final String url) {

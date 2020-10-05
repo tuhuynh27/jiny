@@ -27,7 +27,7 @@ public final class RequestPipeline implements RequestPipelineBase, Runnable {
     @SneakyThrows
     @Override
     public void run() {
-        socket.setSoTimeout(10 * 1000);
+        socket.setSoTimeout(5000);
 
         @Cleanup val in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         @Cleanup val out = new PrintWriter(socket.getOutputStream(), false);
@@ -70,10 +70,7 @@ public final class RequestPipeline implements RequestPipelineBase, Runnable {
         val responseObject = new RequestBinder(requestContext, middlewares, handlers).getResponseObject();
         val responseString = ParserUtils.parseResponse(responseObject, transformer);
 
-        log.info(responseString);
-
         out.write(responseString);
-
         out.flush();
     }
 }

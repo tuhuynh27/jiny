@@ -16,6 +16,8 @@ import java.net.ServerSocket;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import lombok.val;
+
 @Slf4j
 public final class HttpServer extends HttpRouterBase<Handler> {
     private final int serverPort;
@@ -47,8 +49,9 @@ public final class HttpServer extends HttpRouterBase<Handler> {
         serverSocket.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), serverPort));
         log.info("Started Jiny HTTP Server on port " + serverPort);
         while (!Thread.interrupted()) {
+            val clientSocket = serverSocket.accept();
             executor.execute(
-                    new RequestPipeline(serverSocket.accept(), middlewares, handlers, transformer));
+                    new RequestPipeline(clientSocket, middlewares, handlers, transformer));
         }
     }
 
