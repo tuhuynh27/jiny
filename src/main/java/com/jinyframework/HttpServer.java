@@ -48,8 +48,10 @@ public final class HttpServer extends HttpRouterBase<Handler> {
         serverSocket.setReuseAddress(true);
         serverSocket.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), serverPort));
         log.info("Started Jiny HTTP Server on port " + serverPort);
-        val socket = serverSocket.accept();
-        executor.execute(new RequestPipeline(socket, middlewares, handlers, transformer));
+        while (!Thread.interrupted()) {
+            val socket = serverSocket.accept();
+            executor.execute(new RequestPipeline(socket, middlewares, handlers, transformer));
+        }
     }
 
     public void stop() throws IOException {
