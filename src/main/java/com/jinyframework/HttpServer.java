@@ -8,7 +8,6 @@ import com.jinyframework.core.factories.ServerThreadFactory;
 import com.jinyframework.core.utils.Intro;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -45,12 +44,11 @@ public final class HttpServer extends HttpRouterBase<Handler> {
     public void start() throws IOException {
         Intro.begin();
         serverSocket = new ServerSocket();
-        serverSocket.setReuseAddress(true);
         serverSocket.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), serverPort));
         log.info("Started Jiny HTTP Server on port " + serverPort);
         while (!Thread.interrupted()) {
-            val socket = serverSocket.accept();
-            executor.execute(new RequestPipeline(socket, middlewares, handlers, transformer));
+            executor.execute(
+                    new RequestPipeline(serverSocket.accept(), middlewares, handlers, transformer));
         }
     }
 

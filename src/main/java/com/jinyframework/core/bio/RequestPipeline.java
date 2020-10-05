@@ -14,6 +14,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,21 +27,42 @@ public final class RequestPipeline implements RequestPipelineBase, Runnable {
     @SneakyThrows
     @Override
     public void run() {
+        socket.setSoTimeout(10 * 1000);
+
         @Cleanup val in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         @Cleanup val out = new PrintWriter(socket.getOutputStream(), false);
 
         val requestStringArr = new ArrayList<String>();
         var inputLine = "";
-        while (!(inputLine = in.readLine()).isEmpty()) {
+        var isFirstLine = true;
+        var method = "";
+        var contentLength = 0;
+        while (true) {
+            inputLine = in.readLine();
+            if (inputLine == null || inputLine.isEmpty()) {
+                break;
+            }
+            if (isFirstLine) {
+                isFirstLine = false;
+                method = new StringTokenizer(inputLine).nextToken().toLowerCase();
+            }
+            if (inputLine.toLowerCase().startsWith("content-length: ")) {
+                val contentLengthStr = inputLine.toLowerCase().replace("content-length: ", "");
+                contentLength = Integer.parseInt(contentLengthStr);
+            }
             requestStringArr.add(inputLine);
         }
-        val body = new StringBuilder();
-        while (in.ready()) {
-            body.append((char) in.read());
+
+        if (requestStringArr.size() == 0) {
+            return;
         }
 
-        // Log incoming requests
-        log.info(String.valueOf(requestStringArr));
+        val body = new StringBuilder();
+        if (!method.equals("get") && contentLength > 0) {
+            while (in.ready()) {
+                body.append((char) in.read());
+            }
+        }
 
         val requestContext = ParserUtils
                 .parseRequest(requestStringArr.toArray(new String[0]), body.toString());
@@ -48,9 +70,10 @@ public final class RequestPipeline implements RequestPipelineBase, Runnable {
         val responseObject = new RequestBinder(requestContext, middlewares, handlers).getResponseObject();
         val responseString = ParserUtils.parseResponse(responseObject, transformer);
 
+        log.info(responseString);
+
         out.write(responseString);
 
         out.flush();
-        socket.close();
     }
 }

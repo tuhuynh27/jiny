@@ -15,7 +15,6 @@ import lombok.val;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -69,9 +68,6 @@ public final class RequestPipelineNIO implements RequestPipelineBase {
         if (requestParts.length > 0) {
             val req = requestParts[0].trim().split("\r\n");
             val body = requestParts.length == 2 ? requestParts[1].trim() : "";
-
-            // Log incoming requests
-            log.info(Arrays.toString(req));
 
             val requestContext = ParserUtils.parseRequest(req, body);
             val responseObject = new RequestBinderNIO(requestContext, middlewares, handlers)

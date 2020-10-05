@@ -23,6 +23,10 @@ public final class ParserUtils {
     private final Pattern HEADER_PATTERN = Pattern.compile(": ");
 
     public RequestContext parseRequest(@NonNull final String[] request, @NonNull final String body) {
+        if (request.length == 0) {
+            throw new ArithmeticException("Request is empty");
+        }
+
         val metaArr = request[0].split(" ");
 
         val header = new HashMap<String, String>();
@@ -77,9 +81,10 @@ public final class ParserUtils {
                 break;
         }
 
-        return "HTTP/1.1 "
-                + httpResponse.getHttpStatusCode() + ' '
-                + httpStatusText + "\n\n"
+        return "HTTP/1.1 " + httpResponse.getHttpStatusCode() + ' ' + httpStatusText + "\n"
+                + "Connection: Close\n"
+                + "Server: Jiny\n"
+                + "\n\n" // Body begin
                 + transformer.render(httpResponse.getResponseObject()) + '\n';
     }
 
