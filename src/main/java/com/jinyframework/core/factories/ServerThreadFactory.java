@@ -22,7 +22,7 @@ public final class ServerThreadFactory implements ThreadFactory {
     }
 
     @Override
-    public Thread newThread(Runnable runnable) {
+    public Thread newThread(final Runnable runnable) {
         val t = new Thread(runnable, name + "-thread-" + counter);
         counter++;
         val info = String.format("Created thread id %d with name %s on %d", t.getId(), t.getName(),
