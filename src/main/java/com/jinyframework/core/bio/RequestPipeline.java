@@ -37,7 +37,7 @@ public final class RequestPipeline implements RequestPipelineBase, Runnable {
         var isFirstLine = true;
         var method = "";
         var contentLength = 0;
-        while (true) {
+        while (!socket.isClosed()) {
             inputLine = in.readLine();
             if (inputLine == null || inputLine.isEmpty()) {
                 break;
@@ -72,5 +72,7 @@ public final class RequestPipeline implements RequestPipelineBase, Runnable {
 
         out.write(responseString);
         out.flush();
+
+        run();// TODO: Keep-Alive check
     }
 }
