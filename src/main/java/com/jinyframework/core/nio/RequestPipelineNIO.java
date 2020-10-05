@@ -5,14 +5,12 @@ import com.jinyframework.core.RequestBinderBase.HandlerNIO;
 import com.jinyframework.core.RequestBinderBase.RequestTransformer;
 import com.jinyframework.core.RequestPipelineBase;
 import com.jinyframework.core.utils.ParserUtils;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
@@ -31,23 +29,11 @@ public final class RequestPipelineNIO implements RequestPipelineBase {
 
     @Override
     public void run() {
-        if (clientSocketChannel != null && clientSocketChannel.isOpen()) {
-            read().thenAccept(msg -> {
-                try {
-                    process(msg);
-                }
-                catch (IOException ignored) {
-                    try {
-                        clientSocketChannel.close();
-                    } catch (IOException e) {
-                        log.error(e.getMessage(), e);
-                    }
-                } catch (Exception e) {
-                    log.error(e.getMessage(), e);
-                }
+        read().thenAccept(msg -> {
+            process(msg).thenAccept(done -> {
+               run(); // TODO: Keep-Alive check
             });
-            byteBuffer.clear();
-        }
+        });
     }
 
     private CompletableFuture<String> read() {
@@ -70,37 +56,39 @@ public final class RequestPipelineNIO implements RequestPipelineBase {
         return promise;
     }
 
-    private void process(@NonNull final String msg) throws Exception {
+    private CompletableFuture<Void> process(final String msg) {
+        val promise = new CompletableFuture<Void>();
+
         val requestParts = msg.split("\n\r");
         if (requestParts.length > 0) {
             val req = requestParts[0].trim().split("\r\n");
             val body = requestParts.length == 2 ? requestParts[1].trim() : "";
 
             val requestContext = ParserUtils.parseRequest(req, body);
-            val responseObject = new RequestBinderNIO(requestContext, middlewares, handlers)
-                    .getResponseObject();
+            new RequestBinderNIO(requestContext, middlewares, handlers)
+                    .getResponseObject().thenAccept(responseObjectReturned -> {
+                        val responseString = ParserUtils.parseResponse(responseObjectReturned, transformer);
 
-            responseObject.thenAccept(responseObjectReturned -> {
-                val responseString = ParserUtils.parseResponse(responseObjectReturned, transformer);
+                        clientSocketChannel.write(MessageCodec.encode(responseString), null,
+                                new CompletionHandler<Integer, Object>() {
+                                    @Override
+                                    public void completed(Integer result, Object attachment) {
+                                        byteBuffer.clear();
+                                        promise.complete(null);
+                                    }
 
-                clientSocketChannel.write(MessageCodec.encode(responseString), null,
-                        new CompletionHandler<Integer, Object>() {
-                            @SneakyThrows
-                            @Override
-                            public void completed(Integer result, Object attachment) {
-                                if (clientSocketChannel.isOpen()) {
-                                    run(); // TODO: Keep-Alive check
-                                }
-                            }
-
-                            @SneakyThrows
-                            @Override
-                            public void failed(Throwable ignored, Object attachment) {
-                                clientSocketChannel.close();
-                            }
-                        });
-            });
+                                    @SneakyThrows
+                                    @Override
+                                    public void failed(Throwable e, Object attachment) {
+                                        byteBuffer.clear();
+                                        clientSocketChannel.close();
+                                        promise.completeExceptionally(e);
+                                    }
+                                });
+                    });;
         }
+
+        return promise;
     }
 
     @UtilityClass
