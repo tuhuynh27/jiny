@@ -24,7 +24,7 @@ public final class RequestBinderNIO extends RequestBinderBase<HandlerNIO> {
         super(requestContext, middlewares, handlerMetadata);
     }
 
-    public CompletableFuture<HttpResponse> getResponseObject() throws Exception {
+    public CompletableFuture<HttpResponse> getResponseObject() {
         var isFound = false;
 
         for (val h : handlerMetadata) {
@@ -55,7 +55,7 @@ public final class RequestBinderNIO extends RequestBinderBase<HandlerNIO> {
         return isDone;
     }
 
-    private void resolvePromiseChain(final LinkedList<HandlerNIO> handlerQueue) throws Exception {
+    private void resolvePromiseChain(final LinkedList<HandlerNIO> handlerQueue) {
         if (handlerQueue.size() == 1) {
             try {
                 handlerQueue.removeFirst().handleFunc(requestContext).thenAccept(isDone::complete);

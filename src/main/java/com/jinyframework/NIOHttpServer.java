@@ -2,9 +2,11 @@ package com.jinyframework;
 
 import com.jinyframework.core.HttpRouterBase;
 import com.jinyframework.core.RequestBinderBase.HandlerNIO;
+import com.jinyframework.core.RequestBinderBase.RequestTransformer;
 import com.jinyframework.core.factories.ServerThreadFactory;
 import com.jinyframework.core.nio.RequestPipelineNIO;
 import com.jinyframework.core.utils.Intro;
+import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -20,7 +22,9 @@ import java.nio.channels.CompletionHandler;
 @Slf4j
 public final class NIOHttpServer extends HttpRouterBase<HandlerNIO> {
     private final int serverPort;
+    private final ServerThreadFactory threadFactory = new ServerThreadFactory("event-loop");
     private AsynchronousServerSocketChannel serverSocketChannel;
+    private int maxThread = Runtime.getRuntime().availableProcessors() * 2;
 
     private NIOHttpServer(final int serverPort) {
         this.serverPort = serverPort;
@@ -30,13 +34,30 @@ public final class NIOHttpServer extends HttpRouterBase<HandlerNIO> {
         return new NIOHttpServer(serverPort);
     }
 
+    public NIOHttpServer useTransformer(@NonNull final RequestTransformer transformer) {
+        this.transformer = transformer;
+        return this;
+    }
+
+    public NIOHttpServer setNumOfEventLoopThread(final int maxThread) throws IOException {
+        if (maxThread < 1) {
+            throw new ArithmeticException("maxThread cannot lower than 1");
+        }
+        this.maxThread = maxThread;
+        return this;
+    }
+
+    public NIOHttpServer setThreadDebugMode(final boolean isDebug) {
+        threadFactory.setDebug(isDebug);
+        return this;
+    }
+
     public void start() throws IOException {
         Intro.begin();
-        val group = AsynchronousChannelGroup.withFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2,
-                new ServerThreadFactory("event-loop"));
+        val group = AsynchronousChannelGroup.withFixedThreadPool(maxThread, threadFactory);
         serverSocketChannel = AsynchronousServerSocketChannel.open(group);
         serverSocketChannel.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), serverPort));
-        log.info("Started NIO HTTP Server on port " + serverPort);
+        log.info("Started NIO HTTP Server on port " + serverPort + " using " + maxThread + " event loop thread(s)");
         serverSocketChannel.accept(null, new CompletionHandler<AsynchronousSocketChannel, Object>() {
             @SneakyThrows
             @Override

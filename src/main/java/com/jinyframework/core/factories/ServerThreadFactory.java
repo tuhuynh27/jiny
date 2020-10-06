@@ -1,5 +1,6 @@
 package com.jinyframework.core.factories;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
@@ -12,27 +13,35 @@ public final class ServerThreadFactory implements ThreadFactory {
     private final String name;
     private final List<String> stats;
     private int counter;
+    private boolean isDebug = false;
 
-    public ServerThreadFactory(String name) {
+    public ServerThreadFactory(@NonNull String name) {
         counter = 1;
         this.name = name;
         stats = new ArrayList<>();
     }
 
     @Override
-    public Thread newThread(Runnable runnable) {
+    public Thread newThread(final Runnable runnable) {
         val t = new Thread(runnable, name + "-thread-" + counter);
         counter++;
-        val info = String.format("Created thread %d with name %s on %d \n", t.getId(), t.getName(),
-                System.currentTimeMillis() / 1000L);
+        val info = String.format("Created thread id %d with name %s on %d", t.getId(), t.getName(),
+                System.currentTimeMillis());
         stats.add(info);
+        if (isDebug) {
+            log.info(info);
+        }
         return t;
+    }
+
+    public void setDebug(final boolean isDebug) {
+        this.isDebug = isDebug;
     }
 
     public String getStats() {
         val buffer = new StringBuilder();
         for (String stat : stats) {
-            buffer.append(stat);
+            buffer.append(stat).append("\n");
         }
         return buffer.toString();
     }

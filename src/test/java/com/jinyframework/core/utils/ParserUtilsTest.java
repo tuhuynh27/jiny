@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("core.ParserUtilsTest")
 public class ParserUtilsTest {
@@ -28,7 +29,7 @@ public class ParserUtilsTest {
         val response = HttpResponse.of("Hello World");
         assertEquals(200, response.getHttpStatusCode(), "Get HTTP Status Code");
         val responseString = ParserUtils.parseResponse(response, Object::toString);
-        assertEquals("HTTP/1.1 200 OK\n\nHello World\n", responseString, "Get response string");
+        assertTrue(responseString.contains("HTTP/1.1 200 OK"));
     }
 
     @Test

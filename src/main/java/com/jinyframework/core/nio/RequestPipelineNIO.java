@@ -5,7 +5,6 @@ import com.jinyframework.core.RequestBinderBase.HandlerNIO;
 import com.jinyframework.core.RequestBinderBase.RequestTransformer;
 import com.jinyframework.core.RequestPipelineBase;
 import com.jinyframework.core.utils.ParserUtils;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
@@ -15,7 +14,6 @@ import lombok.val;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -31,72 +29,61 @@ public final class RequestPipelineNIO implements RequestPipelineBase {
 
     @Override
     public void run() {
-        if (clientSocketChannel != null && clientSocketChannel.isOpen()) {
-            read().thenAccept(msg -> {
-                try {
-                    process(msg);
-                } catch (Exception e) {
-                    log.error(e.getMessage(), e);
-                }
-            });
-            byteBuffer.clear();
-        }
+        process().thenAccept(canContinue -> {
+            if (canContinue) {
+                run();
+            }
+        });
     }
 
-    private CompletableFuture<String> read() {
-        val promise = new CompletableFuture<String>();
+    private CompletableFuture<Boolean> process() {
+        val promise = new CompletableFuture<Boolean>();
 
         clientSocketChannel.read(byteBuffer, null, new CompletionHandler<Integer, Object>() {
             @Override
             public void completed(Integer result, Object attachment) {
                 val msg = MessageCodec.decode(byteBuffer);
                 byteBuffer.flip();
-                promise.complete(msg);
+
+                val requestParts = msg.split("\n\r");
+                if (requestParts.length > 0) {
+                    val req = requestParts[0].trim().split("\r\n");
+                    val body = requestParts.length == 2 ? requestParts[1].trim() : "";
+
+                    val requestContext = ParserUtils.parseRequest(req, body);
+                    new RequestBinderNIO(requestContext, middlewares, handlers)
+                            .getResponseObject().thenAccept(responseObjectReturned -> {
+                        val responseString = ParserUtils.parseResponse(responseObjectReturned, transformer);
+
+                        clientSocketChannel.write(MessageCodec.encode(responseString), null,
+                                new CompletionHandler<Integer, Object>() {
+                                    @Override
+                                    public void completed(Integer result, Object attachment) {
+                                        byteBuffer.clear();
+                                        promise.complete(true);
+                                    }
+
+                                    @SneakyThrows
+                                    @Override
+                                    public void failed(Throwable e, Object attachment) {
+                                        byteBuffer.clear();
+                                        clientSocketChannel.close();
+                                        promise.complete(false);
+                                    }
+                                });
+                    });;
+                }
             }
 
+            @SneakyThrows
             @Override
             public void failed(Throwable e, Object attachment) {
-                promise.completeExceptionally(e);
-                log.error(e.getMessage(), e);
+                clientSocketChannel.close();
+                promise.complete(false);
             }
         });
 
         return promise;
-    }
-
-    private void process(@NonNull final String msg) throws Exception {
-        val requestParts = msg.split("\n\r");
-        if (requestParts.length > 0) {
-            val req = requestParts[0].trim().split("\r\n");
-            val body = requestParts.length == 2 ? requestParts[1].trim() : "";
-
-            // Log incoming requests
-            log.info(Arrays.toString(req));
-
-            val requestContext = ParserUtils.parseRequest(req, body);
-            val responseObject = new RequestBinderNIO(requestContext, middlewares, handlers)
-                    .getResponseObject();
-
-            responseObject.thenAccept(responseObjectReturned -> {
-                val responseString = ParserUtils.parseResponse(responseObjectReturned, transformer);
-
-                clientSocketChannel.write(MessageCodec.encode(responseString), null,
-                        new CompletionHandler<Integer, Object>() {
-                            @SneakyThrows
-                            @Override
-                            public void completed(Integer result, Object attachment) {
-                                clientSocketChannel.close();
-                            }
-
-                            @SneakyThrows
-                            @Override
-                            public void failed(Throwable e, Object attachment) {
-                                clientSocketChannel.close();
-                                log.error(e.getMessage(), e);
-                            }
-                        });
-            });
-        }
     }
 
     @UtilityClass
