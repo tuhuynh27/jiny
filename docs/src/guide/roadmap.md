@@ -3,6 +3,7 @@
 - [x] Write unit tests, integration tests
 - [x] Support Router, global response transformer 
 - [x] Add logging facade
+- [x] Add Keep-Alive support
 - [ ] Add websocket server/client support
 - [ ] Support CORS config, body compression and some default middlewares
 - [ ] Support serve static files

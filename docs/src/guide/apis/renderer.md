@@ -25,8 +25,8 @@ You can also set a global custom response, which will be applied for all handler
 ```java
 import com.google.gson.Gson;
 
-val server = HttpServer.port(1234);
-server.setupResponseTransformer(gson::toJson);
+val server = HttpServer.port(1234)
+            .useTransformer(gson::toJson);
 ```
 
 ## Template Engine

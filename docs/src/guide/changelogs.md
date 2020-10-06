@@ -2,7 +2,13 @@
 
 ![Maven Central](https://img.shields.io/maven-central/v/com.jinyframework/jiny?style=flat-square)
 
-### 0.2.4 (Current)
+### 0.2.5 (Current)
+
+- Add Keep-Alive support
+- Add Thread Debug mode
+- Refactor code
+
+### 0.2.4
 
 - Add NPE handled methods
 - Fix HTTP client issue
