@@ -65,10 +65,10 @@ public final class ParserUtils {
         val date = new Date();
 
         val headers = new LinkedHashMap<String, String>();
-        headers.put("X-Powered-By", "Jiny");
         headers.put("Content-Type", "text/plain; charset=utf-8");
         headers.put("Content-Length", String.valueOf(body.length() + 1));
         headers.put("Date", dateFormat.format(date));
+        headers.put("Server", "Jiny");
         headers.put("Connection", "Keep-Alive");
 
         return httpResponseStringBuilder(httpResponse.getHttpStatusCode(), headers, body);
