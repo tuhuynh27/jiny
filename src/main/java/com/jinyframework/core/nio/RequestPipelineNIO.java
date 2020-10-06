@@ -29,44 +29,30 @@ public final class RequestPipelineNIO implements RequestPipelineBase {
 
     @Override
     public void run() {
-        read().thenAccept(msg -> {
-            process(msg).thenAccept(done -> {
-                run(); // TODO: Keep-Alive check
-            });
+        process().thenAccept(canContinue -> {
+            if (canContinue) {
+                run();
+            }
         });
     }
 
-    private CompletableFuture<String> read() {
-        val promise = new CompletableFuture<String>();
+    private CompletableFuture<Boolean> process() {
+        val promise = new CompletableFuture<Boolean>();
 
         clientSocketChannel.read(byteBuffer, null, new CompletionHandler<Integer, Object>() {
             @Override
             public void completed(Integer result, Object attachment) {
                 val msg = MessageCodec.decode(byteBuffer);
                 byteBuffer.flip();
-                promise.complete(msg);
-            }
 
-            @Override
-            public void failed(Throwable e, Object attachment) {
-                promise.completeExceptionally(e);
-            }
-        });
+                val requestParts = msg.split("\n\r");
+                if (requestParts.length > 0) {
+                    val req = requestParts[0].trim().split("\r\n");
+                    val body = requestParts.length == 2 ? requestParts[1].trim() : "";
 
-        return promise;
-    }
-
-    private CompletableFuture<Void> process(final String msg) {
-        val promise = new CompletableFuture<Void>();
-
-        val requestParts = msg.split("\n\r");
-        if (requestParts.length > 0) {
-            val req = requestParts[0].trim().split("\r\n");
-            val body = requestParts.length == 2 ? requestParts[1].trim() : "";
-
-            val requestContext = ParserUtils.parseRequest(req, body);
-            new RequestBinderNIO(requestContext, middlewares, handlers)
-                    .getResponseObject().thenAccept(responseObjectReturned -> {
+                    val requestContext = ParserUtils.parseRequest(req, body);
+                    new RequestBinderNIO(requestContext, middlewares, handlers)
+                            .getResponseObject().thenAccept(responseObjectReturned -> {
                         val responseString = ParserUtils.parseResponse(responseObjectReturned, transformer);
 
                         clientSocketChannel.write(MessageCodec.encode(responseString), null,
@@ -74,7 +60,7 @@ public final class RequestPipelineNIO implements RequestPipelineBase {
                                     @Override
                                     public void completed(Integer result, Object attachment) {
                                         byteBuffer.clear();
-                                        promise.complete(null);
+                                        promise.complete(true);
                                     }
 
                                     @SneakyThrows
@@ -82,11 +68,20 @@ public final class RequestPipelineNIO implements RequestPipelineBase {
                                     public void failed(Throwable e, Object attachment) {
                                         byteBuffer.clear();
                                         clientSocketChannel.close();
-                                        promise.completeExceptionally(e);
+                                        promise.complete(false);
                                     }
                                 });
                     });;
-        }
+                }
+            }
+
+            @SneakyThrows
+            @Override
+            public void failed(Throwable e, Object attachment) {
+                clientSocketChannel.close();
+                promise.complete(false);
+            }
+        });
 
         return promise;
     }

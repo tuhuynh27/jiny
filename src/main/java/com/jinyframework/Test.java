@@ -14,25 +14,6 @@ public final class Test {
                 .port(1234)
                 .setThreadDebugMode(false);
 
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            try {
-                server.stop();
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
-            }
-        }));
-
-        new Thread(() -> {
-            System.out.println("YO!");
-            try {
-                Thread.sleep(60000);
-            } catch (InterruptedException e) {
-                log.error(e.getMessage(), e);
-            }
-            System.gc();
-            System.out.println("YOO!");
-        }).start();
-
         server.get("/", ctx -> HttpResponse.of("Hello World!"));
         server.post("/echo", ctx -> HttpResponse.of(ctx.getBody()));
         server.get("/random", ctx -> {
