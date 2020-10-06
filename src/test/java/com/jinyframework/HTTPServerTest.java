@@ -31,6 +31,10 @@ public class HTTPServerTest extends HTTPTest {
             server.get("/gm", ctx -> HttpResponse.of(ctx.dataParam("global")));
             server.get("/gm-sub", ctx -> HttpResponse.of(ctx.dataParam("att")));
             server.post("/echo", ctx -> HttpResponse.of(ctx.getBody()));
+            server.get("/header", ctx -> {
+                ctx.setResponseHeader("foo", "bar");
+                return HttpResponse.of("Done!");
+            });
             server.get("/query", ctx -> {
                 val world = ctx.queryParam("hello");
                 return HttpResponse.of(world);

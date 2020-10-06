@@ -12,14 +12,14 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public abstract class RequestBinderBase<T extends HandlerBase> {
-    protected final RequestContext requestContext;
+    protected final Context context;
     protected final List<HandlerMetadata<T>> middlewares;
     protected final List<HandlerMetadata<T>> handlerMetadata;
 
     protected BinderInitObject binderInit(@NonNull final HandlerMetadata<?> h) {
-        val indexOfQuestionMark = requestContext.getPath().indexOf('?');
+        val indexOfQuestionMark = context.getPath().indexOf('?');
         var requestPath =
-                indexOfQuestionMark == -1 ? requestContext.getPath() : requestContext.getPath().substring(0,
+                indexOfQuestionMark == -1 ? context.getPath() : context.getPath().substring(0,
                         indexOfQuestionMark);
         // Remove all last '/' from the requestPath
         while (requestPath.endsWith("/")) {
@@ -53,7 +53,7 @@ public abstract class RequestBinderBase<T extends HandlerBase> {
                 if (elementsOfHandlerPath[i].startsWith(":")) {
                     val handlerParamKey = elementsOfHandlerPath[i].replace(":", "");
                     val handlerParamValue = elementsOfRequestPath[i];
-                    requestContext.getParam().put(handlerParamKey, handlerParamValue);
+                    context.getParam().put(handlerParamKey, handlerParamValue);
                 }
             }
         }
@@ -66,17 +66,21 @@ public abstract class RequestBinderBase<T extends HandlerBase> {
                 .build();
     }
 
+    public Map<String, String> getResponseHeaders() {
+        return context.getResponseHeaders();
+    }
+
     public interface HandlerBase {
     }
 
     @FunctionalInterface
     public interface Handler extends HandlerBase {
-        HttpResponse handleFunc(RequestContext requestContext) throws Exception;
+        HttpResponse handleFunc(Context context) throws Exception;
     }
 
     @FunctionalInterface
     public interface HandlerNIO extends HandlerBase {
-        CompletableFuture<HttpResponse> handleFunc(RequestContext requestContext) throws Exception;
+        CompletableFuture<HttpResponse> handleFunc(Context context) throws Exception;
     }
 
     @FunctionalInterface
@@ -95,7 +99,7 @@ public abstract class RequestBinderBase<T extends HandlerBase> {
 
     @Getter
     @Builder
-    public static final class RequestContext {
+    public static final class Context {
         private final HttpMethod method;
         private final String path;
         private final Map<String, String> header;
@@ -103,6 +107,8 @@ public abstract class RequestBinderBase<T extends HandlerBase> {
         private final Map<String, String> query;
         private final Map<String, String> param;
         private final Map<String, String> data;
+
+        private final Map<String, String> responseHeaders;
 
         public String headerParam(@NonNull final String name) {
             return header.get(name) != null ? header.get(name) : "";
@@ -120,10 +126,12 @@ public abstract class RequestBinderBase<T extends HandlerBase> {
             return data.get(name) != null ? data.get(name) : "";
         }
 
-        public void setDataParam(@NonNull final String key, final String value) {
-            if (key != null && value != null) {
-                data.put(key, value);
-            }
+        public void setDataParam(@NonNull final String key, @NonNull final String value) {
+            data.put(key, value);
+        }
+
+        public void setResponseHeader(@NonNull final String key, @NonNull final String value) {
+            responseHeaders.put(key, value);
         }
     }
 

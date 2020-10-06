@@ -10,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -21,8 +22,8 @@ public final class HttpClient {
     private final String body;
 
     public ResponseObject perform() throws IOException {
-        URL url = new URL(this.url);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        val url = new URL(this.url);
+        val conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod(method);
         conn.setRequestProperty("Content-Type", "application/json; " + StandardCharsets.UTF_8);
         conn.setRequestProperty("Accept", "application/json");
@@ -45,7 +46,13 @@ public final class HttpClient {
         }
 
         val responseStatus = conn.getResponseCode();
+        val responseStatusText = conn.getResponseMessage();
         val isError = responseStatus >= 400;
+
+        val headers = new HashMap<String, String>();
+        for (val entry : conn.getHeaderFields().entrySet()) {
+            headers.put(entry.getKey(), String.join("; ", entry.getValue()));
+        }
 
         @Cleanup val in = new BufferedReader(
                 new InputStreamReader(!isError ? conn.getInputStream() : conn.getErrorStream()));
@@ -64,13 +71,21 @@ public final class HttpClient {
 
         return ResponseObject.builder()
                 .status(responseStatus)
+                .statusText(responseStatusText)
+                .headers(headers)
                 .body(sb.toString()).build();
     }
 
     @Builder
     @Getter
     public static final class ResponseObject {
-        private final String body;
         private final int status;
+        private final String statusText;
+        private final Map<String, String> headers;
+        private final String body;
+
+        public String getHeader(@NonNull final String key) {
+            return headers.get(key) != null ? headers.get(key) : "";
+        }
     }
 }

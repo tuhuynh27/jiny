@@ -51,9 +51,10 @@ public final class RequestPipelineNIO implements RequestPipelineBase {
                     val body = requestParts.length == 2 ? requestParts[1].trim() : "";
 
                     val requestContext = ParserUtils.parseRequest(req, body);
-                    new RequestBinderNIO(requestContext, middlewares, handlers)
-                            .getResponseObject().thenAccept(responseObjectReturned -> {
-                        val responseString = ParserUtils.parseResponse(responseObjectReturned, transformer);
+                    val response = new RequestBinderNIO(requestContext, middlewares, handlers);
+                    response.getResponseObject().thenAccept(responseObjectReturned -> {
+                        val responseHeaders = response.getResponseHeaders();
+                        val responseString = ParserUtils.parseResponse(responseObjectReturned, responseHeaders, transformer);
 
                         clientSocketChannel.write(MessageCodec.encode(responseString), null,
                                 new CompletionHandler<Integer, Object>() {
@@ -71,7 +72,7 @@ public final class RequestPipelineNIO implements RequestPipelineBase {
                                         promise.complete(false);
                                     }
                                 });
-                    });;
+                    });
                 }
             }
 

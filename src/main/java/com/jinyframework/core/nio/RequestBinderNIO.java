@@ -18,10 +18,10 @@ import java.util.stream.Stream;
 public final class RequestBinderNIO extends RequestBinderBase<HandlerNIO> {
     private final CompletableFuture<HttpResponse> isDone = new CompletableFuture<>();
 
-    public RequestBinderNIO(RequestContext requestContext,
+    public RequestBinderNIO(Context context,
                             final List<HandlerMetadata<HandlerNIO>> middlewares,
                             final List<HandlerMetadata<HandlerNIO>> handlerMetadata) {
-        super(requestContext, middlewares, handlerMetadata);
+        super(context, middlewares, handlerMetadata);
     }
 
     public CompletableFuture<HttpResponse> getResponseObject() {
@@ -31,11 +31,11 @@ public final class RequestBinderNIO extends RequestBinderBase<HandlerNIO> {
             val binder = binderInit(h);
 
             if (binder.isMatchCatchAll() ||
-                    (requestContext.getMethod() == h.getMethod() || (h.getMethod() == HttpMethod.ALL))
+                    (context.getMethod() == h.getMethod() || (h.getMethod() == HttpMethod.ALL))
                             && (binder.getRequestPath().equals(binder.getHandlerPath()) || binder
                             .isRequestWithHandlerParamsMatched())) {
                 val middlewareMatched = middlewares.stream()
-                        .filter(e -> requestContext.getPath().startsWith(e.getPath()))
+                        .filter(e -> context.getPath().startsWith(e.getPath()))
                         .map(HandlerMetadata::getHandlers)
                         .flatMap(e -> Arrays.stream(e).distinct())
                         .collect(Collectors.toList());
@@ -58,14 +58,14 @@ public final class RequestBinderNIO extends RequestBinderBase<HandlerNIO> {
     private void resolvePromiseChain(final LinkedList<HandlerNIO> handlerQueue) {
         if (handlerQueue.size() == 1) {
             try {
-                handlerQueue.removeFirst().handleFunc(requestContext).thenAccept(isDone::complete);
+                handlerQueue.removeFirst().handleFunc(context).thenAccept(isDone::complete);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
                 isDone.complete(HttpResponse.of(e.getMessage()).status(500));
             }
         } else {
             try {
-                handlerQueue.removeFirst().handleFunc(requestContext).thenAccept(result -> {
+                handlerQueue.removeFirst().handleFunc(context).thenAccept(result -> {
                     if (result.isAllowNext()) {
                         try {
                             resolvePromiseChain(handlerQueue);

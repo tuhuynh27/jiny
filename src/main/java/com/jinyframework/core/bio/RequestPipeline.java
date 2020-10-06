@@ -5,8 +5,11 @@ import com.jinyframework.core.RequestBinderBase.HandlerMetadata;
 import com.jinyframework.core.RequestBinderBase.RequestTransformer;
 import com.jinyframework.core.RequestPipelineBase;
 import com.jinyframework.core.utils.ParserUtils;
-import lombok.*;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import lombok.var;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -84,8 +87,10 @@ public final class RequestPipeline implements RequestPipelineBase, Runnable {
             val requestContext = ParserUtils
                     .parseRequest(requestStringArr.toArray(new String[0]), body.toString());
 
-            val responseObject = new RequestBinder(requestContext, middlewares, handlers).getResponseObject();
-            val responseString = ParserUtils.parseResponse(responseObject, transformer);
+            val response = new RequestBinder(requestContext, middlewares, handlers);
+            val responseHeaders = response.getResponseHeaders();
+            val responseObject = response.getResponseObject();
+            val responseString = ParserUtils.parseResponse(responseObject, responseHeaders, transformer);
 
             out.write(responseString);
             out.flush();

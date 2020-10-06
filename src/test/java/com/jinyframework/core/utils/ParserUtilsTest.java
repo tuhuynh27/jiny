@@ -6,6 +6,8 @@ import lombok.val;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -28,7 +30,7 @@ public class ParserUtilsTest {
     void parseResponseTest() {
         val response = HttpResponse.of("Hello World");
         assertEquals(200, response.getHttpStatusCode(), "Get HTTP Status Code");
-        val responseString = ParserUtils.parseResponse(response, Object::toString);
+        val responseString = ParserUtils.parseResponse(response, new HashMap<>(), Object::toString);
         assertTrue(responseString.contains("HTTP/1.1 200 OK"));
     }
 

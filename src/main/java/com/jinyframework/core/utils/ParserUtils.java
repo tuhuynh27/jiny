@@ -1,7 +1,7 @@
 package com.jinyframework.core.utils;
 
+import com.jinyframework.core.RequestBinderBase.Context;
 import com.jinyframework.core.RequestBinderBase.HttpResponse;
-import com.jinyframework.core.RequestBinderBase.RequestContext;
 import com.jinyframework.core.RequestBinderBase.RequestTransformer;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
@@ -12,8 +12,11 @@ import lombok.var;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
-import java.util.*;
 import java.util.AbstractMap.SimpleImmutableEntry;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
@@ -22,7 +25,7 @@ import java.util.regex.Pattern;
 public final class ParserUtils {
     private final Pattern HEADER_PATTERN = Pattern.compile(": ");
 
-    public RequestContext parseRequest(@NonNull final String[] request, @NonNull final String body) {
+    public Context parseRequest(@NonNull final String[] request, @NonNull final String body) {
         if (request.length == 0) {
             throw new ArithmeticException("Request is empty");
         }
@@ -47,7 +50,7 @@ public final class ParserUtils {
         val indexOfQuestionMark = path.indexOf('?');
         val queryParamsString = indexOfQuestionMark == -1 ? null : path.substring(indexOfQuestionMark + 1);
 
-        return RequestContext.builder()
+        return Context.builder()
                 .method(getMethod(metaArr[0]))
                 .path(path)
                 .header(header)
@@ -55,10 +58,11 @@ public final class ParserUtils {
                 .query(splitQuery(queryParamsString))
                 .param(new HashMap<>())
                 .data(new HashMap<>())
+                .responseHeaders(new HashMap<>())
                 .build();
     }
 
-    public String parseResponse(@NonNull final HttpResponse httpResponse, @NonNull RequestTransformer transformer) {
+    public String parseResponse(@NonNull final HttpResponse httpResponse, @NonNull final Map<String, String> responseHeaders, @NonNull RequestTransformer transformer) {
         val body = transformer.render(httpResponse.getResponseObject());
 
         val dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
@@ -70,6 +74,7 @@ public final class ParserUtils {
         headers.put("Date", dateFormat.format(date));
         headers.put("Server", "Jiny");
         headers.put("Connection", "Keep-Alive");
+        headers.putAll(responseHeaders);
 
         return httpResponseStringBuilder(httpResponse.getHttpStatusCode(), headers, body);
     }

@@ -8,6 +8,7 @@ import com.jinyframework.core.factories.ServerThreadFactory;
 import com.jinyframework.core.utils.Intro;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -15,8 +16,6 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-
-import lombok.val;
 
 @Slf4j
 public final class HttpServer extends HttpRouterBase<Handler> {

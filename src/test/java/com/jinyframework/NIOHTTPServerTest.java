@@ -31,6 +31,10 @@ public class NIOHTTPServerTest extends HTTPTest {
             server.get("/gm", ctx -> HttpResponse.ofAsync(ctx.dataParam("global")));
             server.get("/gm-sub", ctx -> HttpResponse.ofAsync(ctx.dataParam("att")));
             server.post("/echo", ctx -> HttpResponse.ofAsync(ctx.getBody()));
+            server.get("/header", ctx -> {
+                ctx.setResponseHeader("foo", "bar");
+                return HttpResponse.ofAsync("Done!");
+            });
             server.get("/query", ctx -> {
                 val world = ctx.queryParam("hello");
                 return HttpResponse.ofAsync(world);

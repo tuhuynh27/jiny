@@ -14,10 +14,10 @@ import java.util.stream.Stream;
 
 @Slf4j
 public final class RequestBinder extends RequestBinderBase<Handler> {
-    public RequestBinder(final RequestContext requestContext,
+    public RequestBinder(final Context context,
                          final List<HandlerMetadata<Handler>> middlewares,
                          final List<HandlerMetadata<Handler>> handlerMetadata) {
-        super(requestContext, middlewares, handlerMetadata);
+        super(context, middlewares, handlerMetadata);
     }
 
     public HttpResponse getResponseObject() {
@@ -25,13 +25,13 @@ public final class RequestBinder extends RequestBinderBase<Handler> {
             val binder = binderInit(h);
 
             if (binder.isMatchCatchAll() ||
-                    (requestContext.getMethod() == h.getMethod() || (h.getMethod() == HttpMethod.ALL))
+                    (context.getMethod() == h.getMethod() || (h.getMethod() == HttpMethod.ALL))
                             && (binder.getRequestPath().equals(binder.getHandlerPath()) || binder
                             .isRequestWithHandlerParamsMatched())) {
                 try {
                     // Handle middleware function chain
                     val middlewareMatched = middlewares.stream()
-                            .filter(e -> requestContext.getPath().startsWith(e.getPath()))
+                            .filter(e -> context.getPath().startsWith(e.getPath()))
                             .map(HandlerMetadata::getHandlers)
                             .flatMap(e -> Arrays.stream(e).distinct())
                             .collect(Collectors.toList());
@@ -45,7 +45,7 @@ public final class RequestBinder extends RequestBinderBase<Handler> {
                     for (var i = 0; i < size; i++) {
                         val isLastItem = (i == size - 1);
                         val resultFromPreviousHandler = handlersAndMiddlewares.get(i).handleFunc(
-                                requestContext);
+                                context);
                         if (!isLastItem && !resultFromPreviousHandler.isAllowNext()) {
                             return resultFromPreviousHandler;
                         } else {

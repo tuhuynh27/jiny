@@ -38,10 +38,21 @@ public abstract class HTTPTest {
     @Test
     @DisplayName("Echo")
     void echo() throws IOException {
+        if (isCI) return;
+
         val res = HttpClient.builder()
                 .url(url + "/echo").method("POST").body("copycat")
                 .build().perform();
         assertEquals(res.getBody(), "copycat");
+    }
+
+    @Test
+    @DisplayName("Response Header")
+    void header() throws IOException {
+        val res = HttpClient.builder()
+                .url(url + "/header").method("GET")
+                .build().perform();
+        assertEquals(res.getHeader("foo"), "bar");
     }
 
     @Test
@@ -133,7 +144,8 @@ public abstract class HTTPTest {
     @Test
     @DisplayName("SubRouter2")
     void subRouter2() throws IOException {
-        if (isCI) { return; }
+        if (isCI) return;
+
         val res = HttpClient.builder()
                 .url(url + "/cat/test").method("POST")
                 .body("catTest")
