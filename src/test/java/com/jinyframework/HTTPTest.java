@@ -133,6 +133,7 @@ public abstract class HTTPTest {
     @Test
     @DisplayName("SubRouter2")
     void subRouter2() throws IOException {
+        if (isCI) { return; }
         val res = HttpClient.builder()
                 .url(url + "/cat/test").method("POST")
                 .body("catTest")
