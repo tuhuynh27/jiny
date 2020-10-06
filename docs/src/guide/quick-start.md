@@ -13,7 +13,7 @@ public class Main {
     public static void main(String args[]) {
         val server = HTTPServer.port(1234);
         val gson = new Gson();
-        server.setupResponseTransformer(gson::toJson);
+        server.useTransformer(gson::toJson);
         server.get("/ping", ctx -> HttpResponse.of("Pong"));
         server.start();
     }
@@ -29,7 +29,7 @@ import your.server.factories.app.AppFactory
 
 object Main extends App {
   val server = HttpServer.port(1234)
-  server.setupResponseTransformer(s => AppFactory.getGson.toJson(s))
+  server.useTransformer(s => AppFactory.getGson.toJson(s))
   server.get("/ping", ctx => HttpResponse.of("Pong))
   server.start()
 }
@@ -44,7 +44,7 @@ import com.google.gson.Gson;
 fun main(args: Array<String>) {
     val server: HttpServer = HTTPServer.port(1234)
     val gson = new Gson()
-    server.setupResponseTransformer(gson::toJson);
+    server.useTransformer(gson::toJson);
     server.get("/ping", ctx -> HttpResponse.of("Pong"))
     server.start()
 }

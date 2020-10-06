@@ -55,17 +55,17 @@ This server can be packaged and launched with java -jar hello-world.jar, no furt
 
 Jiny is just a couple of thousands lines of Java SE code. Essentially, there is no magic implemented under-the-hood, which makes it easy to reason about the program's logic flows.
 
-- No annotations, no implicit
+- No annotations, no implicit state
 - No global static state
 - No reflection
 - No configuration files
 - No JavaEE, no Servlet, no Servlet container
 
-Jiny does not care how you build your app, so any knowledge obtained while working with a Jiny project should transfer easily to other (non-Jiny) projects.
+Unlike restrictive traditional application frameworks, Jiny is **not a restrictive framework**, and thus doesn't force you a correct way to write a web application. Instead Jiny give you a lot of useful bricks and let you create your server the way you want to, with a minimum of fuss, in your favorite JVM language.
 
 ## Good documentations and tutorials
 
-Jiny’s documentation is example-based rather than technical, which allows new users to copy snippets and experiment with them. Jiny also has examples for most common tasks that software engineers have to solve when starting web-programming.
+Jiny’s documentation is example-based rather than technical, which allows new users to copy snippets and experiment with them. Jiny also has examples for most common tasks that software engineers have to solve when starting server-side programming.
 
 ## Asynchronous programming support
 
@@ -75,6 +75,8 @@ Jiny standard mode is designed to be simple and blocking, as this is the easiest
 [See NIO APIs](https://jinyframework.com/guide/nio-apis/)
 :::
 
+Jiny Async mode is event-driven and non-blocking. This means your server can handle a lot of concurrency using a small number of kernel threads, thus help your app scale with minimal hardware.
+
 ## Interoperable
 
-Other Java frameworks usually offer separate version for each JVM language. Jiny is being developed with interoperability in mind, so servers are built the same way in every JVM languages: Java, Kotlin or Scala.
+Other Java frameworks usually offer separate version for each JVM language. Jiny is being developed with interoperability in mind, so servers are built the same way in every JVM languages: Java, Kotlin, Clojure or Scala.

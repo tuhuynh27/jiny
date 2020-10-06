@@ -2,7 +2,9 @@
 
 ## Logging
 
-Recommended to use logback
+Recommended to use [logback](http://logback.qos.ch/)
+
+`build.gradle`
 
 ```groovy
 dependencies {
@@ -13,17 +15,13 @@ dependencies {
 
 ## Build
 
-Suggestion: use `com.github.johnrengelman.shadow` to build Gradle project to JAR executable file:
+Suggestion: use [com.github.johnrengelman.shadow](https://github.com/johnrengelman/shadow) to build Gradle project to JAR executable file:
 
 `build.gradle`
 
 ```groovy
 plugins {
-    id 'com.github.johnrengelman.shadow' version '5.0.0'
-}
-
-shadowJar {
-    classifier = 'fat'
+    id 'com.github.johnrengelman.shadow' version '6.0.0'
 }
 ```
 
@@ -35,6 +33,8 @@ shadowJar {
 
 Add shutdown hook
 
+`Main.java`
+
 ```java
 Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
@@ -43,7 +43,7 @@ Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 log.error(e.getMessage(), e);
             }
         }));
-        log.info("Added shutdown hook");
+log.info("Added shutdown hook");
 ```
 
 (WIP)
