@@ -24,7 +24,6 @@ public final class RequestPipelineNIO implements RequestPipelineBase {
     private final ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
     private final List<HandlerMetadata<HandlerNIO>> middlewares;
     private final List<HandlerMetadata<HandlerNIO>> handlers;
-
     private final RequestTransformer transformer;
 
     @Override
