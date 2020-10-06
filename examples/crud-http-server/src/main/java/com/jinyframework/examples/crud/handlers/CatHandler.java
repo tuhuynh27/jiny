@@ -24,7 +24,7 @@ public class CatHandler {
     public HttpResponse getCats(RequestContext ctx) {
         val catArr = new ArrayList<Cat>();
         catCollection.find().forEach(catArr::add);
-        return HttpResponse.of(catArr.toArray()).transform(gson::toJson);
+        return HttpResponse.of(catArr.toArray());
     }
 
     public HttpResponse addCat(RequestContext ctx) {
