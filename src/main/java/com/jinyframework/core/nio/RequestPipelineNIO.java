@@ -66,7 +66,7 @@ public final class RequestPipelineNIO implements RequestPipelineBase {
                                     @SneakyThrows
                                     @Override
                                     public void failed(Throwable e, Object attachment) {
-                                          byteBuffer.clear();
+                                        byteBuffer.clear();
                                         clientSocketChannel.close();
                                         promise.complete(false);
                                     }

@@ -38,11 +38,12 @@ public final class HttpProxy {
 
     public void start() throws IOException {
         val threadFactory = new ServerThreadFactory("proxy-event-loop");
+        val maxThread = Runtime.getRuntime().availableProcessors() * 2;
         val group = AsynchronousChannelGroup
-                .withFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2, threadFactory);
+                .withFixedThreadPool(maxThread, threadFactory);
         val serverSocketChannel = AsynchronousServerSocketChannel.open(group);
         serverSocketChannel.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), proxyPort));
-        log.info("Started NIO HTTP Proxy Server on port " + proxyPort + " using " + 32 + " event loop thread(s)");
+        log.info("Started NIO HTTP Proxy Server on port " + proxyPort + " using " + maxThread + " event loop thread(s)");
         serverSocketChannel.accept(null, new CompletionHandler<AsynchronousSocketChannel, Object>() {
             @SneakyThrows
             @Override
@@ -87,7 +88,7 @@ public final class HttpProxy {
                     val msg = MessageCodec.decode(byteBuffer);
                     byteBuffer.flip();
 
-                    val msgArr = msg.split("\n");;
+                    val msgArr = msg.split("\n");
                     val firstLineArr = msgArr[0].split(" ");
                     val path = firstLineArr[1];
 
