@@ -87,7 +87,7 @@ public final class HttpProxy {
                     val msg = MessageCodec.decode(byteBuffer);
                     byteBuffer.flip();
 
-                    val msgArr = msg.split("\n");
+                    val msgArr = msg.split("\n");;
                     val firstLineArr = msgArr[0].split(" ");
                     val path = firstLineArr[1];
 
@@ -128,7 +128,6 @@ public final class HttpProxy {
                         serverSocketChannel.connect(new InetSocketAddress(serverMetadata[0], Integer.parseInt(serverMetadata[1])), null, new CompletionHandler<Void, Object>() {
                             @Override
                             public void completed(Void result, Object attachment) {
-                                System.out.println(String.join("\n", msgArr));
                                 serverSocketChannel.write(MessageCodec.encode(String.join("\n", msgArr)), null, new CompletionHandler<Integer, Object>() {
                                     @Override
                                     public void completed(Integer result, Object attachment) {
