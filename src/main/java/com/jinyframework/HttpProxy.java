@@ -2,6 +2,7 @@ package com.jinyframework;
 
 import com.jinyframework.core.RequestBinderBase.HttpResponse;
 import com.jinyframework.core.factories.ServerThreadFactory;
+import com.jinyframework.core.utils.Intro;
 import com.jinyframework.core.utils.MessageCodec;
 import com.jinyframework.core.utils.ParserUtils;
 import lombok.*;
@@ -36,6 +37,7 @@ public final class HttpProxy {
     }
 
     public void start() throws IOException {
+        Intro.begin();
         val threadFactory = new ServerThreadFactory("proxy-event-loop");
         val maxThread = Runtime.getRuntime().availableProcessors() * 2;
         val group = AsynchronousChannelGroup
