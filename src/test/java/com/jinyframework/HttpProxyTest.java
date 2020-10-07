@@ -16,6 +16,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class HttpProxyTest {
     static final String url = "http://localhost:8000";
 
+    private final boolean isCI =
+            System.getenv("CI") != null
+                    && System.getenv("CI").toLowerCase().equals("true");
+
     @BeforeAll
     static void startProxy() throws InterruptedException {
         val serverBIO = HttpServer.port(1111);
@@ -63,10 +67,49 @@ public class HttpProxyTest {
         assertEquals(res.getBody(), "Hello World");
     }
 
-    // Todo: Re-add the unit test when complete the Proxy Mode
+    @Test
+    @DisplayName("Bye")
+    void bye() throws IOException {
+        val res = HttpClient.builder()
+                .url(url + "/nio/bye").method("GET")
+                .build().perform();
+        assertEquals(res.getBody(), "Bye");
+    }
+
+    @Test
+    @DisplayName("Default")
+    void defaultHandler() throws IOException {
+        val res = HttpClient.builder()
+                .url(url + "/").method("GET")
+                .build().perform();
+        assertEquals(res.getStatus(), 404);
+    }
+
+    @Test
+    @DisplayName("Not Found")
+    void notFound() throws IOException {
+        val res = HttpClient.builder()
+                .url(url + "/404").method("GET")
+                .build().perform();
+        assertEquals(res.getStatus(), 404);
+    }
+
+    @Test
+    @DisplayName("Echo")
+    void echo() throws IOException {
+        if (isCI) return;
+
+        val res = HttpClient.builder()
+                .url(url + "/nio/echo").method("POST")
+                .body("Hello World!")
+                .build().perform();
+        assertEquals(res.getBody(), "Hello World!");
+    }
 
     @BeforeEach
     void each() throws InterruptedException {
-        TimeUnit.MILLISECONDS.sleep(500);
+        if (isCI) {
+            TimeUnit.MILLISECONDS.sleep(1000);
+        }
     }
 }
