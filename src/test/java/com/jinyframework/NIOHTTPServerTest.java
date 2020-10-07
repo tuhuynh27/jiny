@@ -32,7 +32,7 @@ public class NIOHTTPServerTest extends HTTPTest {
             server.get("/gm-sub", ctx -> HttpResponse.ofAsync(ctx.dataParam("att")));
             server.post("/echo", ctx -> HttpResponse.ofAsync(ctx.getBody()));
             server.get("/header", ctx -> {
-                ctx.setResponseHeader("foo", "bar");
+                ctx.putHeader("foo", "bar");
                 return HttpResponse.ofAsync("Done!");
             });
             server.get("/query", ctx -> {

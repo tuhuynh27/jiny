@@ -130,7 +130,7 @@ public abstract class RequestBinderBase<T extends HandlerBase> {
             data.put(key, value);
         }
 
-        public void setResponseHeader(@NonNull final String key, @NonNull final String value) {
+        public void putHeader(@NonNull final String key, @NonNull final String value) {
             responseHeaders.put(key, value);
         }
     }
