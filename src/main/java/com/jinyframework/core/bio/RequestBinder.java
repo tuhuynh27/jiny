@@ -40,6 +40,7 @@ public final class RequestBinder extends RequestBinderBase<Handler> {
                     val handlersAndMiddlewares = Stream
                             .concat(middlewaresMatched.stream(), handlersMatched.stream())
                             .collect(Collectors.toList());
+                    System.out.println("LOL");
                     return resolveHandlerChain(handlersAndMiddlewares, null);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
@@ -51,16 +52,20 @@ public final class RequestBinder extends RequestBinderBase<Handler> {
         return resolveHandlerChain(middlewaresMatched, HttpResponse.of("Not found").status(404));
     }
 
-    public HttpResponse resolveHandlerChain(@NonNull final List<RequestBinderBase.Handler> handlers, final HttpResponse customResponse) throws Exception {
+    public HttpResponse resolveHandlerChain(@NonNull final List<RequestBinderBase.Handler> handlers, final HttpResponse customResult) throws Exception {
         for (var i = 0; i < handlers.size(); i++) {
             val isLastItem = (i == handlers.size() - 1);
             val resultFromPreviousHandler = handlers.get(i).handleFunc(context);
             if (!isLastItem && !resultFromPreviousHandler.isAllowNext()) {
+                if (customResult != null) {
+                    return customResult;
+                }
+
                 return resultFromPreviousHandler;
             } else {
                 if (isLastItem) {
-                    if (customResponse != null) {
-                        return customResponse;
+                    if (customResult != null) {
+                        return customResult;
                     }
 
                     return resultFromPreviousHandler;
@@ -68,7 +73,11 @@ public final class RequestBinder extends RequestBinderBase<Handler> {
             }
         }
 
-        log.error("Cannot resolve handler chain");
-        return HttpResponse.of("Cannot resolve handler chain").status(500);
+        if (customResult != null) {
+            return customResult;
+        }
+
+        log.error("Internal Error: Handler chain is empty");
+        return HttpResponse.of("Handler chain is empty").status(500);
     }
 }

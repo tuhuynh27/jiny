@@ -57,7 +57,14 @@ public final class RequestBinderNIO extends RequestBinderBase<HandlerNIO> {
     }
 
     private void resolvePromiseChain(@NonNull final LinkedList<HandlerNIO> handlerQueue, final HttpResponse customResult) {
-        if (handlerQueue.size() == 1) {
+        if (handlerQueue.size() == 0) {
+            if (customResult != null) {
+                promise.complete(customResult);
+            } else {
+                log.error("Internal Error: Handler chain is empty");
+                promise.complete(HttpResponse.of("Handler chain is empty").status(500));
+            }
+        } else if (handlerQueue.size() == 1) {
             try {
                 handlerQueue.removeFirst().handleFunc(context).thenAccept(result -> {
                     if (customResult != null) {
