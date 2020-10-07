@@ -3,6 +3,7 @@ package com.jinyframework.core.bio;
 import com.jinyframework.core.RequestBinderBase;
 import com.jinyframework.core.RequestBinderBase.Handler;
 import com.jinyframework.core.utils.ParserUtils.HttpMethod;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import lombok.var;
@@ -20,7 +21,13 @@ public final class RequestBinder extends RequestBinderBase<Handler> {
         super(context, middlewares, handlerMetadata);
     }
 
-    public HttpResponse getResponseObject() {
+    public HttpResponse getResponseObject() throws Exception {
+        val middlewaresMatched = middlewares.stream()
+                .filter(e -> context.getPath().startsWith(e.getPath()))
+                .map(HandlerMetadata::getHandlers)
+                .flatMap(e -> Arrays.stream(e).distinct())
+                .collect(Collectors.toList());
+
         for (var h : handlerMetadata) {
             val binder = binderInit(h);
 
@@ -29,31 +36,11 @@ public final class RequestBinder extends RequestBinderBase<Handler> {
                             && (binder.getRequestPath().equals(binder.getHandlerPath()) || binder
                             .isRequestWithHandlerParamsMatched())) {
                 try {
-                    // Handle middleware function chain
-                    val middlewareMatched = middlewares.stream()
-                            .filter(e -> context.getPath().startsWith(e.getPath()))
-                            .map(HandlerMetadata::getHandlers)
-                            .flatMap(e -> Arrays.stream(e).distinct())
-                            .collect(Collectors.toList());
-                    val handlers = Arrays.asList(h.handlers);
-
+                    val handlersMatched = Arrays.asList(h.handlers);
                     val handlersAndMiddlewares = Stream
-                            .concat(middlewareMatched.stream(), handlers.stream())
+                            .concat(middlewaresMatched.stream(), handlersMatched.stream())
                             .collect(Collectors.toList());
-
-                    val size = handlersAndMiddlewares.size();
-                    for (var i = 0; i < size; i++) {
-                        val isLastItem = (i == size - 1);
-                        val resultFromPreviousHandler = handlersAndMiddlewares.get(i).handleFunc(
-                                context);
-                        if (!isLastItem && !resultFromPreviousHandler.isAllowNext()) {
-                            return resultFromPreviousHandler;
-                        } else {
-                            if (isLastItem) {
-                                return resultFromPreviousHandler;
-                            }
-                        }
-                    }
+                    return resolveHandlerChain(handlersAndMiddlewares, null);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                     return HttpResponse.of(e.getMessage()).status(500);
@@ -61,6 +48,35 @@ public final class RequestBinder extends RequestBinderBase<Handler> {
             }
         }
 
-        return HttpResponse.of("Not found").status(404);
+        return resolveHandlerChain(middlewaresMatched, HttpResponse.of("Not found").status(404));
+    }
+
+    public HttpResponse resolveHandlerChain(@NonNull final List<RequestBinderBase.Handler> handlers, final HttpResponse customResult) throws Exception {
+        for (var i = 0; i < handlers.size(); i++) {
+            val isLastItem = (i == handlers.size() - 1);
+            val resultFromPreviousHandler = handlers.get(i).handleFunc(context);
+            if (!isLastItem && !resultFromPreviousHandler.isAllowNext()) {
+                if (customResult != null) {
+                    return customResult;
+                }
+
+                return resultFromPreviousHandler;
+            } else {
+                if (isLastItem) {
+                    if (customResult != null) {
+                        return customResult;
+                    }
+
+                    return resultFromPreviousHandler;
+                }
+            }
+        }
+
+        if (customResult != null) {
+            return customResult;
+        }
+
+        log.error("Internal Error: Handler chain is empty");
+        return HttpResponse.of("Handler chain is empty").status(500);
     }
 }

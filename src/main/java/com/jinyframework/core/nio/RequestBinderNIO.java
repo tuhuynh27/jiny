@@ -3,6 +3,7 @@ package com.jinyframework.core.nio;
 import com.jinyframework.core.RequestBinderBase;
 import com.jinyframework.core.RequestBinderBase.HandlerNIO;
 import com.jinyframework.core.utils.ParserUtils.HttpMethod;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import lombok.var;
@@ -16,7 +17,7 @@ import java.util.stream.Stream;
 
 @Slf4j
 public final class RequestBinderNIO extends RequestBinderBase<HandlerNIO> {
-    private final CompletableFuture<HttpResponse> isDone = new CompletableFuture<>();
+    private final CompletableFuture<HttpResponse> promise = new CompletableFuture<>();
 
     public RequestBinderNIO(Context context,
                             final List<HandlerMetadata<HandlerNIO>> middlewares,
@@ -25,61 +26,78 @@ public final class RequestBinderNIO extends RequestBinderBase<HandlerNIO> {
     }
 
     public CompletableFuture<HttpResponse> getResponseObject() {
-        var isFound = false;
+        var is404 = true;
+        val middlewaresMatched = middlewares.stream()
+                .filter(e -> context.getPath().startsWith(e.getPath()))
+                .map(HandlerMetadata::getHandlers)
+                .flatMap(e -> Arrays.stream(e).distinct())
+                .collect(Collectors.toList());
 
         for (val h : handlerMetadata) {
             val binder = binderInit(h);
 
-            if (binder.isMatchCatchAll() ||
+            if (binder.isMatchCatchAll() && (context.getMethod() == h.getMethod() || h.getMethod() == HttpMethod.ALL) ||
                     (context.getMethod() == h.getMethod() || (h.getMethod() == HttpMethod.ALL))
                             && (binder.getRequestPath().equals(binder.getHandlerPath()) || binder
                             .isRequestWithHandlerParamsMatched())) {
-                val middlewareMatched = middlewares.stream()
-                        .filter(e -> context.getPath().startsWith(e.getPath()))
-                        .map(HandlerMetadata::getHandlers)
-                        .flatMap(e -> Arrays.stream(e).distinct())
-                        .collect(Collectors.toList());
-                val handlers = Arrays.asList(h.handlers);
-                val handlerLinkedList = Stream.concat(middlewareMatched.stream(), handlers.stream()).
+                val handlersMatched = Arrays.asList(h.handlers);
+                val handlerLinkedList = Stream.concat(middlewaresMatched.stream(), handlersMatched.stream()).
                         collect(Collectors.toCollection(LinkedList::new));
-                resolvePromiseChain(handlerLinkedList);
-                isFound = true;
+                resolvePromiseChain(handlerLinkedList, null);
+                is404 = false;
                 break;
             }
         }
 
-        if (!isFound) {
-            isDone.complete(HttpResponse.of("Not found").status(404));
+        if (is404) {
+            resolvePromiseChain(new LinkedList<>(middlewaresMatched), HttpResponse.of("Not found").status(404));
         }
 
-        return isDone;
+        return promise;
     }
 
-    private void resolvePromiseChain(final LinkedList<HandlerNIO> handlerQueue) {
-        if (handlerQueue.size() == 1) {
+    private void resolvePromiseChain(@NonNull final LinkedList<HandlerNIO> handlerQueue, final HttpResponse customResult) {
+        if (handlerQueue.size() == 0) {
+            if (customResult != null) {
+                promise.complete(customResult);
+            } else {
+                log.error("Internal Error: Handler chain is empty");
+                promise.complete(HttpResponse.of("Handler chain is empty").status(500));
+            }
+        } else if (handlerQueue.size() == 1) {
             try {
-                handlerQueue.removeFirst().handleFunc(context).thenAccept(isDone::complete);
+                handlerQueue.removeFirst().handleFunc(context).thenAccept(result -> {
+                    if (customResult != null) {
+                        promise.complete(customResult);
+                    } else {
+                        promise.complete(result);
+                    }
+                });
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
-                isDone.complete(HttpResponse.of(e.getMessage()).status(500));
+                promise.complete(HttpResponse.of(e.getMessage()).status(500));
             }
         } else {
             try {
                 handlerQueue.removeFirst().handleFunc(context).thenAccept(result -> {
                     if (result.isAllowNext()) {
                         try {
-                            resolvePromiseChain(handlerQueue);
+                            resolvePromiseChain(handlerQueue, customResult);
                         } catch (Exception e) {
                             log.error(e.getMessage(), e);
-                            isDone.complete(HttpResponse.of(e.getMessage()).status(500));
+                            promise.complete(HttpResponse.of(e.getMessage()).status(500));
                         }
                     } else {
-                        isDone.complete(result);
+                        if (customResult != null) {
+                            promise.complete(customResult);
+                        } else {
+                            promise.complete(result);
+                        }
                     }
                 });
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
-                isDone.complete(HttpResponse.of(e.getMessage()).status(500));
+                promise.complete(HttpResponse.of(e.getMessage()).status(500));
             }
         }
     }

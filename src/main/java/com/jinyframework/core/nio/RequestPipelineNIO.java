@@ -4,10 +4,10 @@ import com.jinyframework.core.RequestBinderBase.HandlerMetadata;
 import com.jinyframework.core.RequestBinderBase.HandlerNIO;
 import com.jinyframework.core.RequestBinderBase.RequestTransformer;
 import com.jinyframework.core.RequestPipelineBase;
+import com.jinyframework.core.utils.MessageCodec;
 import com.jinyframework.core.utils.ParserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
@@ -24,7 +24,6 @@ public final class RequestPipelineNIO implements RequestPipelineBase {
     private final ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
     private final List<HandlerMetadata<HandlerNIO>> middlewares;
     private final List<HandlerMetadata<HandlerNIO>> handlers;
-
     private final RequestTransformer transformer;
 
     @Override
@@ -85,16 +84,5 @@ public final class RequestPipelineNIO implements RequestPipelineBase {
         });
 
         return promise;
-    }
-
-    @UtilityClass
-    public final class MessageCodec {
-        public ByteBuffer encode(final String msg) {
-            return ByteBuffer.wrap(msg.getBytes());
-        }
-
-        public String decode(final ByteBuffer buffer) {
-            return new String(buffer.array(), buffer.arrayOffset(), buffer.remaining());
-        }
     }
 }
