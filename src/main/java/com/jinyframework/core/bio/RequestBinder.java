@@ -40,7 +40,6 @@ public final class RequestBinder extends RequestBinderBase<Handler> {
                     val handlersAndMiddlewares = Stream
                             .concat(middlewaresMatched.stream(), handlersMatched.stream())
                             .collect(Collectors.toList());
-                    System.out.println("LOL");
                     return resolveHandlerChain(handlersAndMiddlewares, null);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);

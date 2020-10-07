@@ -12,7 +12,7 @@ public final class Test {
         new Thread(() -> {
             val proxy = HttpProxy.port(1234);
             proxy.use("/server1", "localhost:1111");
-            proxy.use("/server2", "linecorp.com:80");
+            proxy.use("/server2", "cloudflare.com:80");
             proxy.use("/server3", "localhost:5523");
             try {
                 proxy.start();
@@ -21,15 +21,10 @@ public final class Test {
             }
         }).start();
 
-        val server = NIOHttpServer.port(1111);
-        server.use(ctx -> {
-            System.out.println(ctx.getMethod().toString());
-            System.out.println(ctx.getPath());
-            return HttpResponse.nextAsync();
-        });
-        server.get("/", ctx -> HttpResponse.ofAsync("You are at index!"));
-        server.get("/path/**", ctx -> HttpResponse.ofAsync(ctx.getPath()));
-        server.post("/echo", ctx -> HttpResponse.ofAsync(ctx.getBody()));
+        val server = HttpServer.port(1111);
+        server.get("/", ctx -> HttpResponse.of("You are at index!"));
+        server.get("/path/**", ctx -> HttpResponse.of(ctx.getPath()));
+        server.post("/echo", ctx -> HttpResponse.of(ctx.getBody()));
         server.start();
     }
 }

@@ -128,6 +128,7 @@ public final class HttpProxy {
                         serverSocketChannel.connect(new InetSocketAddress(serverMetadata[0], Integer.parseInt(serverMetadata[1])), null, new CompletionHandler<Void, Object>() {
                             @Override
                             public void completed(Void result, Object attachment) {
+                                System.out.println(String.join("\n", msgArr));
                                 serverSocketChannel.write(MessageCodec.encode(String.join("\n", msgArr)), null, new CompletionHandler<Integer, Object>() {
                                     @Override
                                     public void completed(Integer result, Object attachment) {
