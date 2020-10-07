@@ -13,7 +13,6 @@ import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -110,7 +109,6 @@ public final class HttpProxy {
                         // Replace path
                         msgArr[0] = msgArr[0].replace(matchedKey, "");
 
-
                         val endpoint = endpointMap.get(matchedKey);
                         val serverMetadata = endpoint.split(":");
 
@@ -118,7 +116,7 @@ public final class HttpProxy {
                         serverSocketChannel.connect(new InetSocketAddress(serverMetadata[0], Integer.parseInt(serverMetadata[1])), null, new CompletionHandler<Void, Object>() {
                             @Override
                             public void completed(Void result, Object attachment) {
-                                serverSocketChannel.write(MessageCodec.encode(Arrays.toString(msgArr)), null, new CompletionHandler<Integer, Object>() {
+                                serverSocketChannel.write(MessageCodec.encode(String.join("\n", msgArr)), null, new CompletionHandler<Integer, Object>() {
                                     @Override
                                     public void completed(Integer result, Object attachment) {
                                         byteBuffer.clear();
