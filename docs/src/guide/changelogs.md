@@ -2,7 +2,13 @@
 
 ![Maven Central](https://img.shields.io/maven-central/v/com.jinyframework/jiny?style=flat-square)
 
-### 0.2.5 (Current)
+### 0.2.6 (Current)
+
+- Upgrade HttpProxy to NIO
+- Fix some routing issues
+- Refactor utils
+
+### 0.2.5
 
 - Add Keep-Alive support
 - Add Thread Debug mode
