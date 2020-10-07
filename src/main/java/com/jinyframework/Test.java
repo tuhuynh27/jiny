@@ -27,6 +27,7 @@ public final class Test {
             System.out.println(ctx.getPath());
             return HttpResponse.nextAsync();
         });
+        server.get("/", ctx -> HttpResponse.ofAsync("You are at index!"));
         server.get("/path/**", ctx -> HttpResponse.ofAsync(ctx.getPath()));
         server.post("/echo", ctx -> HttpResponse.ofAsync(ctx.getBody()));
         server.start();

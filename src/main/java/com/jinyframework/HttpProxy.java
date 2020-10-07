@@ -1,7 +1,9 @@
 package com.jinyframework;
 
+import com.jinyframework.core.RequestBinderBase.HttpResponse;
 import com.jinyframework.core.factories.ServerThreadFactory;
 import com.jinyframework.core.utils.MessageCodec;
+import com.jinyframework.core.utils.ParserUtils;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,10 +20,13 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
-@RequiredArgsConstructor
 public final class HttpProxy {
     private final int proxyPort;
     private final Map<String, String> endpointMap = new HashMap<>();
+
+    private HttpProxy(final int proxyPort) {
+        this.proxyPort = proxyPort;
+    }
 
     public static HttpProxy port(final int proxyPort) {
         return new HttpProxy(proxyPort);
@@ -33,7 +38,8 @@ public final class HttpProxy {
 
     public void start() throws IOException {
         val threadFactory = new ServerThreadFactory("proxy-event-loop");
-        val group = AsynchronousChannelGroup.withFixedThreadPool(32, threadFactory);
+        val group = AsynchronousChannelGroup
+                .withFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2, threadFactory);
         val serverSocketChannel = AsynchronousServerSocketChannel.open(group);
         serverSocketChannel.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), proxyPort));
         log.info("Started NIO HTTP Proxy Server on port " + proxyPort + " using " + 32 + " event loop thread(s)");
@@ -42,7 +48,7 @@ public final class HttpProxy {
             @Override
             public void completed(AsynchronousSocketChannel clientSocketChannel, Object attachment) {
                 serverSocketChannel.accept(null, this);
-                new ProxyHandler(clientSocketChannel, endpointMap).process();
+                new ProxyHandler(group, clientSocketChannel, endpointMap).process();
             }
 
             @Override
@@ -53,9 +59,15 @@ public final class HttpProxy {
     }
 
     @RequiredArgsConstructor
-    public static final class ProxyHandler {
+    private static final class ProxyHandler {
+        private final AsynchronousChannelGroup group;
         private final AsynchronousSocketChannel clientSocketChannel;
         private final Map<String, String> endpointMap;
+
+        public String createResponse(@NonNull final String text, final int code) {
+            val httpResponse = HttpResponse.of(text).status(code);
+            return ParserUtils.parseResponse(httpResponse, new HashMap<>(), t -> (String) t);
+        }
 
         public void process() {
             handleSocket().thenAccept(canContinue -> {
@@ -89,7 +101,7 @@ public final class HttpProxy {
                     }
 
                     if (matchedKey == null) {
-                        clientSocketChannel.write(MessageCodec.encode("HTTP/1.1 404 Not Found\nContent-Length: 10\n\nNot Found\n\n"), null, new CompletionHandler<Integer, Object>() {
+                        clientSocketChannel.write(MessageCodec.encode(createResponse("Not found", 404)), null, new CompletionHandler<Integer, Object>() {
                             @Override
                             public void completed(Integer result, Object attachment) {
                                 byteBuffer.clear();
@@ -107,12 +119,12 @@ public final class HttpProxy {
                         });
                     } else {
                         // Replace path
-                        msgArr[0] = msgArr[0].replace(matchedKey, "");
+                        msgArr[0] = msgArr[0].replace(matchedKey, !path.equals(matchedKey) ? "" : "/");
 
                         val endpoint = endpointMap.get(matchedKey);
                         val serverMetadata = endpoint.split(":");
 
-                        val serverSocketChannel = AsynchronousSocketChannel.open();
+                        val serverSocketChannel = AsynchronousSocketChannel.open(group);
                         serverSocketChannel.connect(new InetSocketAddress(serverMetadata[0], Integer.parseInt(serverMetadata[1])), null, new CompletionHandler<Void, Object>() {
                             @Override
                             public void completed(Void result, Object attachment) {
@@ -169,7 +181,7 @@ public final class HttpProxy {
                             @Override
                             public void failed(Throwable e, Object attachment) {
                                 log.error(e.getMessage(), e);
-                                clientSocketChannel.write(MessageCodec.encode("HTTP/1.1 500 Internal Server Error\nContent-Length: 10\n\nNot Found\n\n"), null, new CompletionHandler<Integer, Object>() {
+                                clientSocketChannel.write(MessageCodec.encode(createResponse(e.getMessage(), 500)), null, new CompletionHandler<Integer, Object>() {
                                     @Override
                                     public void completed(Integer result, Object attachment) {
                                         byteBuffer.clear();
