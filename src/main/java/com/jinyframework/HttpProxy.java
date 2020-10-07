@@ -15,8 +15,7 @@ import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
@@ -92,16 +91,26 @@ public final class HttpProxy {
                     val firstLineArr = msgArr[0].split(" ");
                     val path = firstLineArr[1];
 
-                    var matchedKey = endpointMap.keySet().stream()
-                            .filter(path::startsWith).findFirst()
-                            .orElse(null);
-                    if (matchedKey == null) {
-                        if (endpointMap.get("/") != null) {
-                            matchedKey = "/";
+                    val endpoints = endpointMap.keySet().toArray(new String[0]);
+                    val endpointsMatched = new ArrayList<String>();
+                    var matchedKey = "";
+                    for (val endpoint : endpoints) {
+                        if (path.startsWith(endpoint)) {
+                            val exactTestStr = path.replace(endpoint, "");
+                            if (exactTestStr.startsWith("/") || exactTestStr.length() == 0) {
+                                endpointsMatched.add(endpoint);
+                            }
                         }
                     }
+                    if (endpointsMatched.size() > 0) {
+                        matchedKey = Collections.max(endpointsMatched, Comparator.comparing(String::length));
+                    }
 
-                    if (matchedKey == null) {
+                    if (matchedKey.isEmpty() && endpointMap.get("/") != null) {
+                        matchedKey = "/";
+                    }
+
+                    if (matchedKey.isEmpty()) {
                         clientSocketChannel.write(MessageCodec.encode(createResponse("Not found", 404)), null, new CompletionHandler<Integer, Object>() {
                             @Override
                             public void completed(Integer result, Object attachment) {
