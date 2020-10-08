@@ -7,7 +7,7 @@ import com.jinyframework.examples.crud.utils.ResponseHelper;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.jinyframework.core.RequestBinderBase.HttpResponse;
-import com.jinyframework.core.RequestBinderBase.RequestContext;
+import com.jinyframework.core.RequestBinderBase.Context;
 import lombok.val;
 
 import java.io.IOException;
@@ -21,20 +21,20 @@ public class CatHandler {
         this.catCollection = client.getDatabase("default").getCollection("cat", Cat.class);
     }
 
-    public HttpResponse getCats(RequestContext ctx) {
+    public HttpResponse getCats(Context ctx) {
         val catArr = new ArrayList<Cat>();
         catCollection.find().forEach(catArr::add);
         return HttpResponse.of(catArr.toArray());
     }
 
-    public HttpResponse addCat(RequestContext ctx) {
+    public HttpResponse addCat(Context ctx) {
         val body = ctx.getBody();
         val newCat = gson.fromJson(body, Cat.class);
         catCollection.insertOne(newCat);
         return ResponseHelper.success("Done");
     }
 
-    public HttpResponse template(RequestContext ctx) throws IOException {
+    public HttpResponse template(Context ctx) throws IOException {
         val hb = new Handlebars();
         val template = hb.compileInline("<b>Hello {{this}}</b>");
         return HttpResponse.of(template.apply(ctx.getQuery().get("name")));

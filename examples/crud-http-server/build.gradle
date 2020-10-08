@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'idea'
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '5.0.0'
+    id 'com.github.johnrengelman.shadow' version '6.0.0'
 }
 
 group 'com.jinyframework'
@@ -16,7 +16,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
-    compile group: 'com.jinyframework', name: 'jiny', version: '0.2.5'
+    compile group: 'com.jinyframework', name: 'jiny', version: '0.2.6'
     implementation 'com.google.code.gson:gson:2.8.6'
 
     compile group: 'org.mongodb', name: 'mongodb-driver-sync', version: '4.1.0-beta2'
@@ -28,8 +28,4 @@ dependencies {
 
 application {
     mainClassName = 'com.jinyframework.examples.crud.Main'
-}
-
-shadowJar {
-    classifier = 'fat'
 }
