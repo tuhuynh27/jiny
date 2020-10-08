@@ -76,6 +76,7 @@ module.exports = {
           children: [
             'advance/project-structure',
             'advance/project-structure-scala',
+            'advance/database',
             ['https://github.com/huynhminhtufu/jiny/tree/master/examples', 'See examples'],
             'advance/proxy',
             'advance/production',

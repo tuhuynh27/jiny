@@ -67,4 +67,14 @@ fun main(args: Array<String>) {
 
 ::::
 
+<h2>Who're using Jiny?</h2>
+
+
+<p style="text-align: center;">
+<a href="https://oddgame.io" target="_blank"><img src="https://i.imgur.com/0JNoKJd.png" style="max-width: 92px; margin-right: 0.5rem;" /></a>
+<a href="https://engineering.linecorp.com/vi/" target="_blank"><img src="https://i.imgur.com/PfIIONx.png" style="max-width: 100px;" /></a>
+</p>
+
 <p style="text-align: right;"><a class="github-button" href="https://github.com/huynhminhtufu/jiny" data-size="large" data-show-count="true" aria-label="Star huynhminhtufu/jiny on GitHub">Star</a><script async defer src="https://buttons.github.io/buttons.js"></script></p>
+
+<p style="margin-bottom: 2rem;"></p>

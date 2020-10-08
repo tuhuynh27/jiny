@@ -1,5 +1,7 @@
 # Middlewares
 
+Middleware is a logic chain between the client and the route handler. It allows you to perform operations on incoming requests before they get to the route handler and on outgoing responses before they go to the client.
+
 ## Definition
 
 Middleware can be defined by `Handler Chaining`
@@ -21,6 +23,10 @@ server.get("/protected", // You wanna provide a jwt validator on this endpoint
                HttpResponse.of("Login success, hello: " + 
                                                    ctx.getData("username")));
 ```
+
+::: tip Notice the order
+The order in which middleware are added is important. Requests coming into your application will go through the middleware in the order they are added. Responses leaving your application will go back through the middleware in reverse order. Route-specific middleware always runs after application middleware.
+:::
 
 ## Handler Data
 
@@ -53,7 +59,7 @@ Handler jwtMiddleware = ctx -> {
     if (!authorizationHeader.startsWith("Bearer")) {
         return HttpResponse.reject("Invalid token").status(401);
     }
-    ctx.getData().put("username", "tuhuynh");
+    ctx.setDataParam("username", "tuhuynh");
     return HttpResponse.next();
 };
 
@@ -65,7 +71,7 @@ class CommonMiddleware {
         if (!authorizationHeader.startsWith("Bearer")) {
             return HttpResponse.reject("Invalid token").status(401);
         }
-        ctx.getData().put("username", "tuhuynh");
+        ctx.setDataParam("username", "tuhuynh");
         return HttpResponse.next();
     }
 }

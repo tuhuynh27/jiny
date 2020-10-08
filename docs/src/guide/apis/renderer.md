@@ -2,7 +2,7 @@
 
 ## Transform
 
-You can use a JSON adapter to custom the response
+You can use a JSON adapter to custom the response, recommended to use [Google's GSON](https://github.com/google/gson)
 
 ```java
 import com.google.gson.Gson;
@@ -17,6 +17,10 @@ server.get("/json", ctx -> {
     // You will get {"email": "abc@gmail.com", "name": "Tu Huynh"}
 });
 ```
+
+::: details JSON/XML?
+You can also use a [XML transformer](https://docs.oracle.com/javase/7/docs/api/javax/xml/transform/Transformer.html), to make your Jiny server speak `XML` or whatever format you want)
+:::
 
 ## Global Transform
 

@@ -4,19 +4,53 @@ Jiny is well suited for programming courses and for demos/prototypes.
 
 A lot of universities still use application servers such as Glassfish or Tomcat when teaching Java web development. Setting up and configuring these servers for each student requires a lot of effort, and that effort could be spent teaching students about HTTP and programming instead.
 
+::: details Why use enterprise frameworks to learn web development is a bad idea?
+**Enterprise** application servers such as [Glassfish](https://javaee.github.io/glassfish/) and [JBoss](https://www.jboss.org/) are monolithic and needlessly complex, providing a wealth of configuration options and services that are mostly dormant. More lightweight application servers like [Tomcat](http://tomcat.apache.org/) are easier to configure, but still have a learning curve to do so properly.
+
+HTTP, in essence, is a very simple protocol. Each HTTP message has a preamble, some key-value pair headers, and a content body. All of the magic in a web application comes from how those messages are interpreted.
+:::
+
 Jiny was built on Java SE (yes, just Java's standard lib) thus you only need to add the dependency and write a single line of code to create and start a server. A full “Hello World” server looks like this:
 
 :::: tabs
 
-::: tab Java
+::: tab Java7
  ```java
 import com.jinyframework.*;
 
 class Main {
+    // Syntax is very expressive, you don't need to read the docs to understand
     static void main() {
-        val server = HTTPServer.port(1234);
-        server.get("/", ctx -> HttpResponse.of("Hello World"));
-        server.start();
+        val server = HTTPServer.port(1234); // Server will listen at port 1234
+
+        // If a client visits on path '/'
+        server.use("/", new Handler() {
+            @Override
+            public HttpResponse handleFunc(Context context) throws Exception {
+                // the server will send a response said: Hello World
+                return HttpResponse.of("Hello World!");
+            }
+        });
+
+        server.start(); // Start the server
+    }
+} 
+```
+:::
+
+::: tab Java8
+ ```java
+import com.jinyframework.*;
+
+class Main {
+    // Syntax is very expressive, you don't need to read the docs to understand
+    static void main() {
+        val server = HTTPServer.port(1234); // Server will listen at port 1234
+
+        // If a client visits on path '/', the server will send a response said: Hello World
+        server.use("/", ctx -> HttpResponse.of("Hello World!"));
+
+        server.start(); // Start the server
     }
 } 
 ```
@@ -49,7 +83,7 @@ fun main(args: Array<String>) {
 
 ::::
 
-This server can be packaged and launched with java -jar hello-world.jar, no further configuration required. This lets you focus your classes on core principles rather than specifics for setting up an application server (and understand its complex "Enterprise" architecture).
+This server can be packaged and launched with `java -jar hello-world.jar`, no further configuration required. This lets you focus your classes on core principles rather than specifics for setting up an application server (and understand its complex "Enterprise" architecture).
 
 ## Simple and unopinionated
 

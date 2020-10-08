@@ -27,14 +27,14 @@ server.get("/json", ctx -> {
 
 // /query?foo=bar
 server.get("/query", ctx -> {
-    final String bar = ctx.getQuery().get("foo");
+    final String bar = ctx.queryParam("foo");
     return HttpResponse.ofAsync(bar);
 });
 
 // /params/hello/world
 server.get("/params/:foo/:bar", ctx -> {
-    final String foo = ctx.getParam().get("foo");
-    final String bar = ctx.getParam().get("bar");
+    final String foo = ctx.pathParam("foo");
+    final String bar = ctx.pathParam("bar");
     return HttpResponse.ofAsync("Foo: " + foo + ", Bar: " + bar);
 });
 
@@ -78,9 +78,9 @@ server.get("/protected", ctx -> {
     if (!authorizationHeader.startsWith("Bearer ")) {
         return HttpResponse.rejectAsync("InvalidToken", 401);
     }
-    ctx.putHandlerData("username", "tuhuynh");
+    ctx.setDataParam("username", "tuhuynh");
     return HttpResponse.nextAsync();
-}, ctx -> HttpResponse.ofAsync("Login success, hello: " + ctx.getData("username")));
+}, ctx -> HttpResponse.ofAsync("Login success, hello: " + ctx.dataParam("username")));
 
 // Handle error
 server.get("/panic", ctx -> {

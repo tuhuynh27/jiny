@@ -1,6 +1,8 @@
 # Routes
 
-## Define
+Routing is the process of finding the appropriate request handler for an incoming request.
+
+## Definition
 
 The main building block of a Jiny HTTP Server is a set of routes. A route is made up of three simple pieces:
 

@@ -52,3 +52,39 @@ fun main(args: Array<String>) {
 :::
 
 ::::
+
+::: details What is ctx -> HttpResponse.of("Pong") ?
+It's **not a callback** in case you're coming from JS world. :smirk:
+
+This is called [Functional Interface](https://www.geeksforgeeks.org/functional-interfaces-java/) - a shorthand syntax of Java 8, if you use Java 7 and before, you can write like this:
+
+```java
+server.use("/", new Handler() {
+    @Override
+    public HttpResponse handleFunc(Context context) throws Exception {
+        return HttpResponse.of("Hello World!");
+    }
+});
+```
+:::
+
+::: details Okay, then what is gson::toJson ?
+It's another sugar syntax called [Double Colon Operator](https://www.baeldung.com/java-8-double-colon-operator)
+
+The code above can be written without Double Colon Operator like this:
+
+```java
+server.useTransformer(response -> gson.toJson(response));
+```
+
+or without Double Colon Operator and Functional Interface should be as follows:
+
+```java
+server.useTransformer(new RequestTransformer() {
+    @Override
+    public String render(Object model) {
+        return gson.toJson(model);
+    }
+});
+```
+:::
