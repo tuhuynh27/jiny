@@ -106,7 +106,7 @@ Jiny’s documentation is example-based rather than technical, which allows new 
 Jiny standard mode is designed to be simple and blocking, as this is the easiest programming model to reason about. However, you can still switch to use with Future, ComplatableFuture or Reactive Programming since Jiny also support asynchronous mode out-of-the-box.
 
 :::tip What is Async Mode?
-[See NIO APIs](https://jinyframework.com/guide/nio-apis/)
+[See NIO APIs](https://jinyframework.com/guide/nio/)
 :::
 
 Jiny Async mode is event-driven and non-blocking. This means your server can handle a lot of concurrency using a small number of kernel threads, thus help your app scale with minimal hardware.

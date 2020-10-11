@@ -30,11 +30,11 @@ The order in which middleware are added is important. Requests coming into your 
 
 ## Handler Data
 
-You can use `ctx.getData().put('key', 'value')` to set HandlerData, this data can be access by the next middleware handler
+You can use `ctx.setDataParam('key', 'value')` to set HandlerData, this data can be access by the next middleware handler
 
 ```java
-ctx.getData().put("username", "tuhuynh"); // In JWT Middleware
-ctx.getData().get("username") // After the JWT Middleware
+ctx.setDataParam("username", "tuhuynh"); // In JWT Middleware
+ctx.getData("username") // After the JWT Middleware
 ```
 
 ## Next/Reject

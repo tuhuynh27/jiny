@@ -59,24 +59,25 @@ module.exports = {
           ]
         },
         {
-          title: 'APIs',
+          title: 'Basic',
           collapsable: false,
           children: [
-            'apis/routes',
-            'apis/httpresponse',
-            'apis/context',
-            'apis/middlewares',
-            'apis/error-handler',
-            'apis/renderer'
+            'basic/routes',
+            'basic/httpresponse',
+            'basic/context',
+            'basic/middlewares',
+            'basic/error-handler',
+            'basic/renderer'
           ]
         },
         {
           title: 'Advance',
           collapsable: false,
           children: [
+            'advance/di',
+            'advance/database',
             'advance/project-structure',
             'advance/project-structure-scala',
-            'advance/database',
             ['https://github.com/huynhminhtufu/jiny/tree/master/examples', 'See examples'],
             'advance/proxy',
             'advance/production',
@@ -84,14 +85,14 @@ module.exports = {
           ]
         },
         {
-          title: 'NIO APIs',
+          title: 'Non-blocking',
           collapsable: false,
           children: [
-            'nio-apis/',
-            'nio-apis/async-helper',
-            'nio-apis/thread-pool',
-            'nio-apis/completablefuture',
-            'nio-apis/reactor',
+            'nio/',
+            'nio/async-helper',
+            'nio/thread-pool',
+            'nio/completablefuture',
+            'nio/reactor',
           ]
         },
         'changelogs',
