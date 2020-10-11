@@ -2,24 +2,23 @@ package com.jinyframework.examples.crud.handlers;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.google.gson.Gson;
-import com.jinyframework.examples.crud.entities.Cat;
-import com.jinyframework.examples.crud.utils.ResponseHelper;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.jinyframework.core.RequestBinderBase.HttpResponse;
 import com.jinyframework.core.RequestBinderBase.Context;
+import com.jinyframework.core.RequestBinderBase.HttpResponse;
+import com.jinyframework.examples.crud.entities.Cat;
+import com.jinyframework.examples.crud.factories.AppFactory;
+import com.jinyframework.examples.crud.utils.ResponseHelper;
+import com.mongodb.client.MongoCollection;
+import lombok.RequiredArgsConstructor;
 import lombok.val;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
+@RequiredArgsConstructor
 public class CatHandler {
-    private final Gson gson = new Gson();
-    private final MongoCollection<Cat> catCollection;
-
-    public CatHandler(MongoClient client) {
-        this.catCollection = client.getDatabase("default").getCollection("cat", Cat.class);
-    }
+    private final Gson gson = AppFactory.getGsonInstance();
+    private final MongoCollection<Cat> catCollection = AppFactory.getMongoClient()
+            .getDatabase("default").getCollection("cat", Cat.class);
 
     public HttpResponse getCats(Context ctx) {
         val catArr = new ArrayList<Cat>();
