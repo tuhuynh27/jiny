@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 @RequiredArgsConstructor
 public class CatHandler {
-    private final Gson gson = AppFactory.getGsonInstance();
+    private final Gson gson = AppFactory.getGson();
     private final MongoCollection<Cat> catCollection = AppFactory.getMongoClient()
             .getDatabase("default").getCollection("cat", Cat.class);
 
