@@ -1,11 +1,12 @@
 package com.jinyframework.examples.crud.repositories;
 
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import org.hibernate.SessionFactory;
 
 import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
+
+import lombok.val;
 
 @RequiredArgsConstructor
 public abstract class CrudRepository<T> {
