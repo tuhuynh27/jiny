@@ -43,6 +43,10 @@ module.exports = {
         link: '/guide/',
       },
       {
+        text: 'Tutorials',
+        link: 'https://tuhuynh.com/tags/jiny',
+      },
+      {
         text: 'Author',
         link: '/author/',
       },
