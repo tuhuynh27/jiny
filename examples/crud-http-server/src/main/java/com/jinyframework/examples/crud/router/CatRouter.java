@@ -4,7 +4,7 @@ import com.jinyframework.core.bio.HttpRouter;
 import com.jinyframework.examples.crud.handlers.CatHandler;
 import lombok.val;
 
-public final class CatRouter {
+public class CatRouter {
     public static HttpRouter getRouter() {
         val catHandler = new CatHandler();
         val router = new HttpRouter();

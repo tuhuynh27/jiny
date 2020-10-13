@@ -6,7 +6,7 @@ import lombok.experimental.UtilityClass;
 import lombok.val;
 
 @UtilityClass
-public final class ResponseHelper {
+public class ResponseHelper {
     public HttpResponse success(String msg) {
         val obj = ResponseEntity.builder().message(msg).build();
         return HttpResponse.of(obj);

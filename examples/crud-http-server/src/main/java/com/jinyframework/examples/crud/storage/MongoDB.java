@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
-public final class MongoDB {
+public class MongoDB {
     public static MongoClient init() {
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.mongodb.driver").setLevel(Level.OFF);
 
