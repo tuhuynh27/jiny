@@ -109,5 +109,5 @@ test {
 }
 
 //application {
-//    mainClassName = 'com.jinyframework.Test'
+//    mainClassName = 'com.jinyframework.WebSocket'
 //}

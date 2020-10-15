@@ -1,8 +1,8 @@
 package com.jinyframework;
 
-import com.jinyframework.core.HttpRouterBase;
-import com.jinyframework.core.RequestBinderBase.HandlerNIO;
-import com.jinyframework.core.RequestBinderBase.RequestTransformer;
+import com.jinyframework.core.AbstractHttpRouter;
+import com.jinyframework.core.AbstractRequestBinder.HandlerNIO;
+import com.jinyframework.core.AbstractRequestBinder.RequestTransformer;
 import com.jinyframework.core.factories.ServerThreadFactory;
 import com.jinyframework.core.nio.RequestPipelineNIO;
 import com.jinyframework.core.utils.Intro;
@@ -20,7 +20,7 @@ import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 
 @Slf4j
-public final class NIOHttpServer extends HttpRouterBase<HandlerNIO> {
+public final class NIOHttpServer extends AbstractHttpRouter<HandlerNIO> {
     private final int serverPort;
     private final ServerThreadFactory threadFactory = new ServerThreadFactory("event-loop");
     private AsynchronousServerSocketChannel serverSocketChannel;

@@ -1,6 +1,6 @@
-package com.jinyframework.core.nio;
+package com.jinyframework.core.helpers;
 
-import com.jinyframework.core.RequestBinderBase.HttpResponse;
+import com.jinyframework.core.AbstractRequestBinder.HttpResponse;
 import lombok.Getter;
 import lombok.val;
 

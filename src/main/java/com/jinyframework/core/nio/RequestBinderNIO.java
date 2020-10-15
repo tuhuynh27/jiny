@@ -1,7 +1,7 @@
 package com.jinyframework.core.nio;
 
-import com.jinyframework.core.RequestBinderBase;
-import com.jinyframework.core.RequestBinderBase.HandlerNIO;
+import com.jinyframework.core.AbstractRequestBinder;
+import com.jinyframework.core.AbstractRequestBinder.HandlerNIO;
 import com.jinyframework.core.utils.ParserUtils.HttpMethod;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Slf4j
-public final class RequestBinderNIO extends RequestBinderBase<HandlerNIO> {
+public final class RequestBinderNIO extends AbstractRequestBinder<HandlerNIO> {
     private final CompletableFuture<HttpResponse> promise = new CompletableFuture<>();
 
     public RequestBinderNIO(Context context,

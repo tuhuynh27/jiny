@@ -1,8 +1,8 @@
 package com.jinyframework.core.nio;
 
-import com.jinyframework.core.RequestBinderBase.HandlerMetadata;
-import com.jinyframework.core.RequestBinderBase.HandlerNIO;
-import com.jinyframework.core.RequestBinderBase.RequestTransformer;
+import com.jinyframework.core.AbstractRequestBinder.HandlerMetadata;
+import com.jinyframework.core.AbstractRequestBinder.HandlerNIO;
+import com.jinyframework.core.AbstractRequestBinder.RequestTransformer;
 import com.jinyframework.core.RequestPipelineBase;
 import com.jinyframework.core.utils.MessageCodec;
 import com.jinyframework.core.utils.ParserUtils;

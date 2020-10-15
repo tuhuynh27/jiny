@@ -1,6 +1,6 @@
 package com.jinyframework;
 
-import com.jinyframework.core.RequestBinderBase.HttpResponse;
+import com.jinyframework.core.AbstractRequestBinder.HttpResponse;
 import lombok.val;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

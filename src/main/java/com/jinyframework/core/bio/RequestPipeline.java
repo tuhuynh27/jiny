@@ -1,8 +1,8 @@
 package com.jinyframework.core.bio;
 
-import com.jinyframework.core.RequestBinderBase.Handler;
-import com.jinyframework.core.RequestBinderBase.HandlerMetadata;
-import com.jinyframework.core.RequestBinderBase.RequestTransformer;
+import com.jinyframework.core.AbstractRequestBinder.Handler;
+import com.jinyframework.core.AbstractRequestBinder.HandlerMetadata;
+import com.jinyframework.core.AbstractRequestBinder.RequestTransformer;
 import com.jinyframework.core.RequestPipelineBase;
 import com.jinyframework.core.utils.ParserUtils;
 import lombok.RequiredArgsConstructor;

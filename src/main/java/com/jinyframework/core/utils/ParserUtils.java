@@ -1,8 +1,8 @@
 package com.jinyframework.core.utils;
 
-import com.jinyframework.core.RequestBinderBase.Context;
-import com.jinyframework.core.RequestBinderBase.HttpResponse;
-import com.jinyframework.core.RequestBinderBase.RequestTransformer;
+import com.jinyframework.core.AbstractRequestBinder.Context;
+import com.jinyframework.core.AbstractRequestBinder.HttpResponse;
+import com.jinyframework.core.AbstractRequestBinder.RequestTransformer;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
