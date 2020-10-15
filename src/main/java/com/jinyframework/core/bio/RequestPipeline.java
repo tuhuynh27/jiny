@@ -3,7 +3,6 @@ package com.jinyframework.core.bio;
 import com.jinyframework.core.AbstractRequestBinder.Handler;
 import com.jinyframework.core.AbstractRequestBinder.HandlerMetadata;
 import com.jinyframework.core.AbstractRequestBinder.RequestTransformer;
-import com.jinyframework.core.RequestPipelineBase;
 import com.jinyframework.core.utils.ParserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -24,7 +23,7 @@ import java.util.StringTokenizer;
 
 @Slf4j
 @RequiredArgsConstructor
-public final class RequestPipeline implements RequestPipelineBase, Runnable {
+public final class RequestPipeline implements Runnable {
     private final Socket socket;
     private final List<HandlerMetadata<Handler>> middlewares;
     private final List<HandlerMetadata<Handler>> handlers;

@@ -23,8 +23,6 @@ import java.util.regex.Pattern;
 @Slf4j
 @UtilityClass
 public final class ParserUtils {
-    private final Pattern HEADER_PATTERN = Pattern.compile(": ");
-
     public Context parseRequest(@NonNull final String[] request, @NonNull final String body) {
         if (request.length == 0) {
             throw new ArithmeticException("Request is empty");
@@ -33,9 +31,10 @@ public final class ParserUtils {
         val metaArr = request[0].split(" ");
 
         val header = new HashMap<String, String>();
+        val headerPattern = Pattern.compile(": ");
         for (int i = 1; i < request.length; i++) {
             val headerLine = request[i];
-            val headerArr = HEADER_PATTERN.split(headerLine);
+            val headerArr = headerPattern.split(headerLine);
             if (headerArr.length == 2) {
                 val headerKey = headerArr[0];
                 val headerValue = headerArr[1];

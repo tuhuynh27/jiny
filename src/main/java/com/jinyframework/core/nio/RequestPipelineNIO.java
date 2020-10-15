@@ -3,7 +3,6 @@ package com.jinyframework.core.nio;
 import com.jinyframework.core.AbstractRequestBinder.HandlerMetadata;
 import com.jinyframework.core.AbstractRequestBinder.HandlerNIO;
 import com.jinyframework.core.AbstractRequestBinder.RequestTransformer;
-import com.jinyframework.core.RequestPipelineBase;
 import com.jinyframework.core.utils.MessageCodec;
 import com.jinyframework.core.utils.ParserUtils;
 import lombok.RequiredArgsConstructor;
@@ -19,14 +18,13 @@ import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @RequiredArgsConstructor
-public final class RequestPipelineNIO implements RequestPipelineBase {
+public final class RequestPipelineNIO {
     private final AsynchronousSocketChannel clientSocketChannel;
     private final ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
     private final List<HandlerMetadata<HandlerNIO>> middlewares;
     private final List<HandlerMetadata<HandlerNIO>> handlers;
     private final RequestTransformer transformer;
 
-    @Override
     public void run() {
         process().thenAccept(canContinue -> {
             if (canContinue) {
