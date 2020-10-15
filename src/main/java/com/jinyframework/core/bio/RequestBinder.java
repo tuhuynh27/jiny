@@ -1,7 +1,7 @@
 package com.jinyframework.core.bio;
 
-import com.jinyframework.core.RequestBinderBase;
-import com.jinyframework.core.RequestBinderBase.Handler;
+import com.jinyframework.core.AbstractRequestBinder;
+import com.jinyframework.core.AbstractRequestBinder.Handler;
 import com.jinyframework.core.utils.ParserUtils.HttpMethod;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Slf4j
-public final class RequestBinder extends RequestBinderBase<Handler> {
+public final class RequestBinder extends AbstractRequestBinder<Handler> {
     public RequestBinder(final Context context,
                          final List<HandlerMetadata<Handler>> middlewares,
                          final List<HandlerMetadata<Handler>> handlerMetadata) {
@@ -51,7 +51,7 @@ public final class RequestBinder extends RequestBinderBase<Handler> {
         return resolveHandlerChain(middlewaresMatched, HttpResponse.of("Not found").status(404));
     }
 
-    public HttpResponse resolveHandlerChain(@NonNull final List<RequestBinderBase.Handler> handlers, final HttpResponse customResult) throws Exception {
+    public HttpResponse resolveHandlerChain(@NonNull final List<AbstractRequestBinder.Handler> handlers, final HttpResponse customResult) throws Exception {
         for (var i = 0; i < handlers.size(); i++) {
             val isLastItem = (i == handlers.size() - 1);
             val resultFromPreviousHandler = handlers.get(i).handleFunc(context);

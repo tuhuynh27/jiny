@@ -5,7 +5,7 @@
 You can import and create an Async Object
 
 ```java
-import com.jinyframework.core.nio.AsyncHelper;
+import com.jinyframework.core.helpers.AsyncHelper;
 
 val async = AsyncHelper.make();
 ```

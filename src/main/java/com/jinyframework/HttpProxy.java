@@ -1,6 +1,6 @@
 package com.jinyframework;
 
-import com.jinyframework.core.RequestBinderBase.HttpResponse;
+import com.jinyframework.core.AbstractRequestBinder.HttpResponse;
 import com.jinyframework.core.factories.ServerThreadFactory;
 import com.jinyframework.core.utils.Intro;
 import com.jinyframework.core.utils.MessageCodec;

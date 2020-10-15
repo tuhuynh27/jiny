@@ -1,6 +1,6 @@
 package com.jinyframework.core.utils;
 
-import com.jinyframework.core.RequestBinderBase.HttpResponse;
+import com.jinyframework.core.AbstractRequestBinder.HttpResponse;
 import com.jinyframework.core.utils.ParserUtils.HttpMethod;
 import lombok.val;
 import org.junit.jupiter.api.DisplayName;

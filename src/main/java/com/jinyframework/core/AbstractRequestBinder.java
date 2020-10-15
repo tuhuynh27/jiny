@@ -1,6 +1,6 @@
 package com.jinyframework.core;
 
-import com.jinyframework.core.RequestBinderBase.HandlerBase;
+import com.jinyframework.core.AbstractRequestBinder.HandlerBase;
 import com.jinyframework.core.utils.ParserUtils.HttpMethod;
 import lombok.*;
 
@@ -11,7 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public abstract class RequestBinderBase<T extends HandlerBase> {
+public abstract class AbstractRequestBinder<T extends HandlerBase> {
     protected final Context context;
     protected final List<HandlerMetadata<T>> middlewares;
     protected final List<HandlerMetadata<T>> handlerMetadata;

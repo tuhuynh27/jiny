@@ -1,8 +1,8 @@
 package com.jinyframework;
 
-import com.jinyframework.core.HttpRouterBase;
-import com.jinyframework.core.RequestBinderBase.Handler;
-import com.jinyframework.core.RequestBinderBase.RequestTransformer;
+import com.jinyframework.core.AbstractHttpRouter;
+import com.jinyframework.core.AbstractRequestBinder.Handler;
+import com.jinyframework.core.AbstractRequestBinder.RequestTransformer;
 import com.jinyframework.core.bio.RequestPipeline;
 import com.jinyframework.core.factories.ServerThreadFactory;
 import com.jinyframework.core.utils.Intro;
@@ -18,7 +18,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 @Slf4j
-public final class HttpServer extends HttpRouterBase<Handler> {
+public final class HttpServer extends AbstractHttpRouter<Handler> {
     private final int serverPort;
     private final ServerThreadFactory threadFactory = new ServerThreadFactory("request-processor");
     private final Executor executor = Executors.newCachedThreadPool(threadFactory);
