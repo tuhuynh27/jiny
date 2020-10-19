@@ -2,7 +2,12 @@
 
 ![Maven Central](https://img.shields.io/maven-central/v/com.jinyframework/jiny?style=flat-square)
 
-### 0.2.6 (Current)
+### 0.2.7 (Current)
+
+- Refactor code
+- Update package paths
+
+### 0.2.6
 
 - Upgrade HttpProxy to NIO
 - Fix some routing issues

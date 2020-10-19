@@ -22,7 +22,7 @@ And then you have a Gradle build template with `build.gradle` file
 
 ```groovy
 dependencies {
-    compile group: 'com.jinyframework', name: 'jiny', version: '0.2.6'
+    compile group: 'com.jinyframework', name: 'jiny', version: '0.2.7'
 }
 ```
 
@@ -34,6 +34,6 @@ dependencies {
 <dependency>
   <groupId>com.jinyframework</groupId>
   <artifactId>jiny</artifactId>
-  <version>0.2.6</version>
+  <version>0.2.7</version>
 </dependency>
 ```
