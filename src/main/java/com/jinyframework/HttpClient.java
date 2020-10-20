@@ -18,6 +18,7 @@ import java.util.Map;
 public final class HttpClient {
     private final String url;
     private final String method;
+    @Singular
     private final Map<String, String> headers;
     private final String body;
 

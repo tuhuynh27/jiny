@@ -111,7 +111,7 @@ public abstract class AbstractRequestBinder<T extends HandlerBase> {
         private final Map<String, String> responseHeaders;
 
         public String headerParam(@NonNull final String name) {
-            return header.get(name) != null ? header.get(name) : "";
+            return header.get(name.toLowerCase()) != null ? header.get(name.toLowerCase()) : "";
         }
 
         public String pathParam(@NonNull final String name) {
