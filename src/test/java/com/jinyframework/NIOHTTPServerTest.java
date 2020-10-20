@@ -31,6 +31,8 @@ public class NIOHTTPServerTest extends HTTPTest {
             server.get("/gm", ctx -> HttpResponse.ofAsync(ctx.dataParam("global")));
             server.get("/gm-sub", ctx -> HttpResponse.ofAsync(ctx.dataParam("att")));
             server.post("/echo", ctx -> HttpResponse.ofAsync(ctx.getBody()));
+            server.get("/req-header", ctx -> HttpResponse.ofAsync(ctx.headerParam("foo")
+                                                             + ctx.headerParam("Bar")));
             server.get("/header", ctx -> {
                 ctx.putHeader("foo", "bar");
                 return HttpResponse.ofAsync("Done!");

@@ -31,6 +31,8 @@ public class HTTPServerTest extends HTTPTest {
             server.get("/gm", ctx -> HttpResponse.of(ctx.dataParam("global")));
             server.get("/gm-sub", ctx -> HttpResponse.of(ctx.dataParam("att")));
             server.post("/echo", ctx -> HttpResponse.of(ctx.getBody()));
+            server.get("/req-header", ctx -> HttpResponse.of(ctx.headerParam("foo")
+                                                             + ctx.headerParam("Bar")));
             server.get("/header", ctx -> {
                 ctx.putHeader("foo", "bar");
                 return HttpResponse.of("Done!");
