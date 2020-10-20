@@ -111,27 +111,27 @@ public abstract class AbstractRequestBinder<T extends HandlerBase> {
         private final Map<String, String> responseHeaders;
 
         public String headerParam(@NonNull final String name) {
-            return header.get(name) != null ? header.get(name) : "";
+            return header.get(name.toLowerCase()) != null ? header.get(name.toLowerCase()) : "";
         }
 
         public String pathParam(@NonNull final String name) {
-            return param.get(name) != null ? param.get(name) : "";
+            return param.get(name.toLowerCase()) != null ? param.get(name.toLowerCase()) : "";
         }
 
         public String queryParam(@NonNull final String name) {
-            return query.get(name) != null ? query.get(name) : "";
+            return query.get(name.toLowerCase()) != null ? query.get(name.toLowerCase()) : "";
         }
 
         public String dataParam(@NonNull final String name) {
-            return data.get(name) != null ? data.get(name) : "";
+            return data.get(name.toLowerCase()) != null ? data.get(name.toLowerCase()) : "";
         }
 
         public void setDataParam(@NonNull final String key, @NonNull final String value) {
-            data.put(key, value);
+            data.put(key.toLowerCase(), value);
         }
 
         public void putHeader(@NonNull final String key, @NonNull final String value) {
-            responseHeaders.put(key, value);
+            responseHeaders.put(key.toLowerCase(), value);
         }
     }
 
