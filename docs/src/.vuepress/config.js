@@ -47,8 +47,8 @@ module.exports = {
         link: 'https://tuhuynh.com/tags/jiny',
       },
       {
-        text: 'Author',
-        link: '/author/',
+        text: 'Team',
+        link: '/team/',
       },
     ],
     sidebar: {
