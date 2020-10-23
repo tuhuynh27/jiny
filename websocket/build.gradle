@@ -2,8 +2,13 @@ plugins {
     id 'com.adarshr.test-logger' version '2.1.0'
 }
 
+configurations {
+    extraLibs
+}
+
 dependencies {
     compile project(':core')
+    extraLibs group: 'org.java-websocket', name: 'Java-WebSocket', version: '1.5.1'
     compile group: 'org.java-websocket', name: 'Java-WebSocket', version: '1.5.1'
 }
 
@@ -68,5 +73,11 @@ test {
         events "passed", "skipped", "failed"
         outputs.upToDateWhen { false }
         showStandardStreams = true
+    }
+}
+
+jar {
+    from {
+        configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
