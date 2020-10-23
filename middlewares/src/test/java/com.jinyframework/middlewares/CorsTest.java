@@ -14,12 +14,13 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 @DisplayName("middleware.Cors")
 public class CorsTest {
+    static final String uri = "http://localhost";
     @Test
     @DisplayName("Allow all")
     void allowAll() throws Exception {
         final Handler handler = Cors.newHandler(Config.builder().allowAll(true).build());
         final Map<String, String> reqHeaders = new HashMap<>();
-        reqHeaders.put("Origin".toLowerCase(), "http://localhost");
+        reqHeaders.put("Origin".toLowerCase(), uri);
         final Context ctx = Context.builder()
                 .header(reqHeaders)
                 .responseHeaders(new HashMap<>())
@@ -32,7 +33,6 @@ public class CorsTest {
     @Test
     @DisplayName("Allow from list")
     void allowFromList() throws Exception {
-        final String uri = "http://localhost";
         final Handler handler = Cors.newHandler(Config.builder()
                 .allowAll(false)
                 .allowOrigin(uri)
@@ -55,5 +55,25 @@ public class CorsTest {
         handler.handleFunc(failCtx);
         assertEquals(failCtx.getResponseHeaders().get("Vary"), "Origin");
         assertNull(failCtx.getResponseHeaders().get("Access-Control-Allow-Origin"));
+    }
+
+    @Test
+    @DisplayName("Allow credentials")
+    void allowCredentials() throws Exception {
+        final Handler handler = Cors.newHandler(Config.builder()
+                                                      .allowAll(false)
+                                                      .allowOrigin(uri)
+                                                      .allowCredentials(true)
+                                                      .build());
+        final Map<String, String> reqHeaders = new HashMap<>();
+        reqHeaders.put("Origin".toLowerCase(), uri);
+        final Context successCtx = Context.builder()
+                                          .header(reqHeaders)
+                                          .responseHeaders(new HashMap<>())
+                                          .build();
+        handler.handleFunc(successCtx);
+        assertEquals(successCtx.getResponseHeaders().get("Vary"), "Origin");
+        assertEquals(successCtx.getResponseHeaders().get("Access-Control-Allow-Origin"), uri);
+        assertEquals(successCtx.getResponseHeaders().get("Access-Control-Allow-Credentials"), "true");
     }
 }
