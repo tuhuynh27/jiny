@@ -7,7 +7,7 @@
     "name": "Tu Huynh",
     "email": "huynhminhtufu@gmail.com"
   },
-  "repository": "https://github.com/huynhminhtufu/jiny/jiny",
+  "repository": "https://github.com/huynhminhtufu/jiny",
   "scripts": {
     "dev": "vuepress dev src",
     "build": "vuepress build src"

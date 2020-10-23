@@ -35,7 +35,7 @@ And then you have a Gradle build template with `build.gradle` file in your proje
 
 ```groovy
 dependencies {
-    compile group: 'com.jinyframework', name: 'jiny', version: '0.2.7'
+    compile group: 'com.jinyframework', name: 'core', version: '0.2.7'
 }
 ```
 
@@ -46,7 +46,7 @@ dependencies {
 ```xml
 <dependency>
   <groupId>com.jinyframework</groupId>
-  <artifactId>jiny</artifactId>
+  <artifactId>core</artifactId>
   <version>0.2.7</version>
 </dependency>
 ```
