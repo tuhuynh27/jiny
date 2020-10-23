@@ -16,7 +16,7 @@ public class CorsExample {
         server.use("/console",
                    Cors.newHandler(Config.builder()
                                          .allowAll(false)
-                                         .allowOrigin("https://code.google.com")
+                                         .allowOrigin(<your current domain in the browser where you open the console>)
                                          .build()),
                    ctx -> HttpResponse.of("google chrome console"));
 
@@ -39,8 +39,8 @@ Test with fetch in google chrome console
 
 ```javascript
 var url = "http://localhost:1234"
-fetch(url) -> cors error
-fetch(url + "/all") -> success
-fetch(url + "/console") -> success
-fetch(url + "/origins") -> cors error
+fetch(url) // Result: cors error
+fetch(url + "/all") // Result: success
+fetch(url + "/console") // Result: success
+fetch(url + "/origins") // Result: cors error
 ```
