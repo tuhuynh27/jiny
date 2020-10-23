@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @DisplayName("middleware.Cors")
 public class CorsTest {
     static final String uri = "http://localhost";
+
     @Test
     @DisplayName("Allow all")
     void allowAll() throws Exception {
@@ -61,16 +62,16 @@ public class CorsTest {
     @DisplayName("Allow credentials")
     void allowCredentials() throws Exception {
         final Handler handler = Cors.newHandler(Config.builder()
-                                                      .allowAll(false)
-                                                      .allowOrigin(uri)
-                                                      .allowCredentials(true)
-                                                      .build());
+                .allowAll(false)
+                .allowOrigin(uri)
+                .allowCredentials(true)
+                .build());
         final Map<String, String> reqHeaders = new HashMap<>();
         reqHeaders.put("Origin".toLowerCase(), uri);
         final Context successCtx = Context.builder()
-                                          .header(reqHeaders)
-                                          .responseHeaders(new HashMap<>())
-                                          .build();
+                .header(reqHeaders)
+                .responseHeaders(new HashMap<>())
+                .build();
         handler.handleFunc(successCtx);
         assertEquals(successCtx.getResponseHeaders().get("Vary"), "Origin");
         assertEquals(successCtx.getResponseHeaders().get("Access-Control-Allow-Origin"), uri);
@@ -81,16 +82,16 @@ public class CorsTest {
     @DisplayName("Expose headers")
     void exposeHeaders() throws Exception {
         final Handler handler = Cors.newHandler(Config.builder()
-                                                      .allowAll(false)
-                                                      .allowOrigin(uri)
-                                                      .exposeHeader("Foo")
-                                                      .build());
+                .allowAll(false)
+                .allowOrigin(uri)
+                .exposeHeader("Foo")
+                .build());
         final Map<String, String> reqHeaders = new HashMap<>();
         reqHeaders.put("Origin".toLowerCase(), uri);
         final Context successCtx = Context.builder()
-                                          .header(reqHeaders)
-                                          .responseHeaders(new HashMap<>())
-                                          .build();
+                .header(reqHeaders)
+                .responseHeaders(new HashMap<>())
+                .build();
         handler.handleFunc(successCtx);
         assertEquals(successCtx.getResponseHeaders().get("Vary"), "Origin");
         assertEquals(successCtx.getResponseHeaders().get("Access-Control-Allow-Origin"), uri);
