@@ -76,4 +76,24 @@ public class CorsTest {
         assertEquals(successCtx.getResponseHeaders().get("Access-Control-Allow-Origin"), uri);
         assertEquals(successCtx.getResponseHeaders().get("Access-Control-Allow-Credentials"), "true");
     }
+
+    @Test
+    @DisplayName("Expose headers")
+    void exposeHeaders() throws Exception {
+        final Handler handler = Cors.newHandler(Config.builder()
+                                                      .allowAll(false)
+                                                      .allowOrigin(uri)
+                                                      .exposeHeader("Foo")
+                                                      .build());
+        final Map<String, String> reqHeaders = new HashMap<>();
+        reqHeaders.put("Origin".toLowerCase(), uri);
+        final Context successCtx = Context.builder()
+                                          .header(reqHeaders)
+                                          .responseHeaders(new HashMap<>())
+                                          .build();
+        handler.handleFunc(successCtx);
+        assertEquals(successCtx.getResponseHeaders().get("Vary"), "Origin");
+        assertEquals(successCtx.getResponseHeaders().get("Access-Control-Allow-Origin"), uri);
+        assertEquals(successCtx.getResponseHeaders().get("Access-Control-Expose-Headers"), "Foo");
+    }
 }
