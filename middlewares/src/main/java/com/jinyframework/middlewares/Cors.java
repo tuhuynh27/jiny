@@ -1,24 +1,22 @@
 package com.jinyframework.middlewares;
 
-import java.util.List;
-
 import com.jinyframework.core.AbstractRequestBinder.Handler;
 import com.jinyframework.core.AbstractRequestBinder.HttpResponse;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
 import lombok.val;
 
-public final class Cors {
-    private Cors() {}
+import java.util.List;
 
-    @Getter
-    @Builder
-    public static final class Config {
-        private final boolean allowAll;
-        @Singular
-        private final List<String> allowOrigins;
+public final class Cors {
+    private Cors() {
+    }
+
+    public static Config defaultConfig() {
+        return Config.builder()
+                .allowAll(true)
+                .build();
     }
 
     public static Handler newHandler(Config config) {
@@ -35,5 +33,17 @@ public final class Cors {
             }
             return HttpResponse.next();
         };
+    }
+
+    public static Handler newHandler() {
+        return newHandler(defaultConfig());
+    }
+
+    @Getter
+    @Builder
+    public static final class Config {
+        private final boolean allowAll;
+        @Singular
+        private final List<String> allowOrigins;
     }
 }
