@@ -26,10 +26,12 @@ public class CustomizedWebsocketServer extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
+        callback.onOpen(conn, handshake);
     }
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
+        callback.onClose(conn, code, reason, remote);
     }
 
     @Override
@@ -39,10 +41,12 @@ public class CustomizedWebsocketServer extends WebSocketServer {
 
     @Override
     public void onError(WebSocket conn, Exception ex) {
+        callback.onError(conn, ex);
     }
 
     @Override
     public void onStart() {
+        callback.onStart();
     }
 
     public void setValidateHandshake(SocketHandshake socketHandshake) {

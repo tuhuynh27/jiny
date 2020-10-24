@@ -5,6 +5,7 @@ import com.jinyframework.websocket.*;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.java_websocket.WebSocket;
+import org.java_websocket.handshake.ClientHandshake;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,14 +15,72 @@ import java.util.Map;
 
 @Slf4j
 public class WebSocketServer {
-    private final int port;
     private final CustomizedWebsocketServer customizedWebsocketServer;
-    private final Map<String, WebsocketCallback> callbackHashMap = new HashMap<>();
     private final Map<String, Collection<WebSocket>> rooms = new HashMap<>();
+    private final Map<String, NewMessageHandler> callbackHashMap = new HashMap<>();
+    private ConnOpenHandler connOpenHandler;
+    private ConnCloseHandler connCloseHandler;
+    private OnErrorHandler onErrorHandler;
 
     private WebSocketServer(final int port) {
-        this.port = port;
-        customizedWebsocketServer = new CustomizedWebsocketServer(port, this::processMessage, this::handleRoomEvents);
+        customizedWebsocketServer = new CustomizedWebsocketServer(port, new CustomizedWebsocketCallback() {
+            @Override
+            public void onStart() {
+                Intro.begin();
+                log.info("Started Jiny Websocket Server on port " + port);
+            }
+
+            @Override
+            public void onOpen(WebSocket conn, ClientHandshake handshake) {
+                val socket = (Socket) conn.getAttachment();
+                connOpenHandler.handle(socket);
+            }
+
+            @Override
+            public void onClose(WebSocket conn, int code, String reason, boolean remote) {
+                val socket = (Socket) conn.getAttachment();
+                connCloseHandler.handle(socket, code, reason);
+            }
+
+            @Override
+            public void onMessage(WebSocket conn, String message) {
+                val messageArray = message.split(":");
+                val socket = (Socket) conn.getAttachment();
+                if (messageArray.length >= 1) {
+                    val topic = messageArray[0];
+                    val data = message.replaceFirst(topic + ":", "");
+                    val callback = callbackHashMap.get(topic);
+                    if (callback != null) {
+                        callback.handle(socket, data);
+                    }
+                }
+            }
+
+            @Override
+            public void onError(WebSocket conn, Exception ex) {
+                val socket = (Socket) conn.getAttachment();
+                onErrorHandler.handle(socket, ex);
+            }
+        }, new RoomEvent() {
+            @Override
+            public void join(WebSocket conn, String roomName) {
+                val isRoomEmpty = rooms.get(roomName) == null;
+                val r = isRoomEmpty ? new ArrayList<WebSocket>() : rooms.get(roomName);
+                r.add(conn);
+                if (isRoomEmpty) {
+                    rooms.put(roomName, r);
+                }
+            }
+
+            @Override
+            public void leave(WebSocket conn, String roomName) {
+                val isRoomEmpty = rooms.get(roomName) == null;
+                if (!isRoomEmpty) {
+                    val r = rooms.get(roomName);
+                    r.remove(conn);
+                }
+            }
+        });
     }
 
     public static WebSocketServer port(final int port) {
@@ -29,8 +88,6 @@ public class WebSocketServer {
     }
 
     public void start() {
-        Intro.begin();
-        log.info("Started Jiny Websocket Server on port " + port);
         customizedWebsocketServer.start();
     }
 
@@ -42,47 +99,52 @@ public class WebSocketServer {
         customizedWebsocketServer.setValidateHandshake(socketHandshake);
     }
 
-    public void on(final String topic, final WebsocketCallback callback) {
+    public void onOpen(final ConnOpenHandler callback) {
+        connOpenHandler = callback;
+    }
+
+    public void onClose(final ConnCloseHandler callback) {
+        connCloseHandler = callback;
+    }
+
+    public void onError(final OnErrorHandler callback) {
+        onErrorHandler = callback;
+    }
+
+    public void on(final String topic, final NewMessageHandler callback) {
         callbackHashMap.put(topic, callback);
     }
 
-    public void emit(final String topic, final String message) {
-        customizedWebsocketServer.broadcast(topic + ":" + message);
+    public void emit(final String topic, final String... messages) {
+        val messageData = String.join(":", messages);
+        customizedWebsocketServer.broadcast(topic + ":" + messageData);
     }
 
-    public void emit(final String topic, final String message, final String roomName) {
+    public void emitRoom(final String roomName, final String topic, final String... messages) {
         val target = rooms.get(roomName);
         if (target != null) {
-            customizedWebsocketServer.broadcast(topic + ":" + message, target);
+            val messageData = String.join(":", messages);
+            customizedWebsocketServer.broadcast(topic + ":" + messageData, target);
         }
     }
 
-    private void handleRoomEvents(final RoomEventType type, final WebSocket conn, final String roomName) {
-        val isRoomEmpty = rooms.get(roomName) == null;
-        if (type == RoomEventType.JOIN) {
-            val r = isRoomEmpty ? new ArrayList<WebSocket>() : rooms.get(roomName);
-            r.add(conn);
-            if (isRoomEmpty) {
-                rooms.put(roomName, r);
-            }
-            return;
-        }
-        if (type == RoomEventType.LEAVE && !isRoomEmpty) {
-            val r = rooms.get(roomName);
-            r.remove(conn);
-        }
+    @FunctionalInterface
+    public interface NewMessageHandler {
+        void handle(Socket socket, String message);
     }
 
-    private void processMessage(final WebSocket conn, final String message) {
-        val messageArray = message.split(":");
-        val socketIdentify = (Socket) conn.getAttachment();
-        if (messageArray.length >= 2) {
-            val topic = messageArray[0];
-            val data = message.replaceFirst(topic + ":", "");
-            val callback = callbackHashMap.get(topic);
-            if (callback != null) {
-                callback.newMessage(socketIdentify, data);
-            }
-        }
+    @FunctionalInterface
+    public interface ConnOpenHandler {
+        void handle(Socket socket);
+    }
+
+    @FunctionalInterface
+    public interface ConnCloseHandler {
+        void handle(Socket socket, int code, String reason);
+    }
+
+    @FunctionalInterface
+    public interface OnErrorHandler {
+        void handle(Socket socket, Exception ex);
     }
 }
