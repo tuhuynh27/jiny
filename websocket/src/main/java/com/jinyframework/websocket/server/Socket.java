@@ -1,4 +1,4 @@
-package com.jinyframework.websocket;
+package com.jinyframework.websocket.server;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +14,7 @@ public class Socket {
     private final WebSocket conn;
     @Getter
     private final List<String> inRoom = new ArrayList<>();
-    private final RoomEvent roomEvent;
+    private final CustomizedWebsocketServer.RoomEventHandler roomEventHandler;
     @Getter
     @Setter
     private String identify;
@@ -22,13 +22,13 @@ public class Socket {
     public void join(final String roomName) {
         if (!inRoom.contains(roomName)) {
             inRoom.add(roomName);
-            roomEvent.join(conn, roomName);
+            roomEventHandler.join(conn, roomName);
         }
     }
 
     public void leave(final String roomName) {
         inRoom.remove(roomName);
-        roomEvent.leave(conn, roomName);
+        roomEventHandler.leave(conn, roomName);
     }
 
     public void emit(final String message) {

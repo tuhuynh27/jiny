@@ -1,4 +1,4 @@
-package com.jinyframework.websocket;
+package com.jinyframework.websocket.server;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -14,39 +14,39 @@ import java.net.InetSocketAddress;
 
 @Slf4j
 public class CustomizedWebsocketServer extends WebSocketServer {
-    private final CustomizedWebsocketCallback callback;
-    private final RoomEvent roomEvent;
+    private final SocketEventHandler socketEventHandler;
+    private final RoomEventHandler roomEventHandler;
     private SocketHandshake socketHandshake;
 
-    public CustomizedWebsocketServer(final int port, final CustomizedWebsocketCallback callback, RoomEvent roomEvent) {
+    public CustomizedWebsocketServer(final int port, final SocketEventHandler socketEventHandler, RoomEventHandler roomEventHandler) {
         super(new InetSocketAddress("localhost", port));
-        this.callback = callback;
-        this.roomEvent = roomEvent;
+        this.socketEventHandler = socketEventHandler;
+        this.roomEventHandler = roomEventHandler;
     }
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
-        callback.onOpen(conn, handshake);
+        socketEventHandler.onOpen(conn, handshake);
     }
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-        callback.onClose(conn, code, reason, remote);
+        socketEventHandler.onClose(conn, code, reason, remote);
     }
 
     @Override
     public void onMessage(WebSocket conn, String message) {
-        callback.onMessage(conn, message);
+        socketEventHandler.onMessage(conn, message);
     }
 
     @Override
     public void onError(WebSocket conn, Exception ex) {
-        callback.onError(conn, ex);
+        socketEventHandler.onError(conn, ex);
     }
 
     @Override
     public void onStart() {
-        callback.onStart();
+        socketEventHandler.onStart();
     }
 
     public void setValidateHandshake(SocketHandshake socketHandshake) {
@@ -57,7 +57,7 @@ public class CustomizedWebsocketServer extends WebSocketServer {
     public ServerHandshakeBuilder onWebsocketHandshakeReceivedAsServer(WebSocket conn, Draft draft, ClientHandshake request) throws InvalidDataException {
         ServerHandshakeBuilder builder = super
                 .onWebsocketHandshakeReceivedAsServer(conn, draft, request);
-        val socket = Socket.builder().conn(conn).roomEvent(roomEvent).build();
+        val socket = Socket.builder().conn(conn).roomEventHandler(roomEventHandler).build();
         if (socketHandshake != null) {
             try {
                 val identify = socketHandshake.handshake(request);
@@ -68,5 +68,28 @@ public class CustomizedWebsocketServer extends WebSocketServer {
         }
         conn.setAttachment(socket);
         return builder;
+    }
+
+    @FunctionalInterface
+    public interface SocketHandshake {
+        String handshake(ClientHandshake request) throws Exception;
+    }
+
+    public interface SocketEventHandler {
+        void onStart();
+
+        void onOpen(WebSocket conn, ClientHandshake handshake);
+
+        void onClose(WebSocket conn, int code, String reason, boolean remote);
+
+        void onMessage(WebSocket conn, String message);
+
+        void onError(WebSocket conn, Exception ex);
+    }
+
+    public interface RoomEventHandler {
+        void join(WebSocket conn, String roomName);
+
+        void leave(WebSocket conn, String roomName);
     }
 }

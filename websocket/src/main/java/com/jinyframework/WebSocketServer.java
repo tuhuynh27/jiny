@@ -1,7 +1,8 @@
 package com.jinyframework;
 
 import com.jinyframework.core.utils.Intro;
-import com.jinyframework.websocket.*;
+import com.jinyframework.websocket.server.CustomizedWebsocketServer;
+import com.jinyframework.websocket.server.Socket;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.java_websocket.WebSocket;
@@ -23,7 +24,7 @@ public class WebSocketServer {
     private OnErrorHandler onErrorHandler;
 
     private WebSocketServer(final int port) {
-        customizedWebsocketServer = new CustomizedWebsocketServer(port, new CustomizedWebsocketCallback() {
+        customizedWebsocketServer = new CustomizedWebsocketServer(port, new CustomizedWebsocketServer.SocketEventHandler() {
             @Override
             public void onStart() {
                 Intro.begin();
@@ -61,7 +62,7 @@ public class WebSocketServer {
                 val socket = (Socket) conn.getAttachment();
                 onErrorHandler.handle(socket, ex);
             }
-        }, new RoomEvent() {
+        }, new CustomizedWebsocketServer.RoomEventHandler() {
             @Override
             public void join(WebSocket conn, String roomName) {
                 val isRoomEmpty = rooms.get(roomName) == null;
@@ -95,7 +96,7 @@ public class WebSocketServer {
         customizedWebsocketServer.stop();
     }
 
-    public void handshake(final SocketHandshake socketHandshake) {
+    public void handshake(final CustomizedWebsocketServer.SocketHandshake socketHandshake) {
         customizedWebsocketServer.setValidateHandshake(socketHandshake);
     }
 
