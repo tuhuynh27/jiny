@@ -1,8 +1,8 @@
-package com.jinyframework.middlewares;
+package com.jinyframework.middlewares.cors;
 
 import com.jinyframework.core.AbstractRequestBinder.Context;
 import com.jinyframework.core.AbstractRequestBinder.Handler;
-import com.jinyframework.middlewares.Cors.Config;
+import com.jinyframework.middlewares.cors.Cors.Config;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +12,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@DisplayName("middleware.Cors")
+@DisplayName("middleware.cors.Cors")
 public class CorsTest {
     static final String uri = "http://localhost";
 
