@@ -1,34 +1,45 @@
 package com.jinyframework.middlewares.cors;
 
+import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import com.jinyframework.core.AbstractRequestBinder;
 import com.jinyframework.core.AbstractRequestBinder.Handler;
 import com.jinyframework.core.AbstractRequestBinder.HttpResponse;
 import com.jinyframework.core.utils.ParserUtils;
+import com.jinyframework.core.utils.ParserUtils.HttpMethod;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
 import lombok.val;
-
-import java.net.HttpURLConnection;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public final class Cors {
     private Cors() {
     }
 
     public static Config defaultConfig() {
+        final List<String> allowMethods = Stream.of("GET", "POST", "HEAD").collect(Collectors.toList());
+        final List<String> allowHeaders = Stream.of("Origin", "Accept", "Content-Type", "X-Requested-With")
+                                                .collect(
+                                                        Collectors.toList());
         return Config.builder()
                      .allowAll(true)
                      .allowCredentials(false)
+                     .allowMethods(allowMethods)
+                     .allowHeaders(allowHeaders)
+                     .optionPass(false)
                      .build();
     }
 
     public static Handler newHandler(Config config) {
         return ctx -> {
             if (ctx.getMethod() == ParserUtils.HttpMethod.OPTIONS
-                    && !ctx.headerParam("Access-Control-Request-Method").isEmpty()) {
+                && !ctx.headerParam("Access-Control-Request-Method").isEmpty()) {
                 handlePreflight(ctx, config);
                 if (config.optionPass) {
                     return HttpResponse.next();
@@ -43,25 +54,24 @@ public final class Cors {
     }
 
     private static void handlePreflight(AbstractRequestBinder.Context ctx, Config config) {
+        System.out.println("PREFLIGHT");
         val origin = ctx.headerParam("Origin");
 
-        ctx.putHeader("Vary", "Origin");
-        ctx.putHeader("Vary", "Access-Control-Request-Method");
-        ctx.putHeader("Vary", "Access-Control-Request-Headers");
+        ctx.putHeader("Vary",
+                      String.join(",", "Origin", "Access-Control-Request-Method",
+                                  "Access-Control-Request-Headers"));
 
         if (origin.isEmpty()) {
             return;
         }
-        if (config.allowMethods.stream().noneMatch(ctx.getMethod().name()::equalsIgnoreCase)) {
+        val reqMethod = ctx.headerParam("Access-Control-Request-Method");
+        if (ctx.getMethod() != HttpMethod.OPTIONS
+            && config.allowMethods.stream().noneMatch(reqMethod::equalsIgnoreCase)) {
             return;
         }
-        val reqHeaders = Arrays.asList(ctx.headerParam("Access-Control-Request-Headers")
-                                          .split(","));
-        boolean isAllowedHeaders = reqHeaders.stream()
-                                             .allMatch(header -> config.allowHeaders
-                                                     .stream()
-                                                     .anyMatch(header::equalsIgnoreCase));
-        if (!isAllowedHeaders) {
+        val reqHeaders = new ArrayList<>(Arrays.asList(ctx.headerParam("Access-Control-Request-Headers")
+                                          .split(",")));
+        if (!isAllowedHeaders(reqHeaders, config)) {
             return;
         }
 
@@ -71,11 +81,14 @@ public final class Cors {
             ctx.putHeader("Access-Control-Allow-Origin", origin);
         }
 
-        ctx.putHeader("Access-Control-Allow-Method",
+        ctx.putHeader("Access-Control-Allow-Methods",
                       config.allowMethods.stream()
                                          .map(String::toUpperCase)
                                          .collect(Collectors.joining(",")));
-        if (!reqHeaders.isEmpty()) {
+        if (!reqHeaders.get(0).isEmpty()) {
+            if (!reqHeaders.contains("Origin")) {
+                reqHeaders.add("Origin");
+            }
             ctx.putHeader("Access-Control-Allow-Headers",
                           reqHeaders.stream()
                                     .map(Util::normalizeHeader)
@@ -117,6 +130,19 @@ public final class Cors {
         if (!config.exposeHeaders.isEmpty()) {
             ctx.putHeader("Access-Control-Expose-Headers", String.join(",", config.exposeHeaders));
         }
+    }
+
+    private static boolean isAllowedHeaders(List<String> reqHeaders, Config config) {
+        if (reqHeaders.get(0).isEmpty()) {
+            return true;
+        }
+        final boolean isAllowedHeaders = reqHeaders.stream()
+                                                   .allMatch(header -> config.allowHeaders
+                                                           .stream()
+                                                           .anyMatch(header::equalsIgnoreCase));
+        System.out.println(reqHeaders.toString() +
+                           config.allowHeaders + reqHeaders.size() + isAllowedHeaders);
+        return isAllowedHeaders;
     }
 
     public static Handler newHandler() {
