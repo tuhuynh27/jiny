@@ -3,43 +3,42 @@ package com.jinyframework.websocket;
 import com.jinyframework.websocket.protocol.Constants;
 import com.jinyframework.websocket.server.Socket;
 import lombok.val;
-import org.java_websocket.protocols.Protocol;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("api.WebSocketServerTest")
 public class WebSocketServerTest {
     private static final WebSocketServer wsServer = WebSocketServer.port(1234);
     private static final WebSocketClient wsClient = WebSocketClient.builder().uri("ws://localhost:1234").build();;
     private static CountDownLatch lock;
-    private static boolean isDone;
+    private static String expectedValue;
 
     @BeforeAll
     static void beforeAll() throws InterruptedException {
-        wsServer.handshake(req -> {
-            val randomId = ThreadLocalRandom.current().nextInt();
-            return "guess" + randomId;
-        });
+        wsServer.handshake(req -> "guess");
         wsServer.onOpen(socket ->
                 System.out.println("New connection: " + socket.getIdentify()));
         wsServer.on("ping", (socket, message) -> {
-            socket.emit("pong");
+            socket.emit("pong", "Pong message");
         });
 
         wsServer.on("room/join", Socket::join); // Join room
         wsServer.on("room/leave", Socket::leave); // Leave room
 
+        wsServer.on("chat/public", (socket, message) -> {
+            wsServer.emit("chat/public", socket.getIdentify(), message);
+        });
+
         // Receive room chat message
         wsServer.on("chat/private", (socket, message) -> {
-            val messageArray = message.split(":");
+            val messageArray = message.split(Constants.PROTOCOL_MESSAGE_DIVIDER);
             val roomName = messageArray[0];
-            val messageData = message.replaceFirst(roomName + ":", "");
+            val messageData = message.replaceFirst(roomName + Constants.PROTOCOL_MESSAGE_DIVIDER, "");
             wsServer.emitRoom(roomName,
                     "chat/private",
                     roomName, socket.getIdentify(), messageData);
@@ -48,6 +47,12 @@ public class WebSocketServerTest {
         wsServer.start();
         TimeUnit.MILLISECONDS.sleep(1000);
         wsClient.connect();
+
+        lock = new CountDownLatch(1);
+        wsClient.onOpen(handshakeData -> {
+            lock.countDown();
+        });
+        lock.await(3000, TimeUnit.MILLISECONDS);
     }
 
     @AfterAll
@@ -57,39 +62,53 @@ public class WebSocketServerTest {
     }
 
     @BeforeEach
-    void beforeEach() throws InterruptedException {
+    void beforeEach() {
         lock = new CountDownLatch(1);
-        isDone = false;
+        expectedValue = "";
     }
 
     @Test
     @DisplayName("Ping Pong")
     void ping() throws InterruptedException {
-        wsClient.onOpen(handshakeData -> {
-            wsClient.emit("ping", "This is ping message and it will be ignored");
-        });
-
         wsClient.on("pong", message -> {
-            isDone = true;
+            expectedValue = message;
             lock.countDown();
         });
 
+        wsClient.emit("ping", "This is ping message and it will be ignored");
+
         lock.await(3000, TimeUnit.MILLISECONDS);
-        assertTrue(isDone);
+        assertEquals(expectedValue, "Pong message");
+    }
+
+    @Test
+    @DisplayName("Global")
+    void global() throws InterruptedException {
+        wsClient.on("chat/public", message -> {
+            expectedValue = message;
+            lock.countDown();
+        });
+
+        val msg = "Public chat message";
+        wsClient.emit("chat/public", msg);
+
+        lock.await(3000, TimeUnit.MILLISECONDS);
+        assertEquals(expectedValue, "guess" + Constants.PROTOCOL_MESSAGE_DIVIDER + msg);
     }
 
     @Test
     @DisplayName("Room")
     void room() throws InterruptedException {
         wsClient.on("chat/private", message -> {
-            isDone = true;
+            expectedValue = message;
             lock.countDown();
         });
 
+        val msg = "Hello test-room";
         wsClient.emit("room/join", "test-room");
-        wsClient.emit("chat/private", "test-room" + Constants.PROTOCOL_MESSAGE_DIVIDER  + "Hello test-room");
+        wsClient.emit("chat/private", "test-room", msg);
 
         lock.await(3000, TimeUnit.MILLISECONDS);
-        assertTrue(isDone);
+        assertEquals(expectedValue, "test-room" + Constants.PROTOCOL_MESSAGE_DIVIDER + "guess" + Constants.PROTOCOL_MESSAGE_DIVIDER + msg);
     }
 }

@@ -61,8 +61,14 @@ public class WebSocketServer {
 
             @Override
             public void onError(WebSocket conn, Exception ex) {
+                if (conn == null || conn.getAttachment() == null) {
+                    return;
+                }
+
                 val socket = (Socket) conn.getAttachment();
-                onErrorHandler.handle(socket, ex);
+                if (socket != null) {
+                    onErrorHandler.handle(socket, ex);
+                }
             }
         }, new CustomizedWebsocketServer.RoomEventHandler() {
             @Override

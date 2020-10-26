@@ -67,8 +67,9 @@ public class WebSocketClient {
         customizedWebsocketClient.close();
     }
 
-    public void emit(final String topic, final String message) {
-        customizedWebsocketClient.send(topic + Constants.PROTOCOL_MESSAGE_DIVIDER + message);
+    public void emit(final String topic, final String... messages) {
+        val data = String.join(Constants.PROTOCOL_MESSAGE_DIVIDER, messages);
+        customizedWebsocketClient.send(topic + Constants.PROTOCOL_MESSAGE_DIVIDER + data);
     }
 
     public void on(@NonNull final String topic, final NewMessageHandler callback) {

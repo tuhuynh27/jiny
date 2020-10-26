@@ -1,8 +1,7 @@
 package com.jinyframework.websocket.server;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import com.jinyframework.websocket.protocol.Constants;
+import lombok.*;
 import org.java_websocket.WebSocket;
 
 import java.net.InetSocketAddress;
@@ -33,6 +32,11 @@ public class Socket {
 
     public void emit(final String message) {
         conn.send(message);
+    }
+
+    public void emit(@NonNull final String topic, final String message) {
+        val data = topic + Constants.PROTOCOL_MESSAGE_DIVIDER + message;
+        conn.send(data);
     }
 
     public void ping() {
