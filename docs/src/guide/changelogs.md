@@ -2,7 +2,12 @@
 
 ![Maven Central](https://img.shields.io/maven-central/v/com.jinyframework/jiny?style=flat-square)
 
-### 0.2.7 (Current)
+### 0.2.8 (Current)
+
+- Refactor to Gradle subProjects
+- Implement WebSocket module
+
+### 0.2.7
 
 - Refactor code
 - Update package paths
