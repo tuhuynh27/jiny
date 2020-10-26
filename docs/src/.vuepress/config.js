@@ -76,7 +76,7 @@ module.exports = {
         },
         {
           title: 'Advance',
-          collapsable: false,
+          collapsable: true,
           children: [
             'advance/di',
             'advance/database',
@@ -90,7 +90,7 @@ module.exports = {
         },
         {
           title: 'Non-blocking',
-          collapsable: false,
+          collapsable: true,
           children: [
             'nio/',
             'nio/async-helper',
