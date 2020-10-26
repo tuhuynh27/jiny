@@ -1,8 +1,10 @@
-package com.jinyframework;
+package com.jinyframework.websocket;
 
 import com.jinyframework.core.utils.Intro;
+import com.jinyframework.websocket.protocol.Constants;
 import com.jinyframework.websocket.server.CustomizedWebsocketServer;
 import com.jinyframework.websocket.server.Socket;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.java_websocket.WebSocket;
@@ -45,11 +47,11 @@ public class WebSocketServer {
 
             @Override
             public void onMessage(WebSocket conn, String message) {
-                val messageArray = message.split(":");
+                val messageArray = message.split(Constants.PROTOCOL_MESSAGE_DIVIDER);
                 val socket = (Socket) conn.getAttachment();
                 if (messageArray.length >= 1) {
                     val topic = messageArray[0];
-                    val data = message.replaceFirst(topic + ":", "");
+                    val data = message.replaceFirst(topic + Constants.PROTOCOL_MESSAGE_DIVIDER, "");
                     val callback = callbackHashMap.get(topic);
                     if (callback != null) {
                         callback.handle(socket, data);
@@ -112,20 +114,20 @@ public class WebSocketServer {
         onErrorHandler = callback;
     }
 
-    public void on(final String topic, final NewMessageHandler callback) {
+    public void on(@NonNull final String topic, final NewMessageHandler callback) {
         callbackHashMap.put(topic, callback);
     }
 
-    public void emit(final String topic, final String... messages) {
-        val messageData = String.join(":", messages);
-        customizedWebsocketServer.broadcast(topic + ":" + messageData);
+    public void emit(@NonNull final String topic, final String... messages) {
+        val messageData = String.join(Constants.PROTOCOL_MESSAGE_DIVIDER, messages);
+        customizedWebsocketServer.broadcast(topic + Constants.PROTOCOL_MESSAGE_DIVIDER + messageData);
     }
 
-    public void emitRoom(final String roomName, final String topic, final String... messages) {
+    public void emitRoom(@NonNull final String roomName, final String topic, final String... messages) {
         val target = rooms.get(roomName);
         if (target != null) {
-            val messageData = String.join(":", messages);
-            customizedWebsocketServer.broadcast(topic + ":" + messageData, target);
+            val messageData = String.join(Constants.PROTOCOL_MESSAGE_DIVIDER, messages);
+            customizedWebsocketServer.broadcast(topic + Constants.PROTOCOL_MESSAGE_DIVIDER + messageData, target);
         }
     }
 
