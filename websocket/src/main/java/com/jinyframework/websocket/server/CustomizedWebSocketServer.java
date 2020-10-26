@@ -13,12 +13,12 @@ import org.java_websocket.server.WebSocketServer;
 import java.net.InetSocketAddress;
 
 @Slf4j
-public class CustomizedWebsocketServer extends WebSocketServer {
+public class CustomizedWebSocketServer extends WebSocketServer {
     private final SocketEventHandler socketEventHandler;
     private final RoomEventHandler roomEventHandler;
     private SocketHandshake socketHandshake;
 
-    public CustomizedWebsocketServer(final int port, final SocketEventHandler socketEventHandler, RoomEventHandler roomEventHandler) {
+    public CustomizedWebSocketServer(final int port, final SocketEventHandler socketEventHandler, RoomEventHandler roomEventHandler) {
         super(new InetSocketAddress("localhost", port));
         this.socketEventHandler = socketEventHandler;
         this.roomEventHandler = roomEventHandler;

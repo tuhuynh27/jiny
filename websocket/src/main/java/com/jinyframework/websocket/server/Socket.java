@@ -1,6 +1,6 @@
 package com.jinyframework.websocket.server;
 
-import com.jinyframework.websocket.protocol.Constants;
+import com.jinyframework.websocket.protocol.ProtocolConstants;
 import lombok.*;
 import org.java_websocket.WebSocket;
 
@@ -12,21 +12,21 @@ import java.util.List;
 public class Socket {
     private final WebSocket conn;
     @Getter
-    private final List<String> inRoom = new ArrayList<>();
-    private final CustomizedWebsocketServer.RoomEventHandler roomEventHandler;
+    private final List<String> inRooms = new ArrayList<>();
+    private final CustomizedWebSocketServer.RoomEventHandler roomEventHandler;
     @Getter
     @Setter
     private String identify;
 
     public void join(final String roomName) {
-        if (!inRoom.contains(roomName)) {
-            inRoom.add(roomName);
+        if (!inRooms.contains(roomName)) {
+            inRooms.add(roomName);
             roomEventHandler.join(conn, roomName);
         }
     }
 
     public void leave(final String roomName) {
-        inRoom.remove(roomName);
+        inRooms.remove(roomName);
         roomEventHandler.leave(conn, roomName);
     }
 
@@ -35,7 +35,7 @@ public class Socket {
     }
 
     public void emit(@NonNull final String topic, final String message) {
-        val data = topic + Constants.PROTOCOL_MESSAGE_DIVIDER + message;
+        val data = topic + ProtocolConstants.DIVIDER + message;
         conn.send(data);
     }
 

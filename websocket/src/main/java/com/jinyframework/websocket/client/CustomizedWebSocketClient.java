@@ -7,10 +7,10 @@ import org.java_websocket.handshake.ServerHandshake;
 import java.net.URI;
 import java.util.Map;
 
-public class CustomizedWebsocketClient extends WebSocketClient {
+public class CustomizedWebSocketClient extends WebSocketClient {
     private final SocketEventHandler callback;
 
-    public CustomizedWebsocketClient(URI serverUri, Map<String, String> headers, SocketEventHandler socketEventHandler) {
+    public CustomizedWebSocketClient(URI serverUri, Map<String, String> headers, SocketEventHandler socketEventHandler) {
         super(serverUri);
         callback = socketEventHandler;
     }

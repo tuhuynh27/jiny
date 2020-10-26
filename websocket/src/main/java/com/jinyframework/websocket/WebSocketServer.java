@@ -1,8 +1,8 @@
 package com.jinyframework.websocket;
 
 import com.jinyframework.core.utils.Intro;
-import com.jinyframework.websocket.protocol.Constants;
-import com.jinyframework.websocket.server.CustomizedWebsocketServer;
+import com.jinyframework.websocket.protocol.ProtocolConstants;
+import com.jinyframework.websocket.server.CustomizedWebSocketServer;
 import com.jinyframework.websocket.server.Socket;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -17,8 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-public class WebSocketServer {
-    private final CustomizedWebsocketServer customizedWebsocketServer;
+public final class WebSocketServer {
+    private final CustomizedWebSocketServer customizedWebsocketServer;
     private final Map<String, Collection<WebSocket>> rooms = new HashMap<>();
     private final Map<String, NewMessageHandler> callbackHashMap = new HashMap<>();
     private ConnOpenHandler connOpenHandler;
@@ -26,7 +26,7 @@ public class WebSocketServer {
     private OnErrorHandler onErrorHandler;
 
     private WebSocketServer(final int port) {
-        customizedWebsocketServer = new CustomizedWebsocketServer(port, new CustomizedWebsocketServer.SocketEventHandler() {
+        customizedWebsocketServer = new CustomizedWebSocketServer(port, new CustomizedWebSocketServer.SocketEventHandler() {
             @Override
             public void onStart() {
                 Intro.begin();
@@ -47,11 +47,11 @@ public class WebSocketServer {
 
             @Override
             public void onMessage(WebSocket conn, String message) {
-                val messageArray = message.split(Constants.PROTOCOL_MESSAGE_DIVIDER);
+                val messageArray = message.split(ProtocolConstants.DIVIDER);
                 val socket = (Socket) conn.getAttachment();
                 if (messageArray.length >= 1) {
                     val topic = messageArray[0];
-                    val data = message.replaceFirst(topic + Constants.PROTOCOL_MESSAGE_DIVIDER, "");
+                    val data = message.replaceFirst(topic + ProtocolConstants.DIVIDER, "");
                     val callback = callbackHashMap.get(topic);
                     if (callback != null) {
                         callback.handle(socket, data);
@@ -70,7 +70,7 @@ public class WebSocketServer {
                     onErrorHandler.handle(socket, ex);
                 }
             }
-        }, new CustomizedWebsocketServer.RoomEventHandler() {
+        }, new CustomizedWebSocketServer.RoomEventHandler() {
             @Override
             public void join(WebSocket conn, String roomName) {
                 val isRoomEmpty = rooms.get(roomName) == null;
@@ -104,7 +104,7 @@ public class WebSocketServer {
         customizedWebsocketServer.stop();
     }
 
-    public void handshake(final CustomizedWebsocketServer.SocketHandshake socketHandshake) {
+    public void handshake(final CustomizedWebSocketServer.SocketHandshake socketHandshake) {
         customizedWebsocketServer.setValidateHandshake(socketHandshake);
     }
 
@@ -125,15 +125,15 @@ public class WebSocketServer {
     }
 
     public void emit(@NonNull final String topic, final String... messages) {
-        val messageData = String.join(Constants.PROTOCOL_MESSAGE_DIVIDER, messages);
-        customizedWebsocketServer.broadcast(topic + Constants.PROTOCOL_MESSAGE_DIVIDER + messageData);
+        val messageData = String.join(ProtocolConstants.DIVIDER, messages);
+        customizedWebsocketServer.broadcast(topic + ProtocolConstants.DIVIDER + messageData);
     }
 
-    public void emitRoom(@NonNull final String roomName, final String topic, final String... messages) {
+    public void emitRoom(@NonNull final String roomName, @NonNull final String topic, final String... messages) {
         val target = rooms.get(roomName);
         if (target != null) {
-            val messageData = String.join(Constants.PROTOCOL_MESSAGE_DIVIDER, messages);
-            customizedWebsocketServer.broadcast(topic + Constants.PROTOCOL_MESSAGE_DIVIDER + messageData, target);
+            val messageData = String.join(ProtocolConstants.DIVIDER, messages);
+            customizedWebsocketServer.broadcast(topic + ProtocolConstants.DIVIDER + messageData, target);
         }
     }
 

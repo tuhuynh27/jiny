@@ -1,7 +1,7 @@
 package com.jinyframework.websocket;
 
-import com.jinyframework.websocket.client.CustomizedWebsocketClient;
-import com.jinyframework.websocket.protocol.Constants;
+import com.jinyframework.websocket.client.CustomizedWebSocketClient;
+import com.jinyframework.websocket.protocol.ProtocolConstants;
 import lombok.*;
 import org.java_websocket.handshake.ServerHandshake;
 
@@ -10,9 +10,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Builder
-public class WebSocketClient {
+public final class WebSocketClient {
     private static final Map<String, NewMessageHandler> callbackHashMap = new HashMap<>();
-    private static CustomizedWebsocketClient customizedWebsocketClient;
+    private static CustomizedWebSocketClient customizedWebsocketClient;
     private static ConnOpenHandler connOpenHandler;
     private static ConnCloseHandler connCloseHandler;
     private static OnErrorHandler onErrorHandler;
@@ -26,9 +26,7 @@ public class WebSocketClient {
             headers = new HashMap<>();
         }
 
-        val uriConverted = new URI(uri);
-
-        customizedWebsocketClient = new CustomizedWebsocketClient(uriConverted, headers, new CustomizedWebsocketClient.SocketEventHandler() {
+        customizedWebsocketClient = new CustomizedWebSocketClient(new URI(uri), headers, new CustomizedWebSocketClient.SocketEventHandler() {
             @Override
             public void onOpen(ServerHandshake handshakeData) throws InterruptedException {
                 connOpenHandler.handle(handshakeData);
@@ -36,10 +34,10 @@ public class WebSocketClient {
 
             @Override
             public void onMessage(String message) {
-                val messageArray = message.split(Constants.PROTOCOL_MESSAGE_DIVIDER);
+                val messageArray = message.split(ProtocolConstants.DIVIDER);
                 if (messageArray.length >= 1) {
                     val topic = messageArray[0];
-                    val data = message.replaceFirst(topic + Constants.PROTOCOL_MESSAGE_DIVIDER, "");
+                    val data = message.replaceFirst(topic + ProtocolConstants.DIVIDER, "");
                     val callback = callbackHashMap.get(topic);
                     if (callback != null) {
                         callback.handle(data);
@@ -67,24 +65,24 @@ public class WebSocketClient {
         customizedWebsocketClient.close();
     }
 
-    public void emit(final String topic, final String... messages) {
-        val data = String.join(Constants.PROTOCOL_MESSAGE_DIVIDER, messages);
-        customizedWebsocketClient.send(topic + Constants.PROTOCOL_MESSAGE_DIVIDER + data);
+    public void emit(@NonNull final String topic, final String... messages) {
+        val data = String.join(ProtocolConstants.DIVIDER, messages);
+        customizedWebsocketClient.send(topic + ProtocolConstants.DIVIDER + data);
     }
 
     public void on(@NonNull final String topic, final NewMessageHandler callback) {
         callbackHashMap.put(topic, callback);
     }
 
-    public void onOpen(final ConnOpenHandler callback) {
+    public void onOpen(@NonNull final ConnOpenHandler callback) {
         connOpenHandler = callback;
     }
 
-    public void onClose(final ConnCloseHandler callback) {
+    public void onClose(@NonNull final ConnCloseHandler callback) {
         connCloseHandler = callback;
     }
 
-    public void onError(final OnErrorHandler callback) {
+    public void onError(@NonNull final OnErrorHandler callback) {
         onErrorHandler = callback;
     }
 

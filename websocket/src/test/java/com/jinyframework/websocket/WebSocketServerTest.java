@@ -1,6 +1,6 @@
 package com.jinyframework.websocket;
 
-import com.jinyframework.websocket.protocol.Constants;
+import com.jinyframework.websocket.protocol.ProtocolConstants;
 import com.jinyframework.websocket.server.Socket;
 import lombok.val;
 import org.junit.jupiter.api.*;
@@ -21,8 +21,7 @@ public class WebSocketServerTest {
     @BeforeAll
     static void beforeAll() throws InterruptedException {
         wsServer.handshake(req -> "guess");
-        wsServer.onOpen(socket ->
-                System.out.println("New connection: " + socket.getIdentify()));
+
         wsServer.on("ping", (socket, message) -> {
             socket.emit("pong", "Pong message");
         });
@@ -36,9 +35,9 @@ public class WebSocketServerTest {
 
         // Receive room chat message
         wsServer.on("chat/private", (socket, message) -> {
-            val messageArray = message.split(Constants.PROTOCOL_MESSAGE_DIVIDER);
+            val messageArray = message.split(ProtocolConstants.DIVIDER);
             val roomName = messageArray[0];
-            val messageData = message.replaceFirst(roomName + Constants.PROTOCOL_MESSAGE_DIVIDER, "");
+            val messageData = message.replaceFirst(roomName + ProtocolConstants.DIVIDER, "");
             wsServer.emitRoom(roomName,
                     "chat/private",
                     roomName, socket.getIdentify(), messageData);
@@ -93,7 +92,7 @@ public class WebSocketServerTest {
         wsClient.emit("chat/public", msg);
 
         lock.await(3000, TimeUnit.MILLISECONDS);
-        assertEquals(expectedValue, "guess" + Constants.PROTOCOL_MESSAGE_DIVIDER + msg);
+        assertEquals(expectedValue, "guess" + ProtocolConstants.DIVIDER + msg);
     }
 
     @Test
@@ -109,6 +108,6 @@ public class WebSocketServerTest {
         wsClient.emit("chat/private", "test-room", msg);
 
         lock.await(3000, TimeUnit.MILLISECONDS);
-        assertEquals(expectedValue, "test-room" + Constants.PROTOCOL_MESSAGE_DIVIDER + "guess" + Constants.PROTOCOL_MESSAGE_DIVIDER + msg);
+        assertEquals(expectedValue, "test-room" + ProtocolConstants.DIVIDER + "guess" + ProtocolConstants.DIVIDER + msg);
     }
 }
