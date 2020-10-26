@@ -11,14 +11,14 @@ import java.util.Map;
 
 @Builder
 public class WebSocketClient {
+    private static final Map<String, NewMessageHandler> callbackHashMap = new HashMap<>();
+    private static CustomizedWebsocketClient customizedWebsocketClient;
+    private static ConnOpenHandler connOpenHandler;
+    private static ConnCloseHandler connCloseHandler;
+    private static OnErrorHandler onErrorHandler;
     private final String uri;
-    private final Map<String, NewMessageHandler> callbackHashMap = new HashMap<>();
     @Singular
     private Map<String, String> headers;
-    private CustomizedWebsocketClient customizedWebsocketClient;
-    private ConnOpenHandler connOpenHandler;
-    private ConnCloseHandler connCloseHandler;
-    private OnErrorHandler onErrorHandler;
 
     @SneakyThrows
     public WebSocketClient connect() {

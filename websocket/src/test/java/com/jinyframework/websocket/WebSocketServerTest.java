@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DisplayName("api.WebSocketServerTest")
 public class WebSocketServerTest {
     private static final WebSocketServer wsServer = WebSocketServer.port(1234);
-    private static final WebSocketClient wsClient = WebSocketClient.builder().uri("ws://localhost:1234").build();;
+    private static final WebSocketClient wsClient = WebSocketClient.builder().uri("ws://localhost:1234").build();
     private static CountDownLatch lock;
     private static String expectedValue;
 
