@@ -2,6 +2,7 @@ rootProject.name = 'jiny'
 
 include 'core'
 include 'middlewares'
+include 'websocket'
 
 // Test only (with gitignore)
 include 'testproject'
