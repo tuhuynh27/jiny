@@ -26,6 +26,8 @@
 
 Want to file a bug, contribute some code, or improve documentation? Excellent!
 
+First, see [Contributor Manual](CONTRIBUTING.md).
+
 Pull requests are encouraged and always welcome. [Pick an issue](https://github.com/huynhminhtufu/jiny/issues) and help us out!
 
 To install and work on Jiny locally:
