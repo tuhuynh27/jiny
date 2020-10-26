@@ -101,6 +101,7 @@ module.exports = {
         },
         'changelogs',
         'roadmap',
+        'developer-guide',
         'education',
       ],
     }
