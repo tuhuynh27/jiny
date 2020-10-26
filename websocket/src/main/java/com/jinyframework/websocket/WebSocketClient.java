@@ -63,6 +63,10 @@ public class WebSocketClient {
         return this;
     }
 
+    public void close() {
+        customizedWebsocketClient.close();
+    }
+
     public void emit(final String topic, final String message) {
         customizedWebsocketClient.send(topic + Constants.PROTOCOL_MESSAGE_DIVIDER + message);
     }
