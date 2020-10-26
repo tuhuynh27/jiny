@@ -1,5 +1,6 @@
 package com.jinyframework.websocket.client;
 
+import lombok.SneakyThrows;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
@@ -14,6 +15,7 @@ public class CustomizedWebsocketClient extends WebSocketClient {
         callback = socketEventHandler;
     }
 
+    @SneakyThrows
     @Override
     public void onOpen(ServerHandshake handshakeData) {
         callback.onOpen(handshakeData);
@@ -37,7 +39,7 @@ public class CustomizedWebsocketClient extends WebSocketClient {
     }
 
     public interface SocketEventHandler {
-        void onOpen(ServerHandshake handshakeData);
+        void onOpen(ServerHandshake handshakeData) throws InterruptedException;
 
         void onMessage(String message);
 

@@ -30,7 +30,7 @@ public class WebSocketClient {
 
         customizedWebsocketClient = new CustomizedWebsocketClient(uriConverted, headers, new CustomizedWebsocketClient.SocketEventHandler() {
             @Override
-            public void onOpen(ServerHandshake handshakeData) {
+            public void onOpen(ServerHandshake handshakeData) throws InterruptedException {
                 connOpenHandler.handle(handshakeData);
             }
 
@@ -94,7 +94,7 @@ public class WebSocketClient {
 
     @FunctionalInterface
     public interface ConnOpenHandler {
-        void handle(ServerHandshake handshakeData);
+        void handle(ServerHandshake handshakeData) throws InterruptedException;
     }
 
     @FunctionalInterface
