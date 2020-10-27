@@ -89,6 +89,13 @@ module.exports = {
           ]
         },
         {
+          title: 'Plugins',
+          collapsable: true,
+          children: [
+              'plugins/websocket',
+          ]
+        },
+        {
           title: 'Non-blocking',
           collapsable: true,
           children: [
