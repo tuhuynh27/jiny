@@ -1,20 +1,20 @@
 package com.jinyframework.middlewares.cors;
 
-import com.jinyframework.core.AbstractRequestBinder.Context;
-import com.jinyframework.core.AbstractRequestBinder.Handler;
-import com.jinyframework.core.AbstractRequestBinder.HttpResponse;
-import com.jinyframework.core.utils.ParserUtils.HttpMethod;
-import com.jinyframework.middlewares.cors.Cors.Config;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import com.jinyframework.core.AbstractRequestBinder.Context;
+import com.jinyframework.core.AbstractRequestBinder.Handler;
+import com.jinyframework.core.utils.ParserUtils.HttpMethod;
+import com.jinyframework.middlewares.cors.Cors.Config;
 
 import lombok.val;
 
@@ -25,7 +25,8 @@ public class CorsTest {
     @Test
     @DisplayName("Allow all")
     void allowAll() throws Exception {
-        val handler = Cors.newHandler(Config.builder().allowAll(true).build());
+        val handler = Cors.newHandler(Config.builder()
+                                            .allowAllOrigins(true).build());
         val reqHeaders = new HashMap<String, String>();
         reqHeaders.put("Origin".toLowerCase(), uri);
         val ctx = Context.builder()
@@ -41,7 +42,7 @@ public class CorsTest {
     @DisplayName("Allow from list")
     void allowFromList() throws Exception {
         val handler = Cors.newHandler(Config.builder()
-                                            .allowAll(false)
+                                            .allowAllOrigins(false)
                                             .allowOrigin(uri)
                                             .build());
         val reqHeaders = new HashMap<String, String>();
@@ -68,7 +69,7 @@ public class CorsTest {
     @DisplayName("Allow credentials")
     void allowCredentials() throws Exception {
         val handler = Cors.newHandler(Config.builder()
-                                            .allowAll(false)
+                                            .allowAllOrigins(false)
                                             .allowOrigin(uri)
                                             .allowCredentials(true)
                                             .build());
@@ -88,7 +89,7 @@ public class CorsTest {
     @DisplayName("Expose headers")
     void exposeHeaders() throws Exception {
         val handler = Cors.newHandler(Config.builder()
-                                            .allowAll(false)
+                                            .allowAllOrigins(false)
                                             .allowOrigin(uri)
                                             .exposeHeader("Foo")
                                             .build());
@@ -108,7 +109,7 @@ public class CorsTest {
     @DisplayName("Request + Allow methods")
     void requestAllowMethods() throws Exception {
         val handler = Cors.newHandler(Config.builder()
-                                            .allowAll(false)
+                                            .allowAllOrigins(false)
                                             .allowOrigin(uri)
                                             .allowMethod("PUT")
                                             .build());
@@ -128,7 +129,7 @@ public class CorsTest {
     @DisplayName("Request + Allow headers")
     void requestAllowHeaders() throws Exception {
         final Handler handler = Cors.newHandler(Config.builder()
-                                                      .allowAll(false)
+                                                      .allowAllOrigins(false)
                                                       .allowOrigin(uri)
                                                       .allowMethod("GET")
                                                       .allowHeader("Bar")
