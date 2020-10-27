@@ -19,7 +19,7 @@ footer: Apache-2.0 Licensed | Copyright © 2020 Jiny Team
 <img src="https://img.shields.io/tokei/lines/github/huynhminhtufu/jiny?style=flat-square" alt="Lines of code">
 <img src="https://img.shields.io/github/languages/code-size/huynhminhtufu/jiny?style=flat-square" alt="GitHub code size in bytes">
 <img src="https://img.shields.io/github/license/huynhminhtufu/jiny?style=flat-square" alt="GitHub">
-<img src="https://img.shields.io/maven-central/v/com.jinyframework/jiny?style=flat-square" alt="Maven Central">
+<img src="https://img.shields.io/maven-central/v/com.jinyframework/core?style=flat-square" alt="Maven Central">
 </p>
 
 You have your RESTful API server ready to serve JSON in less than ten lines of code

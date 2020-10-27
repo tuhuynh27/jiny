@@ -8,7 +8,7 @@
 ![Lines of code](https://img.shields.io/tokei/lines/github/huynhminhtufu/jiny?style=flat-square)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/huynhminhtufu/jiny?style=flat-square)
 ![GitHub](https://img.shields.io/github/license/huynhminhtufu/jiny?style=flat-square)
-![Maven Central](https://img.shields.io/maven-central/v/com.jinyframework/jiny?style=flat-square)
+![Maven Central](https://img.shields.io/maven-central/v/com.jinyframework/core?style=flat-square)
 
 ## What is Jiny?
 
