@@ -38,16 +38,10 @@ $ cd jiny
 $ ./gradlew dependencies
 ```
 
-To build the modules included in the package:
+To build and run tests for the modules included in the package:
 
 ```
 $ ./gradlew --parallel build
-```
-
-Running tests:
-
-```
-$ ./gradlew test
 ```
 
 ## License
