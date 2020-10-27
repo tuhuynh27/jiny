@@ -1,8 +1,12 @@
 # Changelogs
 
-![Maven Central](https://img.shields.io/maven-central/v/com.jinyframework/jiny?style=flat-square)
+![Maven Central](https://img.shields.io/maven-central/v/com.jinyframework/core?style=flat-square)
 
-### 0.2.8 (Current)
+### 0.2.9 (Current)
+
+- Implement CORS middleware
+
+### 0.2.8
 
 - Refactor to Gradle subProjects
 - Implement WebSocket module
