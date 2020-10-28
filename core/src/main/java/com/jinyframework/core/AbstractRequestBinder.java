@@ -5,6 +5,7 @@ import com.jinyframework.core.utils.ParserUtils.HttpMethod;
 import lombok.*;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -66,8 +67,14 @@ public abstract class AbstractRequestBinder<T extends HandlerBase> {
                 .build();
     }
 
-    public Map<String, String> getResponseHeaders() {
-        return context.getResponseHeaders();
+    public Map<String, String> getResponseHeaders(final Map<String, String> defaultResponseHeaders) {
+        if (defaultResponseHeaders == null) {
+            return context.getResponseHeaders();
+        }
+
+        val headers = new HashMap<>(defaultResponseHeaders);
+        headers.putAll(context.getResponseHeaders());
+        return headers;
     }
 
     public interface HandlerBase {
