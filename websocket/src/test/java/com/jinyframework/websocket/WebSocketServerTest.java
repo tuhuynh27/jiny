@@ -20,7 +20,7 @@ public class WebSocketServerTest {
 
     @BeforeAll
     static void beforeAll() throws InterruptedException {
-        wsServer.handshake(req -> throw new Ex);
+        wsServer.handshake(req -> "guess");
 
         wsServer.on("ping", (socket, message) -> {
             socket.emit("pong", "Pong message");
