@@ -17,6 +17,9 @@ import java.net.ServerSocket;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+/**
+ * The type Http server.
+ */
 @Slf4j
 public final class HttpServer extends AbstractHttpRouter<Handler> {
     private final int serverPort;
@@ -28,20 +31,43 @@ public final class HttpServer extends AbstractHttpRouter<Handler> {
         this.serverPort = serverPort;
     }
 
+    /**
+     * Port http server.
+     *
+     * @param serverPort the server port
+     * @return the http server
+     */
     public static HttpServer port(final int serverPort) {
         return new HttpServer(serverPort);
     }
 
+    /**
+     * Use transformer http server.
+     *
+     * @param transformer the transformer
+     * @return the http server
+     */
     public HttpServer useTransformer(@NonNull final RequestTransformer transformer) {
         this.transformer = transformer;
         return this;
     }
 
+    /**
+     * Sets thread debug mode.
+     *
+     * @param isDebug the is debug
+     * @return the thread debug mode
+     */
     public HttpServer setThreadDebugMode(final boolean isDebug) {
         threadFactory.setDebug(isDebug);
         return this;
     }
 
+    /**
+     * Start.
+     *
+     * @throws IOException the io exception
+     */
     public void start() throws IOException {
         Intro.begin();
         serverSocket = new ServerSocket();
@@ -54,6 +80,11 @@ public final class HttpServer extends AbstractHttpRouter<Handler> {
         }
     }
 
+    /**
+     * Stop.
+     *
+     * @throws IOException the io exception
+     */
     public void stop() throws IOException {
         if (!serverSocket.isClosed()) {
             serverSocket.close();

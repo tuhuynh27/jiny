@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The type Http client.
+ */
 @RequiredArgsConstructor
 @Builder
 public final class HttpClient {
@@ -22,6 +25,12 @@ public final class HttpClient {
     private final Map<String, String> headers;
     private final String body;
 
+    /**
+     * Perform response object.
+     *
+     * @return the response object
+     * @throws IOException the io exception
+     */
     public ResponseObject perform() throws IOException {
         val url = new URL(this.url);
         val conn = (HttpURLConnection) url.openConnection();
@@ -77,6 +86,9 @@ public final class HttpClient {
                 .body(sb.toString()).build();
     }
 
+    /**
+     * The type Response object.
+     */
     @Builder
     @Getter
     public static final class ResponseObject {
@@ -85,6 +97,12 @@ public final class HttpClient {
         private final Map<String, String> headers;
         private final String body;
 
+        /**
+         * Gets header.
+         *
+         * @param key the key
+         * @return the header
+         */
         public String getHeader(@NonNull final String key) {
             return headers.get(key) != null ? headers.get(key) : "";
         }

@@ -57,12 +57,12 @@ public abstract class HTTPTest {
 
     @Test
     @DisplayName("Header Params")
-    void headerParams() throws  IOException {
+    void headerParams() throws IOException {
         val res = HttpClient.builder()
                 .url(url + "/req-header").method("GET")
-                .header("Foo","foo").header("Bar", "bar")
+                .header("Foo", "foo").header("Bar", "bar")
                 .build().perform();
-        assertEquals(res.getBody(),"foobar");
+        assertEquals(res.getBody(), "foobar");
     }
 
     @Test

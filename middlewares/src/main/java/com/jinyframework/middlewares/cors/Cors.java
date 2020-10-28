@@ -13,11 +13,24 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * The type Cors.
+ */
 public final class Cors {
+    /**
+     * Allow default config.
+     *
+     * @return the config
+     */
     public static Config allowDefault() {
         return Config.defaultBuilder().build();
     }
 
+    /**
+     * Allow all config.
+     *
+     * @return the config
+     */
     public static Config allowAll() {
         return Config.builder()
                 .allowAllOrigins(true)
@@ -26,6 +39,12 @@ public final class Cors {
                 .build();
     }
 
+    /**
+     * New handler handler.
+     *
+     * @param config the config
+     * @return the handler
+     */
     public static Handler newHandler(@NonNull Config config) {
         return ctx -> {
             if (ctx.getMethod() == HttpMethod.OPTIONS
@@ -133,10 +152,18 @@ public final class Cors {
                         .anyMatch(header::equalsIgnoreCase));
     }
 
+    /**
+     * New handler handler.
+     *
+     * @return the handler
+     */
     public static Handler newHandler() {
         return newHandler(allowDefault());
     }
 
+    /**
+     * The type Config.
+     */
     @Getter
     @Builder
     public static final class Config {
@@ -153,6 +180,11 @@ public final class Cors {
         private final boolean optionPass;
         private final int maxAge;
 
+        /**
+         * Default builder config builder.
+         *
+         * @return the config builder
+         */
         public static ConfigBuilder defaultBuilder() {
             val allowMethods = Stream.of("GET", "POST", "HEAD").collect(Collectors.toList());
             val allowHeaders = Stream.of("Origin", "Accept", "Content-Type", "X-Requested-With")

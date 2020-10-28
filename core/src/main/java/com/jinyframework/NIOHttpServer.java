@@ -19,6 +19,9 @@ import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 
+/**
+ * The type Nio http server.
+ */
 @Slf4j
 public final class NIOHttpServer extends AbstractHttpRouter<HandlerNIO> {
     private final int serverPort;
@@ -30,15 +33,34 @@ public final class NIOHttpServer extends AbstractHttpRouter<HandlerNIO> {
         this.serverPort = serverPort;
     }
 
+    /**
+     * Port nio http server.
+     *
+     * @param serverPort the server port
+     * @return the nio http server
+     */
     public static NIOHttpServer port(final int serverPort) {
         return new NIOHttpServer(serverPort);
     }
 
+    /**
+     * Use transformer nio http server.
+     *
+     * @param transformer the transformer
+     * @return the nio http server
+     */
     public NIOHttpServer useTransformer(@NonNull final RequestTransformer transformer) {
         this.transformer = transformer;
         return this;
     }
 
+    /**
+     * Sets num of event loop thread.
+     *
+     * @param maxThread the max thread
+     * @return the num of event loop thread
+     * @throws IOException the io exception
+     */
     public NIOHttpServer setNumOfEventLoopThread(final int maxThread) throws IOException {
         if (maxThread < 1) {
             throw new ArithmeticException("maxThread cannot lower than 1");
@@ -47,11 +69,22 @@ public final class NIOHttpServer extends AbstractHttpRouter<HandlerNIO> {
         return this;
     }
 
+    /**
+     * Sets thread debug mode.
+     *
+     * @param isDebug the is debug
+     * @return the thread debug mode
+     */
     public NIOHttpServer setThreadDebugMode(final boolean isDebug) {
         threadFactory.setDebug(isDebug);
         return this;
     }
 
+    /**
+     * Start.
+     *
+     * @throws IOException the io exception
+     */
     public void start() throws IOException {
         Intro.begin();
         val group = AsynchronousChannelGroup.withFixedThreadPool(maxThread, threadFactory);
@@ -73,6 +106,11 @@ public final class NIOHttpServer extends AbstractHttpRouter<HandlerNIO> {
         });
     }
 
+    /**
+     * Stop.
+     *
+     * @throws IOException the io exception
+     */
     public void stop() throws IOException {
         if (serverSocketChannel.isOpen()) {
             serverSocketChannel.close();

@@ -12,12 +12,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The type Abstract http router.
+ *
+ * @param <T> the type parameter
+ */
 @Getter
 public abstract class AbstractHttpRouter<T extends HandlerBase> {
+    /**
+     * The Handlers.
+     */
     protected final List<HandlerMetadata<T>> handlers = new ArrayList<>();
+    /**
+     * The Middlewares.
+     */
     protected final List<HandlerMetadata<T>> middlewares = new ArrayList<>();
+    /**
+     * The Transformer.
+     */
     protected RequestTransformer transformer = Object::toString;
 
+    /**
+     * Use.
+     *
+     * @param path   the path
+     * @param router the router
+     */
     public final void use(@NonNull final String path, @NonNull final AbstractHttpRouter<T> router) {
         val refactoredMiddlewares = router.getMiddlewares().stream().peek(e -> {
             val refactoredPath = path + e.getPath();
@@ -33,6 +53,13 @@ public abstract class AbstractHttpRouter<T extends HandlerBase> {
         handlers.addAll(refactoredHandlers);
     }
 
+    /**
+     * Add handler.
+     *
+     * @param method   the method
+     * @param path     the path
+     * @param handlers the handlers
+     */
     @SafeVarargs
     public final void addHandler(@NonNull final HttpMethod method, @NonNull final String path,
                                  @NonNull final T... handlers) {
@@ -40,42 +67,83 @@ public abstract class AbstractHttpRouter<T extends HandlerBase> {
         this.handlers.add(newHandlers);
     }
 
+    /**
+     * Use.
+     *
+     * @param handlers the handlers
+     */
     @SafeVarargs
     public final void use(@NonNull final T... handlers) {
         val newMiddleware = new HandlerMetadata<T>(HttpMethod.ALL, "/", handlers);
         this.middlewares.add(newMiddleware);
     }
 
+    /**
+     * Use.
+     *
+     * @param path     the path
+     * @param handlers the handlers
+     */
     @SafeVarargs
     public final void use(@NonNull final String path, @NonNull final T... handlers) {
         val newHandlers = new HandlerMetadata<T>(HttpMethod.ALL, path, handlers);
         this.handlers.add(newHandlers);
     }
 
+    /**
+     * Get.
+     *
+     * @param path     the path
+     * @param handlers the handlers
+     */
     @SafeVarargs
     public final void get(@NonNull final String path, @NonNull final T... handlers) {
         val newHandlers = new HandlerMetadata<T>(HttpMethod.GET, path, handlers);
         this.handlers.add(newHandlers);
     }
 
+    /**
+     * Post.
+     *
+     * @param path     the path
+     * @param handlers the handlers
+     */
     @SafeVarargs
     public final void post(@NonNull final String path, @NonNull final T... handlers) {
         val newHandlers = new HandlerMetadata<T>(HttpMethod.POST, path, handlers);
         this.handlers.add(newHandlers);
     }
 
+    /**
+     * Put.
+     *
+     * @param path     the path
+     * @param handlers the handlers
+     */
     @SafeVarargs
     public final void put(@NonNull final String path, @NonNull final T... handlers) {
         val newHandlers = new HandlerMetadata<T>(HttpMethod.PUT, path, handlers);
         this.handlers.add(newHandlers);
     }
 
+    /**
+     * Patch.
+     *
+     * @param path     the path
+     * @param handlers the handlers
+     */
     @SafeVarargs
     public final void patch(@NonNull final String path, @NonNull final T... handlers) {
         val newHandlers = new HandlerMetadata<T>(HttpMethod.PATCH, path, handlers);
         this.handlers.add(newHandlers);
     }
 
+    /**
+     * Delete.
+     *
+     * @param path     the path
+     * @param handlers the handlers
+     */
     @SafeVarargs
     public final void delete(@NonNull final String path, @NonNull final T... handlers) {
         val newHandlers = new HandlerMetadata<T>(HttpMethod.DELETE, path, handlers);

@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
 
+/**
+ * The type Server thread factory.
+ */
 @Slf4j
 public final class ServerThreadFactory implements ThreadFactory {
     private final String name;
@@ -15,6 +18,11 @@ public final class ServerThreadFactory implements ThreadFactory {
     private int counter;
     private boolean isDebug = false;
 
+    /**
+     * Instantiates a new Server thread factory.
+     *
+     * @param name the name
+     */
     public ServerThreadFactory(@NonNull String name) {
         counter = 1;
         this.name = name;
@@ -34,10 +42,20 @@ public final class ServerThreadFactory implements ThreadFactory {
         return t;
     }
 
+    /**
+     * Sets debug.
+     *
+     * @param isDebug the is debug
+     */
     public void setDebug(final boolean isDebug) {
         this.isDebug = isDebug;
     }
 
+    /**
+     * Gets stats.
+     *
+     * @return the stats
+     */
     public String getStats() {
         val buffer = new StringBuilder();
         for (String stat : stats) {
