@@ -10,11 +10,13 @@ WebSockets allow for two-way communication between a client and server. Unlike H
   
 ## Install
 
+Latest version: ![Maven Central](https://img.shields.io/maven-central/v/com.jinyframework/websocket?style=flat-square)
+
 `build.gradle`
 
 ```groovy
 dependencies {
-    compile group: 'com.jinyframework', name: 'websocket', version: 'x.x.x'
+    compile group: 'com.jinyframework', name: 'websocket', version: '{latest_version}'
 }
 ```
 
