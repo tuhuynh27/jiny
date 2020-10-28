@@ -92,7 +92,8 @@ module.exports = {
           title: 'Plugins',
           collapsable: true,
           children: [
-              'plugins/websocket',
+            'plugins/cors',
+            'plugins/websocket',
           ]
         },
         {
