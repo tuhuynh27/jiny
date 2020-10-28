@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 public final class RequestBinderNIO extends AbstractRequestBinder<HandlerNIO> {
     private final CompletableFuture<HttpResponse> promise = new CompletableFuture<>();
 
-    public RequestBinderNIO(Context context,
+    public RequestBinderNIO(final Context context,
                             final List<HandlerMetadata<HandlerNIO>> middlewares,
                             final List<HandlerMetadata<HandlerNIO>> handlerMetadata) {
         super(context, middlewares, handlerMetadata);
