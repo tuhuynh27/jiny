@@ -1,7 +1,6 @@
 package com.jinyframework.middlewares.cors;
 
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,23 +27,46 @@ public final class Cors {
     public static Config allowAll() {
         return Config.builder()
                      .allowAllOrigins(true)
+                     .allowAllHeaders(true)
                      .allowCredentials(false)
                      .optionPass(false)
                      .build();
     }
 
     public static Handler newHandler(Config config) {
+        // apply sensible defaults in case users haven't set them
+        val builder = config.toBuilder();
+
+        if (config.allowOrigins.contains("*")) {
+            builder.allowAllOrigins(true);
+            builder.clearAllowOrigins();
+        }
+
+        if (config.allowHeaders.isEmpty()) {
+            builder.allowHeaders(Config.allowHeadersDefault);
+        } else if (config.allowHeaders.contains("*")) {
+            builder.allowAllHeaders(true);
+            builder.clearAllowHeaders();
+        } else {
+            builder.allowHeader("Origin");
+        }
+
+        if (config.allowMethods.isEmpty()) {
+            builder.allowMethods(Config.allowMethodsDefault);
+        }
+
+        val finalConfig = builder.build();
         return ctx -> {
             if (ctx.getMethod() == HttpMethod.OPTIONS
                 && !ctx.headerParam("Access-Control-Request-Method").isEmpty()) {
-                handlePreflight(ctx, config);
-                if (config.optionPass) {
+                handlePreflight(ctx, finalConfig);
+                if (finalConfig.optionPass) {
                     return HttpResponse.next();
                 } else {
                     return HttpResponse.of("", HttpURLConnection.HTTP_NO_CONTENT);
                 }
             } else {
-                handleActual(ctx, config);
+                handleActual(ctx, finalConfig);
                 return HttpResponse.next();
             }
         };
@@ -63,31 +85,29 @@ public final class Cors {
 
         val reqMethod = ctx.headerParam("Access-Control-Request-Method");
         if (ctx.getMethod() != HttpMethod.OPTIONS
-            && !config.allowMethods.isEmpty()
-            && config.allowMethods.stream().noneMatch(reqMethod::equalsIgnoreCase)) {
+            || !isAllowedMethod(reqMethod, config.getAllowMethods())) {
             return;
         }
 
-        val reqHeaders = new ArrayList<>(Arrays.asList(ctx.headerParam("Access-Control-Request-Headers")
-                                                          .split(",")));
-        if (!isAllowedHeaders(reqHeaders, config)) {
+        val reqHeaders = ctx.headerParam("Access-Control-Request-Headers")
+                                                          .split(",");
+        if (!config.allowAllHeaders && !isAllowedHeaders(reqHeaders, config.allowHeaders)) {
             return;
         }
 
         ctx.putHeader("Access-Control-Allow-Methods",reqMethod);
 
-        if (!reqHeaders.get(0).isEmpty()) {
-            if (!reqHeaders.contains("Origin")) {
-                reqHeaders.add("Origin");
-            }
-            ctx.putHeader("Access-Control-Allow-Headers", reqHeaders.stream()
-                                                                    .map(Util::normalizeHeader)
-                                                                    .collect(Collectors.joining(",")));
+        if (!reqHeaders[0].isEmpty()) {
+            ctx.putHeader("Access-Control-Allow-Headers", Arrays.stream(reqHeaders).distinct()
+                                                                .map(Util::normalizeHeader)
+                                                                .collect(Collectors.joining(",")));
+        } else {
+            ctx.putHeader("Access-Control-Allow-Headers", String.join(",", config.allowHeaders));
         }
 
-        if (config.allowAllOrigins || config.allowOrigins.contains("*")) {
+        if (config.allowAllOrigins) {
             ctx.putHeader("Access-Control-Allow-Origin", "*");
-        } else if (isAllowedOrigin(origin,config)) {
+        } else if (isAllowedOrigin(origin,config.allowOrigins)) {
             ctx.putHeader("Access-Control-Allow-Origin", origin);
         }
 
@@ -109,7 +129,7 @@ public final class Cors {
             return;
         }
 
-        if (config.allowAllOrigins || config.allowOrigins.contains("*")) {
+        if (config.allowAllOrigins) {
             ctx.putHeader("Access-Control-Allow-Origin", "*");
         } else if (config.allowOrigins.contains(origin)) {
             ctx.putHeader("Access-Control-Allow-Origin", origin);
@@ -124,20 +144,41 @@ public final class Cors {
         }
     }
 
-    private static boolean isAllowedOrigin(String origin, Config config) {
-        return config.allowOrigins.stream().anyMatch(org -> org.equalsIgnoreCase(origin));
+    private static boolean isAllowedMethod(String method, List<String> allowMethods) {
+        for (String am: allowMethods) {
+            if (am.equalsIgnoreCase(method)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    private static boolean isAllowedHeaders(List<String> reqHeaders, Config config) {
-        if (reqHeaders.get(0).isEmpty()
-            || config.allowHeaders.isEmpty()
-            || config.allowHeaders.contains("*")) {
+    private static boolean isAllowedOrigin(String origin, List<String> allowOrigins) {
+        for (String org: allowOrigins) {
+            if (org.equalsIgnoreCase(origin)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isAllowedHeaders(String[] reqHeaders, List<String> allowHeaders) {
+        if (reqHeaders[0].isEmpty()) {
             return true;
         }
-        return reqHeaders.stream()
-                         .allMatch(header -> config.allowHeaders
-                                 .stream()
-                                 .anyMatch(header::equalsIgnoreCase));
+        for (String header: reqHeaders) {
+            boolean allow = false;
+            for (String allowHeader: allowHeaders) {
+                if (allowHeader.equalsIgnoreCase(header)) {
+                    allow = true;
+                    break;
+                }
+            }
+            if (!allow) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public static Handler newHandler() {
@@ -145,9 +186,10 @@ public final class Cors {
     }
 
     @Getter
-    @Builder
+    @Builder(toBuilder = true)
     public static final class Config {
         private final boolean allowAllOrigins;
+        private final boolean allowAllHeaders;
         private final boolean allowCredentials;
         @Singular
         private final List<String> exposeHeaders;
@@ -160,15 +202,16 @@ public final class Cors {
         private final boolean optionPass;
         private final int maxAge;
 
+        static List<String> allowHeadersDefault = Stream.of("Origin", "Accept", "Content-Type", "X-Requested-With")
+                                                        .collect(Collectors.toList());
+        static List<String> allowMethodsDefault = Stream.of("GET", "POST", "HEAD").collect(Collectors.toList());
+
         public static ConfigBuilder defaultBuilder() {
-            val allowMethods = Stream.of("GET", "POST", "HEAD").collect(Collectors.toList());
-            val allowHeaders = Stream.of("Origin", "Accept", "Content-Type", "X-Requested-With")
-                                     .collect(Collectors.toList());
             return builder()
                     .allowAllOrigins(true)
                     .allowCredentials(false)
-                    .allowMethods(allowMethods)
-                    .allowHeaders(allowHeaders)
+                    .allowMethods(allowMethodsDefault)
+                    .allowHeaders(allowHeadersDefault)
                     .optionPass(false)
                     .maxAge(0);
         }

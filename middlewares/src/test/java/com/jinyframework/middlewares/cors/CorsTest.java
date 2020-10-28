@@ -131,7 +131,6 @@ public class CorsTest {
         final Handler handler = Cors.newHandler(Config.builder()
                                                       .allowAllOrigins(false)
                                                       .allowOrigin(uri)
-                                                      .allowMethod("GET")
                                                       .allowHeader("Bar")
                                                       .build());
         final Map<String, String> reqHeaders = new HashMap<>();
