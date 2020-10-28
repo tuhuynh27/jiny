@@ -1,5 +1,6 @@
 package com.jinyframework.middlewares.cors;
 
+import lombok.val;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,9 +10,9 @@ class UtilTest {
     @Test
     @DisplayName("Normalize header")
     void normalizeHeader() {
-        String in = "access-CONTROL-Allow-mEthOd";
-        String out = "Access-Control-Allow-Method";
-        String res = Util.normalizeHeader(in);
-        Assertions.assertEquals(out,res);
+        val in = "access-CONTROL-Allow-mEthOd";
+        val out = "Access-Control-Allow-Method";
+        val res = Util.normalizeHeader(in);
+        Assertions.assertEquals(out, res);
     }
 }
