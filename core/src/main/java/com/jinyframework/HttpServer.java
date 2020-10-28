@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -53,6 +54,17 @@ public final class HttpServer extends AbstractHttpRouter<Handler> {
     }
 
     /**
+     * Use response headers http server.
+     *
+     * @param responseHeaders the response headers
+     * @return the http server
+     */
+    public HttpServer useResponseHeaders(@NonNull final Map<String, String> responseHeaders) {
+        this.responseHeaders = responseHeaders;
+        return this;
+    }
+
+    /**
      * Sets thread debug mode.
      *
      * @param isDebug the is debug
@@ -76,7 +88,7 @@ public final class HttpServer extends AbstractHttpRouter<Handler> {
         while (!Thread.interrupted()) {
             val clientSocket = serverSocket.accept();
             executor.execute(
-                    new RequestPipeline(clientSocket, middlewares, handlers, transformer));
+                    new RequestPipeline(clientSocket, middlewares, handlers, responseHeaders, transformer));
         }
     }
 

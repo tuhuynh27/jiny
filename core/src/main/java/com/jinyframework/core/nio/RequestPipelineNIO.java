@@ -14,6 +14,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
@@ -23,6 +24,7 @@ public final class RequestPipelineNIO {
     private final ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
     private final List<HandlerMetadata<HandlerNIO>> middlewares;
     private final List<HandlerMetadata<HandlerNIO>> handlers;
+    private final Map<String, String> responseHeaders;
     private final RequestTransformer transformer;
 
     public void run() {
@@ -35,6 +37,7 @@ public final class RequestPipelineNIO {
 
     private CompletableFuture<Boolean> process() {
         val promise = new CompletableFuture<Boolean>();
+        val defaultResponseHeaders = responseHeaders;
 
         clientSocketChannel.read(byteBuffer, null, new CompletionHandler<Integer, Object>() {
             @Override
@@ -50,7 +53,7 @@ public final class RequestPipelineNIO {
                     val requestContext = ParserUtils.parseRequest(req, body);
                     val response = new RequestBinderNIO(requestContext, middlewares, handlers);
                     response.getResponseObject().thenAccept(responseObjectReturned -> {
-                        val responseHeaders = response.getResponseHeaders();
+                        val responseHeaders = response.getResponseHeaders(defaultResponseHeaders);
                         val responseString = ParserUtils.parseResponse(responseObjectReturned, responseHeaders, transformer);
 
                         clientSocketChannel.write(MessageCodec.encode(responseString), null,

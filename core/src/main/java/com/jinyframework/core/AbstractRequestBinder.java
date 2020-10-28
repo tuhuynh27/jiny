@@ -4,9 +4,7 @@ import com.jinyframework.core.AbstractRequestBinder.HandlerBase;
 import com.jinyframework.core.utils.ParserUtils.HttpMethod;
 import lombok.*;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -66,7 +64,8 @@ public abstract class AbstractRequestBinder<T extends HandlerBase> {
                 .build();
     }
 
-    public Map<String, String> getResponseHeaders() {
+    public Map<String, String> getResponseHeaders(final Map<String, String> defaultResponseHeaders) {
+        context.getResponseHeaders().putAll(defaultResponseHeaders);
         return context.getResponseHeaders();
     }
 

@@ -9,7 +9,9 @@ import lombok.NonNull;
 import lombok.val;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -31,6 +33,11 @@ public abstract class AbstractHttpRouter<T extends HandlerBase> {
      * The Transformer.
      */
     protected RequestTransformer transformer = Object::toString;
+
+    /**
+     * The Response headers.
+     */
+    protected Map<String, String> responseHeaders = new HashMap<>();
 
     /**
      * Use.

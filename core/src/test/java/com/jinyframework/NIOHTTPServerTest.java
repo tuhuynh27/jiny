@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 @DisplayName("api.NIOHttpServerTest")
@@ -25,6 +26,10 @@ public class NIOHTTPServerTest extends HTTPTest {
                 ctx.setDataParam("global", "middleware");
                 return HttpResponse.nextAsync();
             });
+
+            val defaultResponseHeaders = new HashMap<String, String>();
+            defaultResponseHeaders.put("Content-Type", "application/json");
+            server.useResponseHeaders(defaultResponseHeaders);
 
             server.get("/", ctx -> HttpResponse.ofAsync("Hello World"));
             server.post("/transform", ctx -> HttpResponse.ofAsync(ctx.getBody(), s -> s + "ed"));

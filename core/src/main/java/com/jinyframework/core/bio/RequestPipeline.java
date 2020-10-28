@@ -19,6 +19,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 @Slf4j
@@ -27,6 +28,7 @@ public final class RequestPipeline implements Runnable {
     private final Socket socket;
     private final List<HandlerMetadata<Handler>> middlewares;
     private final List<HandlerMetadata<Handler>> handlers;
+    private final Map<String, String> responseHeaders;
     private final RequestTransformer transformer;
     private BufferedReader in;
     private PrintWriter out;
@@ -87,7 +89,7 @@ public final class RequestPipeline implements Runnable {
                     .parseRequest(requestStringArr.toArray(new String[0]), body.toString().trim());
 
             val response = new RequestBinder(requestContext, middlewares, handlers);
-            val responseHeaders = response.getResponseHeaders();
+            val responseHeaders = response.getResponseHeaders(this.responseHeaders);
             val responseObject = response.getResponseObject();
             val responseString = ParserUtils.parseResponse(responseObject, responseHeaders, transformer);
 

@@ -18,6 +18,7 @@ import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
+import java.util.Map;
 
 /**
  * The type Nio http server.
@@ -51,6 +52,17 @@ public final class NIOHttpServer extends AbstractHttpRouter<HandlerNIO> {
      */
     public NIOHttpServer useTransformer(@NonNull final RequestTransformer transformer) {
         this.transformer = transformer;
+        return this;
+    }
+
+    /**
+     * Use response headers http server.
+     *
+     * @param responseHeaders the response headers
+     * @return the http server
+     */
+    public NIOHttpServer useResponseHeaders(@NonNull final Map<String, String> responseHeaders) {
+        this.responseHeaders = responseHeaders;
         return this;
     }
 
@@ -96,7 +108,7 @@ public final class NIOHttpServer extends AbstractHttpRouter<HandlerNIO> {
             @Override
             public void completed(AsynchronousSocketChannel clientSocketChannel, Object attachment) {
                 serverSocketChannel.accept(null, this);
-                new RequestPipelineNIO(clientSocketChannel, middlewares, handlers, transformer).run();
+                new RequestPipelineNIO(clientSocketChannel, middlewares, handlers, responseHeaders, transformer).run();
             }
 
             @Override

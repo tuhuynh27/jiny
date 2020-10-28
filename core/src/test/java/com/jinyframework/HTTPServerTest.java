@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 @DisplayName("api.HttpServerTest")
@@ -25,6 +26,10 @@ public class HTTPServerTest extends HTTPTest {
                 ctx.setDataParam("global", "middleware");
                 return HttpResponse.next();
             });
+
+            val defaultResponseHeaders = new HashMap<String, String>();
+            defaultResponseHeaders.put("Content-Type", "application/json");
+            server.useResponseHeaders(defaultResponseHeaders);
 
             server.get("/", ctx -> HttpResponse.of("Hello World"));
             server.post("/transform", ctx -> HttpResponse.of(ctx.getBody()).transform(s -> s + "ed"));
