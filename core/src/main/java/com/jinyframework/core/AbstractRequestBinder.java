@@ -68,13 +68,11 @@ public abstract class AbstractRequestBinder<T extends HandlerBase> {
     }
 
     public Map<String, String> getResponseHeaders(final Map<String, String> defaultResponseHeaders) {
-        if (defaultResponseHeaders == null) {
-            return context.getResponseHeaders();
-        }
-
-        val headers = new HashMap<>(defaultResponseHeaders);
-        headers.putAll(context.getResponseHeaders());
-        return headers;
+        val responseHeaders = context.getResponseHeaders();
+        responseHeaders.forEach(
+                (key, value) -> defaultResponseHeaders.merge(key, value, (v1, v2) -> v1)
+        );
+        return responseHeaders;
     }
 
     public interface HandlerBase {
