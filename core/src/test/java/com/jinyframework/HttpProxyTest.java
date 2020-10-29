@@ -24,35 +24,17 @@ public class HttpProxyTest {
     static void startProxy() throws InterruptedException {
         val serverBIO = HttpServer.port(1111);
         serverBIO.get("/hello", ctx -> HttpResponse.of("Hello World"));
-        new Thread(() -> {
-            try {
-                serverBIO.start();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).start();
+        new Thread(serverBIO::start).start();
 
         val serverNIO = NIOHttpServer.port(2222);
         serverNIO.get("/bye", ctx -> HttpResponse.ofAsync("Bye"));
         serverNIO.post("/echo", ctx -> HttpResponse.ofAsync(ctx.getBody()));
-        new Thread(() -> {
-            try {
-                serverNIO.start();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).start();
+        new Thread(serverNIO::start).start();
 
         val proxy = HttpProxy.port(8000);
         proxy.use("/bio", "localhost:1111");
         proxy.use("/nio", "localhost:2222");
-        new Thread(() -> {
-            try {
-                proxy.start();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).start();
+        new Thread(proxy::start).start();
 
         // Wait for server to start
         TimeUnit.SECONDS.sleep(1);
