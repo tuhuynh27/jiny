@@ -141,7 +141,7 @@ public final class Cors {
         }
     }
 
-    private static void handleActual(Context ctx,@NonNull Config config) {
+    private static void handleActual(Context ctx, @NonNull Config config) {
         val origin = ctx.headerParam("Origin");
 
         ctx.putHeader("Vary", "Origin");
