@@ -1,9 +1,9 @@
 package com.jinyframework.middlewares.cors;
 
+import java.util.ArrayList;
+
 import lombok.NonNull;
 import lombok.val;
-
-import java.util.ArrayList;
 
 /**
  * The type Util.
