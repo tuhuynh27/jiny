@@ -6,13 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.HttpURLConnection;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.jinyframework.core.AbstractRequestBinder.Context;
-import com.jinyframework.core.AbstractRequestBinder.Handler;
 import com.jinyframework.core.utils.ParserUtils.HttpMethod;
 import com.jinyframework.middlewares.cors.Cors.Config;
 
@@ -149,17 +147,17 @@ public class CorsTest {
     @Test
     @DisplayName("Default settings for empty config fields")
     void defaultSettingEmptyFields() throws Exception {
-        final Handler handler = Cors.newHandler(Config.builder()
-                                                      .allowOrigin(uri)
-                                                      .build());
-        final Map<String, String> reqHeaders = new HashMap<>();
+        val handler = Cors.newHandler(Config.builder()
+                                            .allowOrigin(uri)
+                                            .build());
+        val reqHeaders = new HashMap<String, String>();
         reqHeaders.put("Origin".toLowerCase(), uri);
         reqHeaders.put("Access-Control-Request-Method".toLowerCase(),"HEAD");
-        final Context ctx = Context.builder()
-                                   .method(HttpMethod.OPTIONS)
-                                   .header(reqHeaders)
-                                   .responseHeaders(new HashMap<>())
-                                   .build();
+        val ctx = Context.builder()
+                         .method(HttpMethod.OPTIONS)
+                         .header(reqHeaders)
+                         .responseHeaders(new HashMap<>())
+                         .build();
         handler.handleFunc(ctx);
         assertTrue(ctx.getResponseHeaders().get("Access-Control-Allow-Headers").contains("Content-Type"));
         assertTrue(ctx.getResponseHeaders().get("Access-Control-Allow-Headers").contains("Origin"));

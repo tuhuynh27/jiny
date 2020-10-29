@@ -50,7 +50,7 @@ public final class Cors {
      * @param config the config
      * @return the handler
      */
-    public static Handler newHandler(Config config) {
+    public static Handler newHandler(@NonNull Config config) {
         // apply sensible defaults in case users haven't set them
         val builder = config.toBuilder();
 
@@ -141,7 +141,7 @@ public final class Cors {
         }
     }
 
-    private static void handleActual(Context ctx, Config config) {
+    private static void handleActual(Context ctx,@NonNull Config config) {
         val origin = ctx.headerParam("Origin");
 
         ctx.putHeader("Vary", "Origin");
