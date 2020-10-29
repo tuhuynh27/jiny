@@ -2,7 +2,12 @@
 
 ![Maven Central](https://img.shields.io/maven-central/v/com.jinyframework/core?style=flat-square)
 
-### 0.2.9 (Current)
+### 0.3.0 (Current)
+
+- Implement global header response set
+- Refactor code
+
+### 0.2.9
 
 - Implement CORS middleware
 

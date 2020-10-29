@@ -26,13 +26,13 @@ public class CorsTest {
     @DisplayName("Allow all")
     void allowAll() throws Exception {
         val handler = Cors.newHandler(Config.builder()
-                                            .allowAllOrigins(true).build());
+                .allowAllOrigins(true).build());
         val reqHeaders = new HashMap<String, String>();
         reqHeaders.put("Origin".toLowerCase(), uri);
         val ctx = Context.builder()
-                         .header(reqHeaders)
-                         .responseHeaders(new HashMap<>())
-                         .build();
+                .header(reqHeaders)
+                .responseHeaders(new HashMap<>())
+                .build();
         handler.handleFunc(ctx);
         assertEquals(ctx.getResponseHeaders().get("Vary"), "Origin");
         assertEquals(ctx.getResponseHeaders().get("Access-Control-Allow-Origin"), "*");
@@ -42,24 +42,24 @@ public class CorsTest {
     @DisplayName("Allow from list")
     void allowFromList() throws Exception {
         val handler = Cors.newHandler(Config.builder()
-                                            .allowAllOrigins(false)
-                                            .allowOrigin(uri)
-                                            .build());
+                .allowAllOrigins(false)
+                .allowOrigin(uri)
+                .build());
         val reqHeaders = new HashMap<String, String>();
         reqHeaders.put("Origin".toLowerCase(), uri);
         val successCtx = Context.builder()
-                                .header(reqHeaders)
-                                .responseHeaders(new HashMap<>())
-                                .build();
+                .header(reqHeaders)
+                .responseHeaders(new HashMap<>())
+                .build();
         handler.handleFunc(successCtx);
         assertEquals(successCtx.getResponseHeaders().get("Vary"), "Origin");
         assertEquals(successCtx.getResponseHeaders().get("Access-Control-Allow-Origin"), uri);
 
         reqHeaders.put("Origin".toLowerCase(), "http://wronghost");
         val failCtx = Context.builder()
-                             .header(reqHeaders)
-                             .responseHeaders(new HashMap<>())
-                             .build();
+                .header(reqHeaders)
+                .responseHeaders(new HashMap<>())
+                .build();
         handler.handleFunc(failCtx);
         assertEquals(failCtx.getResponseHeaders().get("Vary"), "Origin");
         assertNull(failCtx.getResponseHeaders().get("Access-Control-Allow-Origin"));
@@ -69,16 +69,16 @@ public class CorsTest {
     @DisplayName("Allow credentials")
     void allowCredentials() throws Exception {
         val handler = Cors.newHandler(Config.builder()
-                                            .allowAllOrigins(false)
-                                            .allowOrigin(uri)
-                                            .allowCredentials(true)
-                                            .build());
+                .allowAllOrigins(false)
+                .allowOrigin(uri)
+                .allowCredentials(true)
+                .build());
         val reqHeaders = new HashMap<String, String>();
         reqHeaders.put("Origin".toLowerCase(), uri);
         val successCtx = Context.builder()
-                                .header(reqHeaders)
-                                .responseHeaders(new HashMap<>())
-                                .build();
+                .header(reqHeaders)
+                .responseHeaders(new HashMap<>())
+                .build();
         handler.handleFunc(successCtx);
         assertEquals(successCtx.getResponseHeaders().get("Vary"), "Origin");
         assertEquals(successCtx.getResponseHeaders().get("Access-Control-Allow-Origin"), uri);
@@ -89,16 +89,16 @@ public class CorsTest {
     @DisplayName("Expose headers")
     void exposeHeaders() throws Exception {
         val handler = Cors.newHandler(Config.builder()
-                                            .allowAllOrigins(false)
-                                            .allowOrigin(uri)
-                                            .exposeHeader("Foo")
-                                            .build());
+                .allowAllOrigins(false)
+                .allowOrigin(uri)
+                .exposeHeader("Foo")
+                .build());
         val reqHeaders = new HashMap<String, String>();
         reqHeaders.put("Origin".toLowerCase(), uri);
         val successCtx = Context.builder()
-                                .header(reqHeaders)
-                                .responseHeaders(new HashMap<>())
-                                .build();
+                .header(reqHeaders)
+                .responseHeaders(new HashMap<>())
+                .build();
         handler.handleFunc(successCtx);
         assertEquals(successCtx.getResponseHeaders().get("Vary"), "Origin");
         assertEquals(successCtx.getResponseHeaders().get("Access-Control-Allow-Origin"), uri);
@@ -109,17 +109,17 @@ public class CorsTest {
     @DisplayName("Request + Allow methods")
     void requestAllowMethods() throws Exception {
         val handler = Cors.newHandler(Config.builder()
-                                            .allowAllOrigins(false)
-                                            .allowOrigin(uri)
-                                            .allowMethod("PUT")
-                                            .build());
+                .allowAllOrigins(false)
+                .allowOrigin(uri)
+                .allowMethod("PUT")
+                .build());
         val reqHeaders = new HashMap<String, String>();
         reqHeaders.put("Origin".toLowerCase(), uri);
-        reqHeaders.put("Access-Control-Request-Method".toLowerCase(),"PUT");
+        reqHeaders.put("Access-Control-Request-Method".toLowerCase(), "PUT");
         val successCtx = Context.builder()
-                                .method(HttpMethod.OPTIONS)
-                                .header(reqHeaders)
-                                .responseHeaders(new HashMap<>()).build();
+                .method(HttpMethod.OPTIONS)
+                .header(reqHeaders)
+                .responseHeaders(new HashMap<>()).build();
         val successRes = handler.handleFunc(successCtx);
         assertTrue(successCtx.getResponseHeaders().get("Access-Control-Allow-Methods").contains("PUT"));
         assertEquals(successRes.getHttpStatusCode(), HttpURLConnection.HTTP_NO_CONTENT);

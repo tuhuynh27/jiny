@@ -1,5 +1,8 @@
 package com.jinyframework.core.utils;
 
+/**
+ * The type Intro.
+ */
 public final class Intro {
     private static Intro instance;
 
@@ -12,6 +15,11 @@ public final class Intro {
                 "               |___/                                                       \n");
     }
 
+    /**
+     * Begin intro.
+     *
+     * @return the intro
+     */
     public static synchronized Intro begin() {
         if (instance == null) {
             instance = new Intro();

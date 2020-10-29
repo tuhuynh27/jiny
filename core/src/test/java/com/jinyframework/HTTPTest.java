@@ -27,6 +27,15 @@ public abstract class HTTPTest {
     }
 
     @Test
+    @DisplayName("Default Response Headers")
+    void defaultResponseHeaders() throws IOException {
+        val res = HttpClient.builder()
+                .url(url + "/").method("GET")
+                .build().perform();
+        assertEquals(res.getHeader("Content-Type"), "application/json");
+    }
+
+    @Test
     @DisplayName("Transformer")
     void transformer() throws IOException {
         val res = HttpClient.builder()
@@ -57,12 +66,12 @@ public abstract class HTTPTest {
 
     @Test
     @DisplayName("Header Params")
-    void headerParams() throws  IOException {
+    void headerParams() throws IOException {
         val res = HttpClient.builder()
                 .url(url + "/req-header").method("GET")
-                .header("Foo","foo").header("Bar", "bar")
+                .header("Foo", "foo").header("Bar", "bar")
                 .build().perform();
-        assertEquals(res.getBody(),"foobar");
+        assertEquals(res.getBody(), "foobar");
     }
 
     @Test

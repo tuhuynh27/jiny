@@ -6,24 +6,35 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.jinyframework.core.AbstractRequestBinder;
+import com.jinyframework.core.AbstractRequestBinder.Context;
 import com.jinyframework.core.AbstractRequestBinder.Handler;
 import com.jinyframework.core.AbstractRequestBinder.HttpResponse;
 import com.jinyframework.core.utils.ParserUtils.HttpMethod;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Singular;
 import lombok.val;
 
+/**
+ * The type Cors.
+ */
 public final class Cors {
-    private Cors() {
-    }
-
+    /**
+     * Allow default config.
+     *
+     * @return the config
+     */
     public static Config allowDefault() {
         return Config.defaultBuilder().build();
     }
 
+    /**
+     * Allow all config.
+     *
+     * @return the config
+     */
     public static Config allowAll() {
         return Config.builder()
                      .allowAllOrigins(true)
@@ -33,6 +44,12 @@ public final class Cors {
                      .build();
     }
 
+    /**
+     * New handler handler.
+     *
+     * @param config the config
+     * @return the handler
+     */
     public static Handler newHandler(Config config) {
         // apply sensible defaults in case users haven't set them
         val builder = config.toBuilder();
@@ -76,10 +93,10 @@ public final class Cors {
                                                           "Access-Control-Request-Method",
                                                           "Access-Control-Request-Headers");
 
-    private static void handlePreflight(AbstractRequestBinder.Context ctx, Config config) {
+    private static void handlePreflight(Context ctx, @NonNull Config config) {
         val origin = ctx.headerParam("Origin");
 
-        ctx.putHeader("Vary",varyHeaders);
+        ctx.putHeader("Vary", varyHeaders);
 
         if (origin.isEmpty()) {
             return;
@@ -92,12 +109,12 @@ public final class Cors {
         }
 
         val reqHeaders = ctx.headerParam("Access-Control-Request-Headers")
-                                                          .split(",");
+                            .split(",");
         if (!config.allowAllHeaders && !isAllowedHeaders(reqHeaders, config.allowHeaders)) {
             return;
         }
 
-        ctx.putHeader("Access-Control-Allow-Methods",reqMethod);
+        ctx.putHeader("Access-Control-Allow-Methods", reqMethod);
 
         if (!reqHeaders[0].isEmpty()) {
             ctx.putHeader("Access-Control-Allow-Headers", Stream.concat(Arrays.stream(reqHeaders),
@@ -111,7 +128,7 @@ public final class Cors {
 
         if (config.allowAllOrigins) {
             ctx.putHeader("Access-Control-Allow-Origin", "*");
-        } else if (isAllowedOrigin(origin,config.allowOrigins)) {
+        } else if (isAllowedOrigin(origin, config.allowOrigins)) {
             ctx.putHeader("Access-Control-Allow-Origin", origin);
         }
 
@@ -124,7 +141,7 @@ public final class Cors {
         }
     }
 
-    private static void handleActual(AbstractRequestBinder.Context ctx, Config config) {
+    private static void handleActual(Context ctx, Config config) {
         val origin = ctx.headerParam("Origin");
 
         ctx.putHeader("Vary", "Origin");
@@ -149,7 +166,7 @@ public final class Cors {
     }
 
     private static boolean isAllowedMethod(String method, List<String> allowMethods) {
-        for (String am: allowMethods) {
+        for (String am : allowMethods) {
             if (am.equalsIgnoreCase(method)) {
                 return true;
             }
@@ -158,7 +175,7 @@ public final class Cors {
     }
 
     private static boolean isAllowedOrigin(String origin, List<String> allowOrigins) {
-        for (String org: allowOrigins) {
+        for (String org : allowOrigins) {
             if (org.equalsIgnoreCase(origin)) {
                 return true;
             }
@@ -170,9 +187,9 @@ public final class Cors {
         if (reqHeaders[0].isEmpty()) {
             return true;
         }
-        for (String header: reqHeaders) {
+        for (String header : reqHeaders) {
             boolean allow = false;
-            for (String allowHeader: allowHeaders) {
+            for (String allowHeader : allowHeaders) {
                 if (allowHeader.equalsIgnoreCase(header)) {
                     allow = true;
                     break;
@@ -185,10 +202,18 @@ public final class Cors {
         return true;
     }
 
+    /**
+     * New handler handler.
+     *
+     * @return the handler
+     */
     public static Handler newHandler() {
         return newHandler(allowDefault());
     }
 
+    /**
+     * The type Config.
+     */
     @Getter
     @Builder(toBuilder = true)
     public static final class Config {
@@ -209,8 +234,14 @@ public final class Cors {
         static List<String> allowHeadersDefault = Stream.of("Origin", "Accept", "Content-Type",
                                                             "X-Requested-With")
                                                         .collect(Collectors.toList());
-        static List<String> allowMethodsDefault = Stream.of("GET", "POST", "HEAD").collect(Collectors.toList());
+        static List<String> allowMethodsDefault = Stream.of("GET", "POST", "HEAD").collect(
+                Collectors.toList());
 
+        /**
+         * Default builder config builder.
+         *
+         * @return the config builder
+         */
         public static ConfigBuilder defaultBuilder() {
             return builder()
                     .allowAllOrigins(true)

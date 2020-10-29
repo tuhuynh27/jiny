@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 @DisplayName("api.NIOHttpServerTest")
@@ -26,13 +27,17 @@ public class NIOHTTPServerTest extends HTTPTest {
                 return HttpResponse.nextAsync();
             });
 
+            val defaultResponseHeaders = new HashMap<String, String>();
+            defaultResponseHeaders.put("Content-Type", "application/json");
+            server.useResponseHeaders(defaultResponseHeaders);
+
             server.get("/", ctx -> HttpResponse.ofAsync("Hello World"));
             server.post("/transform", ctx -> HttpResponse.ofAsync(ctx.getBody(), s -> s + "ed"));
             server.get("/gm", ctx -> HttpResponse.ofAsync(ctx.dataParam("global")));
             server.get("/gm-sub", ctx -> HttpResponse.ofAsync(ctx.dataParam("att")));
             server.post("/echo", ctx -> HttpResponse.ofAsync(ctx.getBody()));
             server.get("/req-header", ctx -> HttpResponse.ofAsync(ctx.headerParam("foo")
-                                                             + ctx.headerParam("Bar")));
+                    + ctx.headerParam("Bar")));
             server.get("/header", ctx -> {
                 ctx.putHeader("foo", "bar");
                 return HttpResponse.ofAsync("Done!");

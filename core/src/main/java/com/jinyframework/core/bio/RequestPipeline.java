@@ -1,15 +1,5 @@
 package com.jinyframework.core.bio;
 
-import com.jinyframework.core.AbstractRequestBinder.Handler;
-import com.jinyframework.core.AbstractRequestBinder.HandlerMetadata;
-import com.jinyframework.core.AbstractRequestBinder.RequestTransformer;
-import com.jinyframework.core.utils.ParserUtils;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import lombok.val;
-import lombok.var;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -19,7 +9,19 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
+
+import com.jinyframework.core.AbstractRequestBinder.Handler;
+import com.jinyframework.core.AbstractRequestBinder.HandlerMetadata;
+import com.jinyframework.core.AbstractRequestBinder.RequestTransformer;
+import com.jinyframework.core.utils.ParserUtils;
+
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import lombok.var;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -27,6 +29,7 @@ public final class RequestPipeline implements Runnable {
     private final Socket socket;
     private final List<HandlerMetadata<Handler>> middlewares;
     private final List<HandlerMetadata<Handler>> handlers;
+    private final Map<String, String> responseHeaders;
     private final RequestTransformer transformer;
     private BufferedReader in;
     private PrintWriter out;
@@ -87,7 +90,7 @@ public final class RequestPipeline implements Runnable {
                     .parseRequest(requestStringArr.toArray(new String[0]), body.toString().trim());
 
             val response = new RequestBinder(requestContext, middlewares, handlers);
-            val responseHeaders = response.getResponseHeaders();
+            val responseHeaders = response.getResponseHeaders(this.responseHeaders);
             val responseObject = response.getResponseObject();
             val responseString = ParserUtils.parseResponse(responseObject, responseHeaders, transformer);
 

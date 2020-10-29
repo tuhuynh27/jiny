@@ -20,9 +20,19 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
+/**
+ * The type Parser utils.
+ */
 @Slf4j
 @UtilityClass
 public final class ParserUtils {
+    /**
+     * Parse request context.
+     *
+     * @param request the request
+     * @param body    the body
+     * @return the context
+     */
     public Context parseRequest(@NonNull final String[] request, @NonNull final String body) {
         if (request.length == 0) {
             throw new ArithmeticException("Request is empty");
@@ -61,6 +71,14 @@ public final class ParserUtils {
                 .build();
     }
 
+    /**
+     * Parse response string.
+     *
+     * @param httpResponse    the http response
+     * @param responseHeaders the response headers
+     * @param transformer     the transformer
+     * @return the string
+     */
     public String parseResponse(@NonNull final HttpResponse httpResponse, @NonNull final Map<String, String> responseHeaders, @NonNull RequestTransformer transformer) {
         val body = transformer.render(httpResponse.getResponseObject());
 
@@ -78,6 +96,14 @@ public final class ParserUtils {
         return httpResponseStringBuilder(httpResponse.getHttpStatusCode(), headers, body);
     }
 
+    /**
+     * Http response string builder string.
+     *
+     * @param statusCode the status code
+     * @param headers    the headers
+     * @param body       the body
+     * @return the string
+     */
     public String httpResponseStringBuilder(final int statusCode, @NonNull final Map<String, String> headers, final String body) {
         var httpStatusText = "";
         switch (statusCode) {
@@ -113,6 +139,12 @@ public final class ParserUtils {
         return stringBuilder.toString();
     }
 
+    /**
+     * Split query map.
+     *
+     * @param url the url
+     * @return the map
+     */
     public Map<String, String> splitQuery(final String url) {
         if (url == null || url.isEmpty()) {
             return new HashMap<>();
@@ -163,14 +195,41 @@ public final class ParserUtils {
         }
     }
 
+    /**
+     * The enum Http method.
+     */
     public enum HttpMethod {
+        /**
+         * Head http method.
+         */
         HEAD,
+        /**
+         * Options http method.
+         */
         OPTIONS,
+        /**
+         * Get http method.
+         */
         GET,
+        /**
+         * Post http method.
+         */
         POST,
+        /**
+         * Put http method.
+         */
         PUT,
+        /**
+         * Patch http method.
+         */
         PATCH,
+        /**
+         * Delete http method.
+         */
         DELETE,
+        /**
+         * All http method.
+         */
         ALL
     }
 }

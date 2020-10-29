@@ -19,6 +19,9 @@ import java.nio.channels.CompletionHandler;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * The type Http proxy.
+ */
 @Slf4j
 public final class HttpProxy {
     private final int proxyPort;
@@ -28,14 +31,31 @@ public final class HttpProxy {
         this.proxyPort = proxyPort;
     }
 
+    /**
+     * Port http proxy.
+     *
+     * @param proxyPort the proxy port
+     * @return the http proxy
+     */
     public static HttpProxy port(final int proxyPort) {
         return new HttpProxy(proxyPort);
     }
 
+    /**
+     * Use.
+     *
+     * @param path     the path
+     * @param endpoint the endpoint
+     */
     public void use(@NonNull final String path, @NonNull final String endpoint) {
         endpointMap.put(path, endpoint);
     }
 
+    /**
+     * Start.
+     *
+     * @throws IOException the io exception
+     */
     public void start() throws IOException {
         Intro.begin();
         val threadFactory = new ServerThreadFactory("proxy-event-loop");
@@ -66,11 +86,21 @@ public final class HttpProxy {
         private final AsynchronousSocketChannel clientSocketChannel;
         private final Map<String, String> endpointMap;
 
+        /**
+         * Create response string.
+         *
+         * @param text the text
+         * @param code the code
+         * @return the string
+         */
         public String createResponse(@NonNull final String text, final int code) {
             val httpResponse = HttpResponse.of(text).status(code);
             return ParserUtils.parseResponse(httpResponse, new HashMap<>(), t -> (String) t);
         }
 
+        /**
+         * Process.
+         */
         public void process() {
             handleSocket().thenAccept(canContinue -> {
                 if (canContinue) {
@@ -79,6 +109,11 @@ public final class HttpProxy {
             });
         }
 
+        /**
+         * Handle socket completable future.
+         *
+         * @return the completable future
+         */
         public CompletableFuture<Boolean> handleSocket() {
             val promise = new CompletableFuture<Boolean>();
             val byteBuffer = ByteBuffer.allocate(1024);
