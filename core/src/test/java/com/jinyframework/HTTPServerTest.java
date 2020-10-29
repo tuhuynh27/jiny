@@ -7,7 +7,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -79,11 +78,7 @@ public class HTTPServerTest extends HTTPTest {
             catRouter.get("/:foo/:bar", ctx -> HttpResponse.of(ctx.pathParam("foo") + ":" + ctx.pathParam("bar")));
             server.use("/cat", catRouter);
 
-            try {
-                server.start();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            server.start();
         }).start();
 
         // Wait for server to start
@@ -91,7 +86,7 @@ public class HTTPServerTest extends HTTPTest {
     }
 
     @AfterAll
-    static void stopServer() throws IOException {
+    static void stopServer() {
         server.stop();
     }
 }

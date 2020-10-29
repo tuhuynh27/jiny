@@ -53,31 +53,33 @@ public final class HttpProxy {
 
     /**
      * Start.
-     *
-     * @throws IOException the io exception
      */
-    public void start() throws IOException {
+    public void start() {
         Intro.begin();
-        val threadFactory = new ServerThreadFactory("proxy-event-loop");
-        val maxThread = Runtime.getRuntime().availableProcessors() * 2;
-        val group = AsynchronousChannelGroup
-                .withFixedThreadPool(maxThread, threadFactory);
-        val serverSocketChannel = AsynchronousServerSocketChannel.open(group);
-        serverSocketChannel.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), proxyPort));
-        log.info("Started NIO HTTP Proxy Server on port " + proxyPort + " using " + maxThread + " event loop thread(s)");
-        serverSocketChannel.accept(null, new CompletionHandler<AsynchronousSocketChannel, Object>() {
-            @SneakyThrows
-            @Override
-            public void completed(AsynchronousSocketChannel clientSocketChannel, Object attachment) {
-                serverSocketChannel.accept(null, this);
-                new ProxyHandler(group, clientSocketChannel, endpointMap).process();
-            }
+        try {
+            val threadFactory = new ServerThreadFactory("proxy-event-loop");
+            val maxThread = Runtime.getRuntime().availableProcessors() * 2;
+            val group = AsynchronousChannelGroup
+                    .withFixedThreadPool(maxThread, threadFactory);
+            val serverSocketChannel = AsynchronousServerSocketChannel.open(group);
+            serverSocketChannel.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), proxyPort));
+            log.info("Started NIO HTTP Proxy Server on port " + proxyPort + " using " + maxThread + " event loop thread(s)");
+            serverSocketChannel.accept(null, new CompletionHandler<AsynchronousSocketChannel, Object>() {
+                @SneakyThrows
+                @Override
+                public void completed(AsynchronousSocketChannel clientSocketChannel, Object attachment) {
+                    serverSocketChannel.accept(null, this);
+                    new ProxyHandler(group, clientSocketChannel, endpointMap).process();
+                }
 
-            @Override
-            public void failed(Throwable e, Object attachment) {
-                log.error(e.getMessage(), e);
-            }
-        });
+                @Override
+                public void failed(Throwable e, Object attachment) {
+                    log.error(e.getMessage(), e);
+                }
+            });
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        }
     }
 
     @RequiredArgsConstructor

@@ -94,38 +94,42 @@ public final class NIOHttpServer extends AbstractHttpRouter<HandlerNIO> {
 
     /**
      * Start.
-     *
-     * @throws IOException the io exception
      */
-    public void start() throws IOException {
+    public void start() {
         Intro.begin();
-        val group = AsynchronousChannelGroup.withFixedThreadPool(maxThread, threadFactory);
-        serverSocketChannel = AsynchronousServerSocketChannel.open(group);
-        serverSocketChannel.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), serverPort));
-        log.info("Started NIO HTTP Server on port " + serverPort + " using " + maxThread + " event loop thread(s)");
-        serverSocketChannel.accept(null, new CompletionHandler<AsynchronousSocketChannel, Object>() {
-            @SneakyThrows
-            @Override
-            public void completed(AsynchronousSocketChannel clientSocketChannel, Object attachment) {
-                serverSocketChannel.accept(null, this);
-                new RequestPipelineNIO(clientSocketChannel, middlewares, handlers, responseHeaders, transformer).run();
-            }
+        try {
+            val group = AsynchronousChannelGroup.withFixedThreadPool(maxThread, threadFactory);
+            serverSocketChannel = AsynchronousServerSocketChannel.open(group);
+            serverSocketChannel.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), serverPort));
+            log.info("Started NIO HTTP Server on port " + serverPort + " using " + maxThread + " event loop thread(s)");
+            serverSocketChannel.accept(null, new CompletionHandler<AsynchronousSocketChannel, Object>() {
+                @SneakyThrows
+                @Override
+                public void completed(AsynchronousSocketChannel clientSocketChannel, Object attachment) {
+                    serverSocketChannel.accept(null, this);
+                    new RequestPipelineNIO(clientSocketChannel, middlewares, handlers, responseHeaders, transformer).run();
+                }
 
-            @Override
-            public void failed(Throwable e, Object attachment) {
-                log.error(e.getMessage(), e);
-            }
-        });
+                @Override
+                public void failed(Throwable e, Object attachment) {
+                    log.error(e.getMessage(), e);
+                }
+            });
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        }
     }
 
     /**
      * Stop.
-     *
-     * @throws IOException the io exception
      */
-    public void stop() throws IOException {
+    public void stop() {
         if (serverSocketChannel.isOpen()) {
-            serverSocketChannel.close();
+            try {
+                serverSocketChannel.close();
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+            }
             log.info("Stopped Jiny HTTP Server on port " + serverPort);
         }
     }

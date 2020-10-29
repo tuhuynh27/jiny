@@ -77,29 +77,33 @@ public final class HttpServer extends AbstractHttpRouter<Handler> {
 
     /**
      * Start.
-     *
-     * @throws IOException the io exception
      */
-    public void start() throws IOException {
+    public void start() {
         Intro.begin();
-        serverSocket = new ServerSocket();
-        serverSocket.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), serverPort));
-        log.info("Started Jiny HTTP Server on port " + serverPort);
-        while (!Thread.interrupted()) {
-            val clientSocket = serverSocket.accept();
-            executor.execute(
-                    new RequestPipeline(clientSocket, middlewares, handlers, responseHeaders, transformer));
+        try {
+            serverSocket = new ServerSocket();
+            serverSocket.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), serverPort));
+            log.info("Started Jiny HTTP Server on port " + serverPort);
+            while (!Thread.interrupted()) {
+                val clientSocket = serverSocket.accept();
+                executor.execute(
+                        new RequestPipeline(clientSocket, middlewares, handlers, responseHeaders, transformer));
+            }
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
         }
     }
 
     /**
      * Stop.
-     *
-     * @throws IOException the io exception
      */
-    public void stop() throws IOException {
+    public void stop() {
         if (!serverSocket.isClosed()) {
-            serverSocket.close();
+            try {
+                serverSocket.close();
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+            }
             log.info("Stopped Jiny HTTP Server on port " + serverPort);
         }
     }
