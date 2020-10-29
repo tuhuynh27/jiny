@@ -37,7 +37,7 @@ public final class Cors {
         // apply sensible defaults in case users haven't set them
         val builder = config.toBuilder();
 
-        if (config.allowOrigins.contains("*")) {
+        if (config.allowOrigins.isEmpty() || config.allowOrigins.contains("*")) {
             builder.allowAllOrigins(true);
             builder.clearAllowOrigins();
         }
@@ -72,12 +72,14 @@ public final class Cors {
         };
     }
 
+    private static final String varyHeaders = String.join(",", "Origin",
+                                                          "Access-Control-Request-Method",
+                                                          "Access-Control-Request-Headers");
+
     private static void handlePreflight(AbstractRequestBinder.Context ctx, Config config) {
         val origin = ctx.headerParam("Origin");
 
-        ctx.putHeader("Vary",
-                      String.join(",", "Origin", "Access-Control-Request-Method",
-                                  "Access-Control-Request-Headers"));
+        ctx.putHeader("Vary",varyHeaders);
 
         if (origin.isEmpty()) {
             return;
@@ -98,7 +100,9 @@ public final class Cors {
         ctx.putHeader("Access-Control-Allow-Methods",reqMethod);
 
         if (!reqHeaders[0].isEmpty()) {
-            ctx.putHeader("Access-Control-Allow-Headers", Arrays.stream(reqHeaders).distinct()
+            ctx.putHeader("Access-Control-Allow-Headers", Stream.concat(Arrays.stream(reqHeaders),
+                                                                        Stream.of("Origin"))
+                                                                .distinct()
                                                                 .map(Util::normalizeHeader)
                                                                 .collect(Collectors.joining(",")));
         } else {
@@ -202,7 +206,8 @@ public final class Cors {
         private final boolean optionPass;
         private final int maxAge;
 
-        static List<String> allowHeadersDefault = Stream.of("Origin", "Accept", "Content-Type", "X-Requested-With")
+        static List<String> allowHeadersDefault = Stream.of("Origin", "Accept", "Content-Type",
+                                                            "X-Requested-With")
                                                         .collect(Collectors.toList());
         static List<String> allowMethodsDefault = Stream.of("GET", "POST", "HEAD").collect(Collectors.toList());
 

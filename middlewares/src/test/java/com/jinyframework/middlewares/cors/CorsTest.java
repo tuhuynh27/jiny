@@ -128,21 +128,42 @@ public class CorsTest {
     @Test
     @DisplayName("Request + Allow headers")
     void requestAllowHeaders() throws Exception {
-        final Handler handler = Cors.newHandler(Config.builder()
-                                                      .allowAllOrigins(false)
-                                                      .allowOrigin(uri)
-                                                      .allowHeader("Bar")
-                                                      .build());
-        final Map<String, String> reqHeaders = new HashMap<>();
+        val handler = Cors.newHandler(Config.builder()
+                                            .allowAllOrigins(false)
+                                            .allowOrigin(uri)
+                                            .allowHeader("Bar")
+                                            .build());
+        val reqHeaders = new HashMap<String, String>();
         reqHeaders.put("Origin".toLowerCase(), uri);
         reqHeaders.put("Access-Control-Request-Method".toLowerCase(),"GET");
         reqHeaders.put("Access-Control-Request-Headers".toLowerCase(),"Bar");
-        final Context successCtx = Context.builder()
-                                          .method(HttpMethod.OPTIONS)
-                                          .header(reqHeaders)
-                                          .responseHeaders(new HashMap<>()).build();
+        val successCtx = Context.builder()
+                                .method(HttpMethod.OPTIONS)
+                                .header(reqHeaders)
+                                .responseHeaders(new HashMap<>()).build();
         val successRes = handler.handleFunc(successCtx);
         assertTrue(successCtx.getResponseHeaders().get("Access-Control-Allow-Headers").contains("Bar"));
         assertEquals(successRes.getHttpStatusCode(), HttpURLConnection.HTTP_NO_CONTENT);
+    }
+
+    @Test
+    @DisplayName("Default settings for empty config fields")
+    void defaultSettingEmptyFields() throws Exception {
+        final Handler handler = Cors.newHandler(Config.builder()
+                                                      .allowOrigin(uri)
+                                                      .build());
+        final Map<String, String> reqHeaders = new HashMap<>();
+        reqHeaders.put("Origin".toLowerCase(), uri);
+        reqHeaders.put("Access-Control-Request-Method".toLowerCase(),"HEAD");
+        final Context ctx = Context.builder()
+                                   .method(HttpMethod.OPTIONS)
+                                   .header(reqHeaders)
+                                   .responseHeaders(new HashMap<>())
+                                   .build();
+        handler.handleFunc(ctx);
+        assertTrue(ctx.getResponseHeaders().get("Access-Control-Allow-Headers").contains("Content-Type"));
+        assertTrue(ctx.getResponseHeaders().get("Access-Control-Allow-Headers").contains("Origin"));
+        assertTrue(ctx.getResponseHeaders().get("Access-Control-Allow-Methods").contains("HEAD"));
+        assertEquals(ctx.getResponseHeaders().get("Access-Control-Allow-Origin"), uri);
     }
 }
