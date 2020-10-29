@@ -16,6 +16,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Singular;
 import lombok.val;
+import lombok.var;
 
 /**
  * The type Cors.
@@ -166,7 +167,7 @@ public final class Cors {
     }
 
     private static boolean isAllowedMethod(String method, List<String> allowMethods) {
-        for (String am : allowMethods) {
+        for (val am : allowMethods) {
             if (am.equalsIgnoreCase(method)) {
                 return true;
             }
@@ -175,7 +176,7 @@ public final class Cors {
     }
 
     private static boolean isAllowedOrigin(String origin, List<String> allowOrigins) {
-        for (String org : allowOrigins) {
+        for (val org : allowOrigins) {
             if (org.equalsIgnoreCase(origin)) {
                 return true;
             }
@@ -187,15 +188,15 @@ public final class Cors {
         if (reqHeaders[0].isEmpty()) {
             return true;
         }
-        for (String header : reqHeaders) {
-            boolean allow = false;
-            for (String allowHeader : allowHeaders) {
+        for (val header : reqHeaders) {
+            var isAllow = false;
+            for (val allowHeader : allowHeaders) {
                 if (allowHeader.equalsIgnoreCase(header)) {
-                    allow = true;
+                    isAllow = true;
                     break;
                 }
             }
-            if (!allow) {
+            if (!isAllow) {
                 return false;
             }
         }
