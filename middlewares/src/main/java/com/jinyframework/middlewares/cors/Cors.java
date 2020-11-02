@@ -19,11 +19,13 @@ import lombok.val;
 import lombok.var;
 
 /**
- * The type Cors.
+ * Middleware to help handle Cross-Origin Resource Sharing
+ * <p/>
+ * Specification: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
  */
 public final class Cors {
     /**
-     * Allow default config.
+     * A configuration that allows "simple requests" for all origins.
      *
      * @return the config
      */
@@ -32,7 +34,7 @@ public final class Cors {
     }
 
     /**
-     * Allow all config.
+     * A configuration that allows all origins and headers.
      *
      * @return the config
      */
@@ -46,7 +48,7 @@ public final class Cors {
     }
 
     /**
-     * New handler handler.
+     * Creates new CORS handler with provided configuration.
      *
      * @param config the config
      * @return the handler
@@ -204,7 +206,7 @@ public final class Cors {
     }
 
     /**
-     * New handler handler.
+     * Create new CORS handler with default settings.
      *
      * @return the handler
      */
@@ -213,23 +215,70 @@ public final class Cors {
     }
 
     /**
-     * The type Config.
+     * Used to configure CORS options
      */
     @Getter
     @Builder(toBuilder = true)
     public static final class Config {
+        /**
+         * Accept request from any origins.
+         * Defaults to {@code false} but will be set to {@code true}
+         * if {@link #allowOrigins} is empty or contains {@code "*"}.
+         * */
         private final boolean allowAllOrigins;
+
+        /**
+         * Accept request with any headers.
+         * Defaults to {@code false} but will be set to {@code true}
+         * if {@link #allowHeaders} contains {@code "*"}.
+         * */
         private final boolean allowAllHeaders;
+
+        /**
+         * If true, the credential header will be set in response to make Cookies available.
+         */
         private final boolean allowCredentials;
+
+        /**
+         * Whitelisted headers that are made available for client to access.
+         */
         @Singular
         private final List<String> exposeHeaders;
+
+        /**
+         * Whitelisted origins that the server will accept.
+         * If list is empty, all origins are permitted.
+         */
         @Singular
         private final List<String> allowOrigins;
+
+        /**
+         * Whitelisted methods that the server will accept.
+         * If list is empty, it will be set to
+         * {@code GET}, {@code POST}, {@code HEAD} (see {@link #allowMethodsDefault})
+         */
         @Singular
         private final List<String> allowMethods;
+
+        /**
+         * Whitelisted headers that the server will accept in a request.
+         * {@code Origin} header will automatically be added as well.
+         * If list is empty, it will be set to
+         * {@code Origin}, {@code Accept}, {@code Content-Type}, {@code X-Requested-With}
+         * (see {@link #allowHeadersDefault})
+         */
         @Singular
         private final List<String> allowHeaders;
+
+        /**
+         * Continue processing for OPTION preflight request. Defaults to {@code false}
+         */
         private final boolean optionPass;
+
+        /**
+         * The maximum age (in seconds) of the cache duration for preflight responses.
+         * Defaults is {@code 0} (header not set)
+         */
         private final int maxAge;
 
         static List<String> allowHeadersDefault = Stream.of("Origin", "Accept", "Content-Type",
@@ -239,7 +288,7 @@ public final class Cors {
                 Collectors.toList());
 
         /**
-         * Default builder config builder.
+         * Default ConfigBuilder that allows "simple request" for all origins.
          *
          * @return the config builder
          */
