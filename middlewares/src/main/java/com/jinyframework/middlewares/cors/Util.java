@@ -10,10 +10,12 @@ import lombok.val;
  */
 public final class Util {
     /**
-     * Normalize header string.
+     * Normalize header string to uppercase the first letter after hyphen, and lowercase everything else.
+     * <p/>
+     * e.g: "the-RANDOM-HeadEr" to "The-Random-Header"
      *
-     * @param h the h
-     * @return the string
+     * @param h the header
+     * @return the formatted header
      */
     public static String normalizeHeader(@NonNull String h) {
         val split = h.split("-");
