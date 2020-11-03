@@ -20,7 +20,7 @@ import lombok.var;
 
 /**
  * Middleware to help handle Cross-Origin Resource Sharing
- * <p/>
+ * <p></p>
  * Specification: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
  */
 public final class Cors {
