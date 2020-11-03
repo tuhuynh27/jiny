@@ -2,7 +2,12 @@
 
 ![Maven Central](https://img.shields.io/maven-central/v/com.jinyframework/core?style=flat-square)
 
-### 0.3.0 (Current)
+### 0.3.1 (Current)
+
+- CORS improvement
+- Handle core exceptions internally
+
+### 0.3.0
 
 - Implement global header response set
 - Refactor code
