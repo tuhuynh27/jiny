@@ -1,6 +1,6 @@
 package com.jinyframework.examples.scalacrud.handlers
 
-import com.jinyframework.core.RequestBinderBase.{Handler, HttpResponse}
+import com.jinyframework.core.AbstractRequestBinder.{Handler, HttpResponse}
 
 object CatHandler {
   val getCats: Handler = _ =>

@@ -1,6 +1,6 @@
 package com.jinyframework.examples.scalacrud.handlers
 
-import com.jinyframework.core.RequestBinderBase.{Handler, HttpResponse}
+import com.jinyframework.core.AbstractRequestBinder.{Handler, HttpResponse}
 import com.jinyframework.examples.scalacrud.entities.Mouse
 import com.jinyframework.examples.scalacrud.factories.app.AppFactory
 import org.mongodb.scala.MongoCollection
