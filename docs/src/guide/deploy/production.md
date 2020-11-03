@@ -1,4 +1,4 @@
-# Production Use
+# Production Suggestions
 
 ## Logging
 
@@ -36,14 +36,10 @@ Add shutdown hook
 `Main.java`
 
 ```java
-Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            try {
-                server.stop();
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
-            }
-        }));
+Runtime.getRuntime().addShutdownHook(new Thread(server::stop));
 log.info("Added shutdown hook");
 ```
 
-(WIP)
+:::warning WIP
+This page is in WIP
+:::

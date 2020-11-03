@@ -76,7 +76,7 @@ module.exports = {
         },
         {
           title: 'Advance',
-          collapsable: true,
+          collapsable: false,
           children: [
             'advance/di',
             'advance/database',
@@ -84,8 +84,16 @@ module.exports = {
             'advance/project-structure-scala',
             ['https://github.com/huynhminhtufu/jiny/tree/master/examples', 'See examples'],
             'advance/proxy',
-            'advance/production',
-            'advance/benchmark',
+          ]
+        },
+        {
+          title: 'Deploy',
+          collapsable: true,
+          children: [
+            'deploy/production',
+            'deploy/supervisor',
+            'deploy/deploy-nginx',
+            'deploy/benchmark',
           ]
         },
         {

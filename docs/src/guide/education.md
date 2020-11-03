@@ -20,14 +20,14 @@ import com.jinyframework.*;
 
 class Main {
     // Syntax is very expressive, you don't need to read the docs to understand
-    static void main() {
-        val server = HTTPServer.port(1234); // Server will listen at port 1234
+    static void main(String[] args) {
+        HttpServer server = HttpServer.port(1234); // Server will listen at port 1234
 
         // If a client visits on path '/'
         server.use("/", new Handler() {
             @Override
-            public HttpResponse handleFunc(Context context) throws Exception {
-                // the server will send a response said: Hello World
+            public HttpResponse handleFunc(Context context) {
+                // The server will send a response said: Hello World
                 return HttpResponse.of("Hello World!");
             }
         });
@@ -44,8 +44,8 @@ import com.jinyframework.*;
 
 class Main {
     // Syntax is very expressive, you don't need to read the docs to understand
-    static void main() {
-        val server = HTTPServer.port(1234); // Server will listen at port 1234
+    static void main(String[] args) {
+        HttpServer server = HttpServer.port(1234); // Server will listen at port 1234
 
         // If a client visits on path '/', the server will send a response said: Hello World
         server.use("/", ctx -> HttpResponse.of("Hello World!"));
@@ -74,7 +74,7 @@ object Main extends App {
 import com.jinyframework.*
 
 fun main(args: Array<String>) {
-    val server: HttpServer = HTTPServer.port(1234)
+    val server: HttpServer = HttpServer.port(1234)
     server.get("/", ctx -> HttpResponse.of("Hello World"))
     server.start()
 }

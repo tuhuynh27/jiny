@@ -32,7 +32,7 @@ import com.jinyframework.*;
 
 class Main {
     static void main(String[] args) {
-        HttpServer server = HTTPServer.port(1234);
+        HttpServer server = HttpServer.port(1234);
         server.get("/ping", ctx -> HttpResponse.of("Pong"));
         server.start();
     }
@@ -58,7 +58,7 @@ object Main extends App {
 import com.jinyframework.*
 
 fun main(args: Array<String>) {
-    val server: HttpServer = HTTPServer.port(1234)
+    val server: HttpServer = HttpServer.port(1234)
     server.get("/ping", ctx -> HttpResponse.of("Pong"))
     server.start()
 }

@@ -11,17 +11,17 @@ You can pass multiple handlers per route define, the below example is a JWT midd
 ```java
 server.get("/protected", // You wanna provide a jwt validator on this endpoint
            ctx -> {
-               val authorizationHeader = ctx.getHeader().get("Authorization");
+               val authorizationHeader = ctx.headerParam("Authorization");
                // Check JWT is valid, below is just a sample check
                if (!authorizationHeader.startsWith("Bearer")) {
                    return HttpResponse.reject("Invalid token").status(401);
                }
-               ctx.putHandlerData("username", "tuhuynh");
+               ctx.setDataParam("username", "tuhuynh");
                return HttpResponse.next();
            }, // Injected
            ctx -> 
                HttpResponse.of("Login success, hello: " + 
-                                                   ctx.getData("username")));
+                                                   ctx.dataParam("username")));
 ```
 
 ::: tip Notice the order
@@ -34,7 +34,7 @@ You can use `ctx.setDataParam('key', 'value')` to set HandlerData, this data can
 
 ```java
 ctx.setDataParam("username", "tuhuynh"); // In JWT Middleware
-ctx.getData("username") // After the JWT Middleware
+ctx.dataParam("username") // After the JWT Middleware
 ```
 
 ## Next/Reject
@@ -55,7 +55,7 @@ You can also separate the middleware into functions, to re-use it in many routes
 
 ```java
 Handler jwtMiddleware = ctx -> {
-    val authorizationHeader = ctx.getHeader().get("Authorization");
+    val authorizationHeader = ctx.headerParam("Authorization");
     if (!authorizationHeader.startsWith("Bearer")) {
         return HttpResponse.reject("Invalid token").status(401);
     }
@@ -67,7 +67,7 @@ Handler jwtMiddleware = ctx -> {
 
 class CommonMiddleware {
     static HttpResponse jwtMiddleware(Context ctx) {
-        val authorizationHeader = ctx.getHeader().get("Authorization");
+        val authorizationHeader = ctx.headerParam("Authorization");
         if (!authorizationHeader.startsWith("Bearer")) {
             return HttpResponse.reject("Invalid token").status(401);
         }
@@ -102,3 +102,7 @@ server.use(ctx -> {
 
 server.use("/", ctx -> HttpResponse.of("Hello World"));
 ```
+
+:::tip Middleware Plugins
+You can also use some Jiny's plugin middleware, example: see [CORS Plugins](https://jinyframework.com/guide/plugins/cors.html)
+:::
