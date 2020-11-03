@@ -2,8 +2,8 @@ package com.jinyframework.examples.crud.handlers;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.google.gson.Gson;
-import com.jinyframework.core.RequestBinderBase.Context;
-import com.jinyframework.core.RequestBinderBase.HttpResponse;
+import com.jinyframework.core.AbstractRequestBinder.Context;
+import com.jinyframework.core.AbstractRequestBinder.HttpResponse;
 import com.jinyframework.examples.crud.entities.Cat;
 import com.jinyframework.examples.crud.factories.AppFactory;
 import com.jinyframework.examples.crud.utils.ResponseHelper;

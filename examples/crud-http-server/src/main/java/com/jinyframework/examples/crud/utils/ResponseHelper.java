@@ -1,6 +1,6 @@
 package com.jinyframework.examples.crud.utils;
 
-import com.jinyframework.core.RequestBinderBase.HttpResponse;
+import com.jinyframework.core.AbstractRequestBinder.HttpResponse;
 import com.jinyframework.examples.crud.entities.ResponseEntity;
 import lombok.experimental.UtilityClass;
 import lombok.val;

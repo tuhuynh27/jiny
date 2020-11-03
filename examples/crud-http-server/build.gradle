@@ -16,7 +16,8 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
-    compile group: 'com.jinyframework', name: 'jiny', version: '0.2.6'
+    compile group: 'com.jinyframework', name: 'core', version: '0.3.1'
+    compile group: 'com.jinyframework', name: 'middlewares', version: '0.3.1'
     implementation 'com.google.code.gson:gson:2.8.6'
 
     compile group: 'org.mongodb', name: 'mongodb-driver-sync', version: '4.1.0-beta2'
