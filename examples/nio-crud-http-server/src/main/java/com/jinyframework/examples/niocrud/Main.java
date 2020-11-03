@@ -2,7 +2,7 @@ package com.jinyframework.examples.niocrud;
 
 import com.google.gson.Gson;
 import com.jinyframework.NIOHttpServer;
-import com.jinyframework.core.RequestBinderBase.HttpResponse;
+import com.jinyframework.core.AbstractRequestBinder.HttpResponse;
 import com.jinyframework.examples.niocrud.router.CatRouter;
 import lombok.val;
 

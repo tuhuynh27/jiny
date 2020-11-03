@@ -1,8 +1,8 @@
 package com.jinyframework.examples.niocrud.handlers;
 
 import com.google.gson.Gson;
-import com.jinyframework.core.RequestBinderBase.Context;
-import com.jinyframework.core.RequestBinderBase.HttpResponse;
+import com.jinyframework.core.AbstractRequestBinder.Context;
+import com.jinyframework.core.AbstractRequestBinder.HttpResponse;
 import com.jinyframework.examples.niocrud.entities.Cat;
 import com.mongodb.reactivestreams.client.MongoCollection;
 import com.mongodb.reactivestreams.client.MongoDatabase;
