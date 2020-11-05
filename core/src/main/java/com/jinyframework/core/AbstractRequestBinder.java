@@ -1,22 +1,14 @@
 package com.jinyframework.core;
 
+import com.jinyframework.core.AbstractRequestBinder.HandlerBase;
+import com.jinyframework.core.utils.ParserUtils.HttpMethod;
+import lombok.*;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-
-import com.jinyframework.core.AbstractRequestBinder.HandlerBase;
-import com.jinyframework.core.utils.ParserUtils.HttpMethod;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.val;
-import lombok.var;
 
 @RequiredArgsConstructor
 public abstract class AbstractRequestBinder<T extends HandlerBase> {
@@ -176,6 +168,10 @@ public abstract class AbstractRequestBinder<T extends HandlerBase> {
 
         public static HttpResponse reject(final String errorText) {
             return new HttpResponse(400, errorText, false);
+        }
+
+        public static CompletableFuture<HttpResponse> rejectAsync(final String errorText) {
+            return CompletableFuture.completedFuture(new HttpResponse(400, errorText, false));
         }
 
         public static CompletableFuture<HttpResponse> rejectAsync(final String errorText,
