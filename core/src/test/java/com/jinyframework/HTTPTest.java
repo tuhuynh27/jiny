@@ -93,6 +93,15 @@ public abstract class HTTPTest {
     }
 
     @Test
+    @DisplayName("Data Params")
+    void dataParams() throws IOException {
+        val res = HttpClient.builder()
+                .url(url + "/data/param").method("GET")
+                .build().perform();
+        assertEquals(res.getBody(), "ok");
+    }
+
+    @Test
     @DisplayName("Catch All")
     void catchAll() throws IOException {
         val res = HttpClient.builder()
