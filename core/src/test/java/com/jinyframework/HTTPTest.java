@@ -1,15 +1,16 @@
 package com.jinyframework;
 
-import lombok.val;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import lombok.val;
 
 public abstract class HTTPTest {
     protected String url = "";
@@ -90,6 +91,15 @@ public abstract class HTTPTest {
                 .url(url + "/path/hello/123").method("GET")
                 .build().perform();
         assertEquals(res.getBody(), "hello:123");
+    }
+
+    @Test
+    @DisplayName("Data Params")
+    void dataParams() throws IOException {
+        val res = HttpClient.builder()
+                .url(url + "/data/param").method("GET")
+                .build().perform();
+        assertEquals(res.getBody(), "data/param");
     }
 
     @Test

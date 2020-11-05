@@ -1,14 +1,16 @@
 package com.jinyframework;
 
-import com.jinyframework.core.AbstractRequestBinder.HttpResponse;
-import com.jinyframework.core.nio.HttpRouterNIO;
-import lombok.val;
+import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 
-import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
+import com.jinyframework.core.AbstractRequestBinder.HttpResponse;
+import com.jinyframework.core.nio.HttpRouterNIO;
+
+import lombok.val;
 
 @DisplayName("api.NIOHttpServerTest")
 public class NIOHTTPServerTest extends HTTPTest {
@@ -50,6 +52,10 @@ public class NIOHTTPServerTest extends HTTPTest {
                 val bar = ctx.pathParam("bar");
                 return HttpResponse.ofAsync(foo + ":" + bar);
             });
+            server.get("/data/param",ctx -> {
+                ctx.setDataParam("data","data/param");
+                return HttpResponse.nextAsync();
+            }, ctx -> HttpResponse.ofAsync(ctx.dataParam("data")));
             server.get("/all/**", ctx -> HttpResponse.ofAsync(ctx.getPath()));
 
             server.get("/protected",

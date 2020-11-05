@@ -1,12 +1,22 @@
 package com.jinyframework.core;
 
-import com.jinyframework.core.AbstractRequestBinder.HandlerBase;
-import com.jinyframework.core.utils.ParserUtils.HttpMethod;
-import lombok.*;
-
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+
+import com.jinyframework.core.AbstractRequestBinder.HandlerBase;
+import com.jinyframework.core.utils.ParserUtils.HttpMethod;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.val;
+import lombok.var;
 
 @RequiredArgsConstructor
 public abstract class AbstractRequestBinder<T extends HandlerBase> {
@@ -105,7 +115,7 @@ public abstract class AbstractRequestBinder<T extends HandlerBase> {
         private final String body;
         private final Map<String, String> query;
         private final Map<String, String> param;
-        private final Map<String, String> data;
+        private final Map<String, Object> data;
 
         private final Map<String, String> responseHeaders;
 
@@ -121,11 +131,11 @@ public abstract class AbstractRequestBinder<T extends HandlerBase> {
             return query.get(name) != null ? query.get(name) : "";
         }
 
-        public String dataParam(@NonNull final String name) {
+        public Object dataParam(@NonNull final String name) {
             return data.get(name) != null ? data.get(name) : "";
         }
 
-        public void setDataParam(@NonNull final String key, @NonNull final String value) {
+        public void setDataParam(@NonNull final String key, @NonNull final Object value) {
             data.put(key, value);
         }
 
