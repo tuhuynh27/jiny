@@ -4,6 +4,9 @@ plugins {
 
 dependencies {
     compile project(':core')
+    compile 'io.jsonwebtoken:jjwt-api:0.11.2'
+    runtime 'io.jsonwebtoken:jjwt-impl:0.11.2',
+            'io.jsonwebtoken:jjwt-gson:0.11.2'
 }
 
 java {
