@@ -1,16 +1,19 @@
 package com.jinyframework.middlewares.jwt;
 
+import com.google.gson.Gson;
 import com.jinyframework.core.AbstractRequestBinder;
 import com.jinyframework.core.AbstractRequestBinder.Handler;
 import com.jinyframework.core.AbstractRequestBinder.HttpResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
 import lombok.val;
 
+import java.net.HttpURLConnection;
 import java.util.Map;
 
 public final class Jwt {
@@ -20,7 +23,7 @@ public final class Jwt {
 
     @Accessors(fluent = true)
     @Getter
-    @Builder
+    @Builder(toBuilder = true)
     public static class AuthComponent {
         private final Handler handlePermission;
         private final Handler handleRefresh;
@@ -43,6 +46,7 @@ public final class Jwt {
 
         return AuthComponent.builder()
                 .handleVerify(verifyHandler(finalConfig))
+                .handleLogin(loginHandler(finalConfig))
                 .build();
     }
 
@@ -55,7 +59,8 @@ public final class Jwt {
     }
 
     private static Map<String, Object> verifyToken(String key, String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build()
+        return Jwts.parserBuilder().setSigningKey(key)
+                .build()
                 .parseClaimsJws(token).getBody();
     }
 
@@ -75,6 +80,35 @@ public final class Jwt {
     }
 
     @Getter
+    public static class UserAuthReq {
+        String username;
+        String password;
+    }
+
+    private static UserAuthReq extractUserAuth(AbstractRequestBinder.Context ctx) {
+        return new Gson().fromJson(ctx.getBody(), UserAuthReq.class);
+    }
+
+    private static boolean validUser(UserAuthReq userAuthReq) {
+        return true;
+    }
+
+    private static Handler loginHandler(@NonNull Config config) {
+        return ctx -> {
+            val userAuthReq = extractUserAuth(ctx);
+            if (!validUser(userAuthReq)) {
+                return HttpResponse.of("Wrong username or password", HttpURLConnection.HTTP_UNAUTHORIZED);
+            }
+            val secretKey = Keys.hmacShaKeyFor(config.secretKey.getBytes());
+            Jwts.builder()
+                    .setSubject("")
+                    .signWith(secretKey)
+                    .compact();
+            return HttpResponse.next();
+        };
+    }
+
+    @Getter
     @Builder(toBuilder = true)
     public static final class Config {
         /**
@@ -88,7 +122,8 @@ public final class Jwt {
         private final String userKey;
 
         /**
-         * Function that retrieves user info based on context and token claims
+         * Function that retrieves user info based on context and token claims.
+         * This data will be populated to context.
          * Default: returns {@code claims.get("sub")}
          */
         @SuppressWarnings("rawtypes")
