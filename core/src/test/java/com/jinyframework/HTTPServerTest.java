@@ -1,5 +1,6 @@
 package com.jinyframework;
 
+import com.jinyframework.core.AbstractRequestBinder;
 import com.jinyframework.core.AbstractRequestBinder.HttpResponse;
 import com.jinyframework.core.bio.HttpRouter;
 import lombok.val;
@@ -8,7 +9,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @DisplayName("api.HttpServerTest")
 public class HTTPServerTest extends HTTPTest {
@@ -50,6 +54,32 @@ public class HTTPServerTest extends HTTPTest {
                 val bar = ctx.pathParam("bar");
                 return HttpResponse.of(foo + ":" + bar);
             });
+            server.get("/data/param",ctx -> {
+                ctx.setDataParam("string","data/param");
+                val stream = Stream.of("a", "b");
+                ctx.setDataParam("stream", stream);
+                ctx.setDataParam("list",stream.collect(Collectors.toList()));
+                ctx.setDataParam("map",new HashMap<>());
+                ctx.setDataParam("context", AbstractRequestBinder.Context.builder().build());
+                return HttpResponse.next();
+            },ctx -> {
+                if (!(ctx.dataParam("string") instanceof String)) {
+                    return HttpResponse.reject("wrong class");
+                }
+                if (!(ctx.dataParam("stream") instanceof Stream)) {
+                    return HttpResponse.reject("wrong class");
+                }
+                if (!(ctx.dataParam("list") instanceof List)) {
+                    return HttpResponse.reject("wrong class");
+                }
+                if (!(ctx.dataParam("map") instanceof HashMap)) {
+                    return HttpResponse.reject("wrong class");
+                }
+                if (!(ctx.dataParam("context") instanceof AbstractRequestBinder.Context)) {
+                    return HttpResponse.reject("wrong class");
+                }
+                return HttpResponse.next();
+            }, ctx -> HttpResponse.of("ok"));
             server.get("/all/**", ctx -> HttpResponse.of(ctx.getPath()));
 
             server.get("/protected",
