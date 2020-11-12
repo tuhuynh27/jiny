@@ -170,6 +170,10 @@ public abstract class AbstractRequestBinder<T extends HandlerBase> {
             return new HttpResponse(400, errorText, false);
         }
 
+        public static HttpResponse reject(final String errorText,final int httpStatusCode) {
+            return new HttpResponse(httpStatusCode, errorText, false);
+        }
+
         public static CompletableFuture<HttpResponse> rejectAsync(final String errorText) {
             return CompletableFuture.completedFuture(new HttpResponse(400, errorText, false));
         }
