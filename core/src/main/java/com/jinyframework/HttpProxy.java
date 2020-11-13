@@ -24,6 +24,7 @@ import java.util.concurrent.CompletableFuture;
  */
 @Slf4j
 public final class HttpProxy {
+    private String proxyHost;
     private final int proxyPort;
     private final Map<String, String> endpointMap = new HashMap<>();
 
@@ -39,6 +40,17 @@ public final class HttpProxy {
      */
     public static HttpProxy port(final int proxyPort) {
         return new HttpProxy(proxyPort);
+    }
+
+    /**
+     * Host http proxy.
+     *
+     * @param serverHost the server host
+     * @return the http proxy
+     */
+    public HttpProxy host(@NonNull final String serverHost) {
+        this.proxyHost = serverHost;
+        return this;
     }
 
     /**
@@ -62,7 +74,11 @@ public final class HttpProxy {
             val group = AsynchronousChannelGroup
                     .withFixedThreadPool(maxThread, threadFactory);
             val serverSocketChannel = AsynchronousServerSocketChannel.open(group);
-            serverSocketChannel.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), proxyPort));
+            val socketAddress =
+                    proxyHost != null ?
+                            new InetSocketAddress(proxyHost, proxyPort) :
+                            new InetSocketAddress(InetAddress.getLoopbackAddress(), proxyPort);
+            serverSocketChannel.bind(socketAddress);
             log.info("Started NIO HTTP Proxy Server on port " + proxyPort + " using " + maxThread + " event loop thread(s)");
             serverSocketChannel.accept(null, new CompletionHandler<AsynchronousSocketChannel, Object>() {
                 @SneakyThrows
