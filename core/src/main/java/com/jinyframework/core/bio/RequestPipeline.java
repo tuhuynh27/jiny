@@ -1,5 +1,15 @@
 package com.jinyframework.core.bio;
 
+import com.jinyframework.core.AbstractRequestBinder.Handler;
+import com.jinyframework.core.AbstractRequestBinder.HandlerMetadata;
+import com.jinyframework.core.AbstractRequestBinder.RequestTransformer;
+import com.jinyframework.core.utils.ParserUtils;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import lombok.var;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,17 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-
-import com.jinyframework.core.AbstractRequestBinder.Handler;
-import com.jinyframework.core.AbstractRequestBinder.HandlerMetadata;
-import com.jinyframework.core.AbstractRequestBinder.RequestTransformer;
-import com.jinyframework.core.utils.ParserUtils;
-
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import lombok.val;
-import lombok.var;
 
 @Slf4j
 @RequiredArgsConstructor

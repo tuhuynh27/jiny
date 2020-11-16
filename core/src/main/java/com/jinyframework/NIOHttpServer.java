@@ -27,6 +27,7 @@ import java.util.Map;
 public final class NIOHttpServer extends AbstractHttpRouter<HandlerNIO> {
     private final int serverPort;
     private final ServerThreadFactory threadFactory = new ServerThreadFactory("event-loop");
+    private String serverHost;
     private AsynchronousServerSocketChannel serverSocketChannel;
     private int maxThread = Runtime.getRuntime().availableProcessors() * 2;
 
@@ -42,6 +43,17 @@ public final class NIOHttpServer extends AbstractHttpRouter<HandlerNIO> {
      */
     public static NIOHttpServer port(final int serverPort) {
         return new NIOHttpServer(serverPort);
+    }
+
+    /**
+     * Host http server.
+     *
+     * @param serverHost the server host
+     * @return the http server
+     */
+    public NIOHttpServer host(@NonNull final String serverHost) {
+        this.serverHost = serverHost;
+        return this;
     }
 
     /**
@@ -100,7 +112,11 @@ public final class NIOHttpServer extends AbstractHttpRouter<HandlerNIO> {
         try {
             val group = AsynchronousChannelGroup.withFixedThreadPool(maxThread, threadFactory);
             serverSocketChannel = AsynchronousServerSocketChannel.open(group);
-            serverSocketChannel.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), serverPort));
+            val socketAddress =
+                    serverHost != null ?
+                            new InetSocketAddress(serverHost, serverPort) :
+                            new InetSocketAddress(InetAddress.getLoopbackAddress(), serverPort);
+            serverSocketChannel.bind(socketAddress);
             log.info("Started NIO HTTP Server on port " + serverPort + " using " + maxThread + " event loop thread(s)");
             serverSocketChannel.accept(null, new CompletionHandler<AsynchronousSocketChannel, Object>() {
                 @SneakyThrows
