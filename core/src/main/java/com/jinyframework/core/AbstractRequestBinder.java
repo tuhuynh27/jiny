@@ -208,11 +208,11 @@ public abstract class AbstractRequestBinder<T extends HandlerBase> {
         }
 
         public static <T> HttpResponse of(final T t) {
-            return new HttpResponse(200, t, true);
+            return new HttpResponse(200, t, false);
         }
 
         public static <T> HttpResponse of(final T t, final int httpStatusCode) {
-            return new HttpResponse(httpStatusCode, t, true);
+            return new HttpResponse(httpStatusCode, t, false);
         }
 
         public static CompletableFuture<HttpResponse> createPromise() {

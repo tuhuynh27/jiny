@@ -36,6 +36,15 @@ public abstract class HTTPTest {
     }
 
     @Test
+    @DisplayName("Immediately return from handler chain")
+    void immediateReturn() throws IOException {
+        val res = HttpClient.builder()
+                .url(url + "/immediate").method("GET")
+                .build().perform();
+        assertEquals(res.getBody(),"Foo");
+    }
+
+    @Test
     @DisplayName("Transformer")
     void transformer() throws IOException {
         val res = HttpClient.builder()
