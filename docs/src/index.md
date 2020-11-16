@@ -33,7 +33,7 @@ import com.jinyframework.*;
 class Main {
     static void main(String[] args) {
         HttpServer server = HttpServer.port(1234);
-        server.get("/ping", ctx -> HttpResponse.of("Pong"));
+        server.get("/hello", ctx -> of("Hello World"));
         server.start();
     }
 } 
@@ -47,7 +47,7 @@ import com.jinyframework.*
 
 object Main extends App {
   val server = HttpServer.port(1234)
-  server.get("/ping", ctx => HttpResponse.of("Pong))
+  server.get("/hello", ctx => of("Hello World))
   server.start()
 }
 ```
@@ -59,7 +59,7 @@ import com.jinyframework.*
 
 fun main(args: Array<String>) {
     val server: HttpServer = HttpServer.port(1234)
-    server.get("/ping", ctx -> HttpResponse.of("Pong"))
+    server.get("/hello", ctx -> of("Hello World"))
     server.start()
 }
 ```
