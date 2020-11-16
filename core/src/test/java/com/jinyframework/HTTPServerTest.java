@@ -35,7 +35,7 @@ public class HTTPServerTest extends HTTPTest {
             server.useResponseHeaders(defaultResponseHeaders);
 
             server.get("/", ctx -> HttpResponse.of("Hello World"));
-            server.get("/immediate",ctx->HttpResponse.of("Foo"), ctx -> HttpResponse.of("Bar"));
+            server.get("/immediate", ctx -> HttpResponse.of("Foo"), ctx -> HttpResponse.of("Bar"));
             server.post("/transform", ctx -> HttpResponse.of(ctx.getBody()).transform(s -> s + "ed"));
             server.get("/gm", ctx -> HttpResponse.of(ctx.dataParam("global")));
             server.get("/gm-sub", ctx -> HttpResponse.of(ctx.dataParam("att")));
