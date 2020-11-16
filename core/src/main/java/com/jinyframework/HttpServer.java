@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
-import java.net.SocketAddress;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -24,10 +23,10 @@ import java.util.concurrent.Executors;
  */
 @Slf4j
 public final class HttpServer extends AbstractHttpRouter<Handler> {
-    private String serverHost;
     private final int serverPort;
     private final ServerThreadFactory threadFactory = new ServerThreadFactory("request-processor");
     private final Executor executor = Executors.newCachedThreadPool(threadFactory);
+    private String serverHost;
     private ServerSocket serverSocket;
 
     private HttpServer(final int serverPort) {
@@ -95,12 +94,10 @@ public final class HttpServer extends AbstractHttpRouter<Handler> {
         Intro.begin();
         try {
             serverSocket = new ServerSocket();
-            SocketAddress socketAddress;
-            if (serverHost != null) {
-                socketAddress = new InetSocketAddress(serverHost, serverPort);
-            } else {
-                socketAddress = new InetSocketAddress(InetAddress.getLoopbackAddress(), serverPort);
-            }
+            val socketAddress =
+                    serverHost != null ?
+                            new InetSocketAddress(serverHost, serverPort) :
+                            new InetSocketAddress(InetAddress.getLoopbackAddress(), serverPort);
             serverSocket.bind(socketAddress);
             log.info("Started Jiny HTTP Server on " + serverPort);
             while (!Thread.interrupted()) {
