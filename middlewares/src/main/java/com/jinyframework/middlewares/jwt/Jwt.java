@@ -73,13 +73,13 @@ public final class Jwt {
         return ctx -> {
             val tokStr = extractToken(ctx);
             if (tokStr == null) {
-                return HttpResponse.reject("Authentication failed", HttpURLConnection.HTTP_UNAUTHORIZED);
+                return HttpResponse.of("Authentication failed", HttpURLConnection.HTTP_UNAUTHORIZED);
             }
             final Map<String, Object> claims;
             try {
                 claims = verifyToken(config.secKeyObj, tokStr);
             } catch (Exception e) {
-                return HttpResponse.reject(e.toString(), HttpURLConnection.HTTP_UNAUTHORIZED);
+                return HttpResponse.of(e.toString(), HttpURLConnection.HTTP_UNAUTHORIZED);
             }
             val user = config.userRetriever.retrieveUser(ctx, claims);
             ctx.setDataParam(config.userKey, user);
@@ -91,7 +91,7 @@ public final class Jwt {
         return ctx -> {
             val claims = config.authenticator.authenticate(ctx);
             if (claims == null) {
-                return HttpResponse.reject("Authentication failed", HttpURLConnection.HTTP_UNAUTHORIZED);
+                return HttpResponse.of("Authentication failed", HttpURLConnection.HTTP_UNAUTHORIZED);
             }
             val token = Jwts.builder()
                     .addClaims(claims)
