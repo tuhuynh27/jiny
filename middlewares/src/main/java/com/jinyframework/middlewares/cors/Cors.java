@@ -1,22 +1,16 @@
 package com.jinyframework.middlewares.cors;
 
+import com.jinyframework.core.AbstractRequestBinder.Context;
+import com.jinyframework.core.AbstractRequestBinder.Handler;
+import com.jinyframework.core.AbstractRequestBinder.HttpResponse;
+import com.jinyframework.core.utils.ParserUtils.HttpMethod;
+import lombok.*;
+
 import java.net.HttpURLConnection;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import com.jinyframework.core.AbstractRequestBinder.Context;
-import com.jinyframework.core.AbstractRequestBinder.Handler;
-import com.jinyframework.core.AbstractRequestBinder.HttpResponse;
-import com.jinyframework.core.utils.ParserUtils.HttpMethod;
-
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Singular;
-import lombok.val;
-import lombok.var;
 
 /**
  * Middleware to help handle Cross-Origin Resource Sharing
