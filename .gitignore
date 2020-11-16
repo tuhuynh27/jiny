@@ -6,3 +6,4 @@ gradle.properties
 
 testproject/
 run.sh
+config.json

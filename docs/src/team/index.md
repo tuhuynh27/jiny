@@ -12,7 +12,7 @@ Jiny is built by a team of engineers who share a passion for making server-side 
         <td>
             <h3>Tu Huynh</h3>
             <p>Core Focus</p>
-            <p><a href="https://github.com/huynhminhtufu" target="_blank">github.com/huynhminhtufu</a></p>
+            <p><a href="https://github.com/tuhuynh27" target="_blank">github.com/tuhuynh27</a></p>
         </td>
     </tr>
     <tr style="background: #fff">
