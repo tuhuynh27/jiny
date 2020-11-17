@@ -54,7 +54,6 @@ fun main(args: Array<String>) {
 ::::
 
 ::: details What is ctx -> HttpResponse.of("Pong") ?
-It's **not a callback** in case you're coming from JS world. :smirk:
 
 This is called [Functional Interface](https://www.geeksforgeeks.org/functional-interfaces-java/) - a shorthand syntax of Java 8, if you use Java 7 and before, you can write like this:
 

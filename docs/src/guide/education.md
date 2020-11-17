@@ -4,7 +4,7 @@ Jiny is well suited for programming courses and for demos/prototypes.
 
 A lot of universities still use application servers such as Glassfish or Tomcat when teaching Java web development. Setting up and configuring these servers for each student requires a lot of effort, and that effort could be spent teaching students about HTTP and programming instead.
 
-::: details Why use enterprise frameworks to learn web development is a bad idea?
+::: details Why use enterprise frameworks to learn web development is not a good idea?
 **Enterprise** application servers such as [Glassfish](https://javaee.github.io/glassfish/) and [JBoss](https://www.jboss.org/) are monolithic and needlessly complex, providing a wealth of configuration options and services that are mostly dormant. More lightweight application servers like [Tomcat](http://tomcat.apache.org/) are easier to configure, but still have a learning curve to do so properly.
 
 HTTP, in essence, is a very simple protocol. Each HTTP message has a preamble, some key-value pair headers, and a content body. All of the magic in a web application comes from how those messages are interpreted.

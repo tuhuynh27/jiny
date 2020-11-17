@@ -12,7 +12,10 @@ Jiny is built by a team of engineers who share a passion for making server-side 
         <td>
             <h3>Tu Huynh</h3>
             <p>Core Focus</p>
-            <p><a href="https://github.com/tuhuynh27" target="_blank">github.com/tuhuynh27</a></p>
+            <p>
+                <img src="https://image.flaticon.com/icons/png/512/25/25231.png" style="max-width: 12.5px; margin-right: 2.5px;"/>
+                <a href="https://github.com/tuhuynh27" target="_blank">tuhuynh27</a>
+            </p>
         </td>
     </tr>
     <tr style="background: #fff">
@@ -20,7 +23,10 @@ Jiny is built by a team of engineers who share a passion for making server-side 
         <td>
             <h3>Viet Nguyen</h3>
             <p>Ecosystem: Middleware</p>
-            <p><a href="https://github.com/axblueblader" target="_blank">github.com/axblueblader</a></p>
+            <p>
+                <img src="https://image.flaticon.com/icons/png/512/25/25231.png" style="max-width: 12.5px; margin-right: 2.5px;"/>
+                <a href="https://github.com/axblueblader" target="_blank">axblueblader</a>
+            </p>
         </td>
     </tr>
 </table>
