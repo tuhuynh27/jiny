@@ -1,8 +1,8 @@
 package com.jinyframework.middlewares.jwt;
 
-import com.jinyframework.core.AbstractRequestBinder;
 import com.jinyframework.core.AbstractRequestBinder.Handler;
 import com.jinyframework.core.AbstractRequestBinder.HttpResponse;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -16,14 +16,19 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.jinyframework.core.AbstractRequestBinder.Context;
+
 public final class Jwt {
 
-    private static final String authHeaderKey = "Authorization";
-    private static final String authHeaderPrefix = "Bearer ";
+    public static final String AUTH_HEADER_KEY = "Authorization";
+    public static final String AUTH_HEADER_PREFIX = "Bearer ";
 
     private Jwt() {
     }
 
+    /**
+     * Generate a HS256 key string. You should store this somewhere safe for reuse.
+     * */
     public static String genHS256Key() {
         return Arrays.toString(Keys.secretKeyFor(SignatureAlgorithm.HS256).getEncoded());
     }
@@ -35,21 +40,27 @@ public final class Jwt {
         }
         val builder = config.toBuilder();
 
-        val secKeyObj = Keys.hmacShaKeyFor(config.secretKey.getBytes(StandardCharsets.UTF_8));
-        builder.secKeyObj(secKeyObj);
+        builder.secKeyObj(Keys.hmacShaKeyFor(config.secretKey.getBytes(StandardCharsets.UTF_8)));
 
         if (config.userKey == null) {
-            builder.userKey(Config.userKeyDefault);
+            builder.userKey(Config.USER_KEY_DEFAULT);
         }
         if (config.userRetriever == null) {
-            final UserRetriever retriever = (ctx, claims) -> String.valueOf(claims.get(Claims.SUBJECT));
-            builder.userRetriever(retriever);
+            builder.userRetriever((ctx,claims)-> String.valueOf(claims.get(Claims.SUBJECT)));
         }
 
         if (config.authenticator == null) {
-            final Authenticator authenticator = ctx -> new HashMap<>();
-            builder.authenticator(authenticator);
+            builder.authenticator(ctx-> new HashMap<>());
         }
+
+        if (config.okHandler == null) {
+            builder.okHandler((ctx,token,claims)->HttpResponse.of("Authentication successful"));
+        }
+
+        if (config.failHandler == null) {
+            builder.failHandler((ctx,e)->HttpResponse.of(e.toString(), HttpURLConnection.HTTP_UNAUTHORIZED));
+        }
+
         val finalConfig = builder.build();
 
         return AuthComponent.builder()
@@ -58,9 +69,9 @@ public final class Jwt {
                 .build();
     }
 
-    private static String extractToken(AbstractRequestBinder.Context ctx) {
-        val header = ctx.headerParam(authHeaderKey);
-        return header.startsWith(authHeaderPrefix) ? header.substring(authHeaderPrefix.length()) : null;
+    private static String extractToken(Context ctx) {
+        val header = ctx.headerParam(AUTH_HEADER_KEY);
+        return header.startsWith(AUTH_HEADER_PREFIX) ? header.substring(AUTH_HEADER_PREFIX.length()) : null;
     }
 
     private static Map<String, Object> verifyToken(SecretKey key, String token) {
@@ -71,59 +82,63 @@ public final class Jwt {
 
     private static Handler verifyHandler(@NonNull Config config) {
         return ctx -> {
-            val tokStr = extractToken(ctx);
-            if (tokStr == null) {
-                return HttpResponse.of("Authentication failed", HttpURLConnection.HTTP_UNAUTHORIZED);
-            }
-            final Map<String, Object> claims;
             try {
+                val tokStr = extractToken(ctx);
+                final Map<String, Object> claims;
                 claims = verifyToken(config.secKeyObj, tokStr);
+                val user = config.userRetriever.retrieve(ctx, claims);
+                ctx.setDataParam(config.userKey, user);
+                return HttpResponse.next();
             } catch (Exception e) {
-                return HttpResponse.of(e.toString(), HttpURLConnection.HTTP_UNAUTHORIZED);
+                return config.failHandler.handle(ctx,e);
             }
-            val user = config.userRetriever.retrieveUser(ctx, claims);
-            ctx.setDataParam(config.userKey, user);
-            return HttpResponse.next();
         };
     }
 
     private static Handler loginHandler(@NonNull Config config) {
         return ctx -> {
-            val claims = config.authenticator.authenticate(ctx);
-            if (claims == null) {
-                return HttpResponse.of("Authentication failed", HttpURLConnection.HTTP_UNAUTHORIZED);
+            try {
+                val claims = config.authenticator.authenticate(ctx);
+                if (claims == null) {
+                    throw new Exception("Authentication fail");
+                }
+                val token = Jwts.builder()
+                        .addClaims(claims)
+                        .signWith(config.secKeyObj)
+                        .compact();
+                val authHeaderVal = AUTH_HEADER_PREFIX + token;
+                ctx.putHeader(AUTH_HEADER_KEY, authHeaderVal);
+                return config.okHandler.handle(ctx,token,claims);
+            } catch (Exception e) {
+                return config.failHandler.handle(ctx,e);
             }
-            val token = Jwts.builder()
-                    .addClaims(claims)
-                    .signWith(config.secKeyObj)
-                    .compact();
-            val authHeaderVal = authHeaderPrefix + token;
-            ctx.getResponseHeaders().put(authHeaderKey, authHeaderVal);
-            return HttpResponse.of("Authentication successful");
         };
     }
 
     @FunctionalInterface
     public interface UserRetriever {
-        Object retrieveUser(AbstractRequestBinder.Context ctx, Map<String, Object> claims);
+        Object retrieve(Context ctx, Map<String,Object> claims);
     }
 
     @FunctionalInterface
     public interface Authenticator {
-        Map<String, Object> authenticate(AbstractRequestBinder.Context ctx) throws Exception;
+        Map<String,Object> authenticate(Context ctx) throws Exception;
     }
 
-    @SuppressWarnings("ClassNameSameAsAncestorName")
-    public interface Claims extends io.jsonwebtoken.Claims {
+    @FunctionalInterface
+    public interface OkHandler {
+        HttpResponse handle(Context ctx, String token, Map<String,Object> claims);
+    }
 
+    @FunctionalInterface
+    public interface FailHandler {
+        HttpResponse handle(Context ctx, Exception e);
     }
 
     @Accessors(fluent = true)
     @Getter
     @Builder(toBuilder = true)
     public static class AuthComponent {
-        private final Handler handlePermission;
-        private final Handler handleRefresh;
         /**
          * Handler that extracts user authentication info, authenticates user, then response with a JWT
          */
@@ -139,12 +154,17 @@ public final class Jwt {
     @Getter
     @Builder(toBuilder = true)
     public static final class Config {
-        public static final String userKeyDefault = "authUser";
+        public static final String USER_KEY_DEFAULT = "authUser";
         /**
          * Secret key used for signing. Required and must be long enough. Recommend using {@link #genHS256Key()}
          */
         private final String secretKey;
         private final SecretKey secKeyObj;
+
+        /**
+         * Algorithm to use in signing. Default: HS256
+         * */
+        private final String algorithm;
         /**
          * Key used for getting data from context
          * Default: authUser
@@ -161,12 +181,16 @@ public final class Jwt {
         /**
          * Function that authenticates user given the Context object
          * and returns claims map to add to the JWT.
-         * This will be used by the login handler. It should return null if authentication fails
+         * This will be used by the login handler. It should return {@code null} if authentication failed
          * Default: returns an empty HashMap
          */
         private final Authenticator authenticator;
 
+        private final OkHandler okHandler;
+        private final FailHandler failHandler;
+
         public static class ConfigBuilder {
+            @SuppressWarnings("unused")
             private ConfigBuilder secKeyObj(SecretKey secKeyObj) {
                 return this;
             }
