@@ -5,6 +5,7 @@ import com.jinyframework.core.AbstractRequestBinder.HttpResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -12,7 +13,7 @@ import lombok.experimental.Accessors;
 import javax.crypto.SecretKey;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,18 +28,26 @@ public final class Jwt {
     }
 
     /**
-     * Generate a HS256 key string. You should store this somewhere safe for reuse.
-     * */
-    public static String genHS256Key() {
-        return Arrays.toString(Keys.secretKeyFor(SignatureAlgorithm.HS256).getEncoded());
+     * Generate a Base64 encoded key string using provided algorithm. You should store this somewhere safe for reuse.
+     */
+    public static String genKey(String algo) {
+        return Encoders.BASE64.encode(Keys.secretKeyFor(SignatureAlgorithm.forName(algo)).getEncoded());
     }
 
+    /**
+     * Create a wrapper class to store auth related handlers
+     */
     @SneakyThrows
     public static AuthComponent newAuthComponent(@NonNull Config config) {
         if (config.secretKey == null) {
             throw new Exception("Secret key not provided");
         }
+
         val builder = config.toBuilder();
+
+        if (config.algorithm == null) {
+            builder.algorithm("HS256");
+        }
 
         builder.secKeyObj(Keys.hmacShaKeyFor(config.secretKey.getBytes(StandardCharsets.UTF_8)));
 
@@ -46,19 +55,23 @@ public final class Jwt {
             builder.userKey(Config.USER_KEY_DEFAULT);
         }
         if (config.userRetriever == null) {
-            builder.userRetriever((ctx,claims)-> String.valueOf(claims.get(Claims.SUBJECT)));
+            builder.userRetriever((ctx, claims) -> String.valueOf(claims.get(Claims.SUBJECT)));
         }
 
         if (config.authenticator == null) {
-            builder.authenticator(ctx-> new HashMap<>());
+            builder.authenticator(ctx -> new HashMap<>());
         }
 
         if (config.okHandler == null) {
-            builder.okHandler((ctx,token,claims)->HttpResponse.of("Authentication successful"));
+            builder.okHandler((ctx, token, claims) -> {
+                val authHeaderVal = AUTH_HEADER_PREFIX + token;
+                ctx.putHeader(AUTH_HEADER_KEY, authHeaderVal);
+                return HttpResponse.of("Authentication successful");
+            });
         }
 
         if (config.failHandler == null) {
-            builder.failHandler((ctx,e)->HttpResponse.of(e.toString(), HttpURLConnection.HTTP_UNAUTHORIZED));
+            builder.failHandler((ctx, e) -> HttpResponse.of(e.toString(), HttpURLConnection.HTTP_UNAUTHORIZED));
         }
 
         val finalConfig = builder.build();
@@ -90,7 +103,7 @@ public final class Jwt {
                 ctx.setDataParam(config.userKey, user);
                 return HttpResponse.next();
             } catch (Exception e) {
-                return config.failHandler.handle(ctx,e);
+                return config.failHandler.handle(ctx, e);
             }
         };
     }
@@ -98,36 +111,37 @@ public final class Jwt {
     private static Handler loginHandler(@NonNull Config config) {
         return ctx -> {
             try {
-                val claims = config.authenticator.authenticate(ctx);
-                if (claims == null) {
+                val userClaims = config.authenticator.authenticate(ctx);
+                if (userClaims == null) {
                     throw new Exception("Authentication fail");
                 }
+                @SuppressWarnings("UseOfObsoleteDateTimeApi")
                 val token = Jwts.builder()
-                        .addClaims(claims)
-                        .signWith(config.secKeyObj)
+                        .setHeaderParam("typ", "JWT")
+                        .setIssuedAt(new Date())
+                        .addClaims(userClaims)
+                        .signWith(config.secKeyObj, SignatureAlgorithm.forName(config.algorithm))
                         .compact();
-                val authHeaderVal = AUTH_HEADER_PREFIX + token;
-                ctx.putHeader(AUTH_HEADER_KEY, authHeaderVal);
-                return config.okHandler.handle(ctx,token,claims);
+                return config.okHandler.handle(ctx, token, userClaims);
             } catch (Exception e) {
-                return config.failHandler.handle(ctx,e);
+                return config.failHandler.handle(ctx, e);
             }
         };
     }
 
     @FunctionalInterface
     public interface UserRetriever {
-        Object retrieve(Context ctx, Map<String,Object> claims);
+        Object retrieve(Context ctx, Map<String, Object> claims);
     }
 
     @FunctionalInterface
     public interface Authenticator {
-        Map<String,Object> authenticate(Context ctx) throws Exception;
+        Map<String, Object> authenticate(Context ctx) throws Exception;
     }
 
     @FunctionalInterface
     public interface OkHandler {
-        HttpResponse handle(Context ctx, String token, Map<String,Object> claims);
+        HttpResponse handle(Context ctx, String token, Map<String, Object> claims);
     }
 
     @FunctionalInterface
@@ -140,13 +154,15 @@ public final class Jwt {
     @Builder(toBuilder = true)
     public static class AuthComponent {
         /**
-         * Handler that extracts user authentication info, authenticates user, then response with a JWT
+         * Handler that extracts user authentication info, authenticates user, then response with a JWT.
+         * Put this on your login route.
          */
         private final Handler handleLogin;
 
         /**
          * Handler that extracts JWT, verifies it, retrieve user info with claims
          * then populate context with user info.
+         * Put this on your restricted routes.
          */
         private final Handler handleVerify;
     }
@@ -156,15 +172,17 @@ public final class Jwt {
     public static final class Config {
         public static final String USER_KEY_DEFAULT = "authUser";
         /**
-         * Secret key used for signing. Required and must be long enough. Recommend using {@link #genHS256Key()}
+         * Secret key used for signing. Required and must be long enough. Recommend using {@link #genKey(String)}
          */
         private final String secretKey;
+
         private final SecretKey secKeyObj;
 
         /**
          * Algorithm to use in signing. Default: HS256
-         * */
+         */
         private final String algorithm;
+
         /**
          * Key used for getting data from context
          * Default: authUser
@@ -186,12 +204,23 @@ public final class Jwt {
          */
         private final Authenticator authenticator;
 
+        /**
+         * Specifies action when authenticate success.
+         * Default: set "Authentication: Bearer {token}" in response headers and returns 200;
+         */
         private final OkHandler okHandler;
+
+        /**
+         * Specifies action when authenticate fail.
+         * Default: returns 401 and exception message in body.
+         */
         private final FailHandler failHandler;
 
+        // Override lombok builder to hide specific setters
         public static class ConfigBuilder {
             @SuppressWarnings("unused")
             private ConfigBuilder secKeyObj(SecretKey secKeyObj) {
+                this.secKeyObj = secKeyObj;
                 return this;
             }
         }
