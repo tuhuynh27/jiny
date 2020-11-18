@@ -17,8 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DisplayName("middlewares.jwt.Jwt")
 public class JwtTest {
-    private static final HttpServer server = HttpServer.port(1234);
-    private static final String url = "http://localhost:1234";
+    private static final HttpServer server = HttpServer.port(1235);
+    private static final String url = "http://localhost:1235";
 
     @BeforeAll
     static void startServer() throws InterruptedException {
