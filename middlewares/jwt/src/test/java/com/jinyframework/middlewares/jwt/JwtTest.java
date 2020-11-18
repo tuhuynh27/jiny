@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import static com.jinyframework.core.AbstractRequestBinder.HttpResponse.of;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@DisplayName("middlewares.jwt.Jwt")
 public class JwtTest {
     private static final HttpServer server = HttpServer.port(1234);
     private static final String url = "http://localhost:1234";

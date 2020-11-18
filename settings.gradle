@@ -1,7 +1,8 @@
 rootProject.name = 'jiny'
 
 include 'core'
-include 'middlewares'
+include 'middlewares:cors'
+include 'middlewares:jwt'
 include 'websocket'
 
 // Test only (with gitignore)

@@ -16,7 +16,7 @@ import com.jinyframework.middlewares.cors.Cors.Config;
 
 import lombok.val;
 
-@DisplayName("middleware.cors.Cors")
+@DisplayName("middlewares.cors.Cors")
 public class CorsTest {
     static final String uri = "http://localhost";
 
