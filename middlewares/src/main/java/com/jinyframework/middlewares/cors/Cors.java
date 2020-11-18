@@ -57,7 +57,7 @@ public final class Cors {
         }
 
         if (config.allowHeaders.isEmpty()) {
-            builder.allowHeaders(Config.allowHeadersDefault);
+            builder.allowHeaders(Config.ALLOW_HEADERS_DEFAULT);
         } else if (config.allowHeaders.contains("*")) {
             builder.allowAllHeaders(true);
             builder.clearAllowHeaders();
@@ -66,7 +66,7 @@ public final class Cors {
         }
 
         if (config.allowMethods.isEmpty()) {
-            builder.allowMethods(Config.allowMethodsDefault);
+            builder.allowMethods(Config.ALLOW_METHODS_DEFAULT);
         }
 
         val finalConfig = builder.build();
@@ -86,14 +86,14 @@ public final class Cors {
         };
     }
 
-    private static final String varyHeaders = String.join(",", "Origin",
+    private static final String VARY_HEADERS = String.join(",", "Origin",
                                                           "Access-Control-Request-Method",
                                                           "Access-Control-Request-Headers");
 
     private static void handlePreflight(Context ctx, @NonNull Config config) {
         val origin = ctx.headerParam("Origin");
 
-        ctx.putHeader("Vary", varyHeaders);
+        ctx.putHeader("Vary", VARY_HEADERS);
 
         if (origin.isEmpty()) {
             return;
@@ -249,7 +249,7 @@ public final class Cors {
         /**
          * Whitelisted methods that the server will accept.
          * If list is empty, it will be set to
-         * {@code GET}, {@code POST}, {@code HEAD} (see {@link #allowMethodsDefault})
+         * {@code GET}, {@code POST}, {@code HEAD} (see {@link #ALLOW_METHODS_DEFAULT})
          */
         @Singular
         private final List<String> allowMethods;
@@ -259,7 +259,7 @@ public final class Cors {
          * {@code Origin} header will automatically be added as well.
          * If list is empty, it will be set to
          * {@code Origin}, {@code Accept}, {@code Content-Type}, {@code X-Requested-With}
-         * (see {@link #allowHeadersDefault})
+         * (see {@link #ALLOW_HEADERS_DEFAULT})
          */
         @Singular
         private final List<String> allowHeaders;
@@ -275,10 +275,10 @@ public final class Cors {
          */
         private final int maxAge;
 
-        static List<String> allowHeadersDefault = Stream.of("Origin", "Accept", "Content-Type",
+        public static final List<String> ALLOW_HEADERS_DEFAULT = Stream.of("Origin", "Accept", "Content-Type",
                                                             "X-Requested-With")
                                                         .collect(Collectors.toList());
-        static List<String> allowMethodsDefault = Stream.of("GET", "POST", "HEAD").collect(
+        public static final List<String> ALLOW_METHODS_DEFAULT = Stream.of("GET", "POST", "HEAD").collect(
                 Collectors.toList());
 
         /**
@@ -290,8 +290,8 @@ public final class Cors {
             return builder()
                     .allowAllOrigins(true)
                     .allowCredentials(false)
-                    .allowMethods(allowMethodsDefault)
-                    .allowHeaders(allowHeadersDefault)
+                    .allowMethods(ALLOW_METHODS_DEFAULT)
+                    .allowHeaders(ALLOW_HEADERS_DEFAULT)
                     .optionPass(false)
                     .maxAge(0);
         }
