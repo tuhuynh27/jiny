@@ -1,9 +1,9 @@
 package com.jinyframework.middlewares.cors;
 
-import java.util.ArrayList;
-
 import lombok.NonNull;
 import lombok.val;
+
+import java.util.ArrayList;
 
 /**
  * The type Util.
@@ -11,7 +11,7 @@ import lombok.val;
 public final class Util {
     /**
      * Normalize header string to uppercase the first letter after hyphen, and lowercase everything else.
-     * <p></p>
+     * <p>
      * e.g: "the-RANDOM-HeadEr" to "The-Random-Header"
      *
      * @param h the header
