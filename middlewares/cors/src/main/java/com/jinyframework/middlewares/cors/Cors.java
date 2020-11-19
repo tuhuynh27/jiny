@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 
 /**
  * Middleware to help handle Cross-Origin Resource Sharing
- * <p></p>
+ * <p>
  * Specification: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
  */
 public final class Cors {
@@ -280,6 +280,13 @@ public final class Cors {
                                                         .collect(Collectors.toList());
         public static final List<String> ALLOW_METHODS_DEFAULT = Stream.of("GET", "POST", "HEAD").collect(
                 Collectors.toList());
+
+        /**
+         * The type Config builder.
+         */
+        // Override anything if needed
+        public static class ConfigBuilder {
+        }
 
         /**
          * Default ConfigBuilder that allows "simple request" for all origins.

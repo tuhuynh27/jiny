@@ -19,9 +19,18 @@ import java.util.Map;
 
 import static com.jinyframework.core.AbstractRequestBinder.Context;
 
+/**
+ * Middleware to help with basic Json Web Token authentication
+ */
 public final class Jwt {
 
+    /**
+     * The constant AUTH_HEADER_KEY.
+     */
     public static final String AUTH_HEADER_KEY = "Authorization";
+    /**
+     * The constant AUTH_HEADER_PREFIX.
+     */
     public static final String AUTH_HEADER_PREFIX = "Bearer ";
 
     private Jwt() {
@@ -29,6 +38,9 @@ public final class Jwt {
 
     /**
      * Generate a Base64 encoded key string using provided algorithm. You should store this somewhere safe for reuse.
+     *
+     * @param algo name of signature algorithm
+     * @return base64 encoded string
      */
     public static String genKey(String algo) {
         return Encoders.BASE64.encode(Keys.secretKeyFor(SignatureAlgorithm.forName(algo)).getEncoded());
@@ -36,6 +48,9 @@ public final class Jwt {
 
     /**
      * Create a wrapper class to store auth related handlers
+     *
+     * @param config the config
+     * @return the auth component
      */
     @SneakyThrows
     public static AuthComponent newAuthComponent(@NonNull Config config) {
@@ -129,26 +144,70 @@ public final class Jwt {
         };
     }
 
+    /**
+     * The interface User retriever.
+     */
     @FunctionalInterface
     public interface UserRetriever {
+        /**
+         * Retrieve object.
+         *
+         * @param ctx    context object
+         * @param claims the claims
+         * @return the user data object
+         */
         Object retrieve(Context ctx, Map<String, Object> claims);
     }
 
+    /**
+     * The interface Authenticator.
+     */
     @FunctionalInterface
     public interface Authenticator {
+        /**
+         * Authenticate map.
+         *
+         * @param ctx context object
+         * @return the map
+         * @throws Exception the exception
+         */
         Map<String, Object> authenticate(Context ctx) throws Exception;
     }
 
+    /**
+     * The interface Ok handler.
+     */
     @FunctionalInterface
     public interface OkHandler {
+        /**
+         * Handle http response.
+         *
+         * @param ctx    context object
+         * @param token  the token
+         * @param claims the claims
+         * @return the http response
+         */
         HttpResponse handle(Context ctx, String token, Map<String, Object> claims);
     }
 
+    /**
+     * The interface Fail handler.
+     */
     @FunctionalInterface
     public interface FailHandler {
+        /**
+         * Handle http response.
+         *
+         * @param ctx context object
+         * @param e   exception
+         * @return the http response
+         */
         HttpResponse handle(Context ctx, Exception e);
     }
 
+    /**
+     * The type Auth component.
+     */
     @Accessors(fluent = true)
     @Getter
     @Builder(toBuilder = true)
@@ -167,9 +226,15 @@ public final class Jwt {
         private final Handler handleVerify;
     }
 
+    /**
+     * The type Config.
+     */
     @Getter
     @Builder(toBuilder = true)
     public static final class Config {
+        /**
+         * The constant USER_KEY_DEFAULT.
+         */
         public static final String USER_KEY_DEFAULT = "authUser";
         /**
          * Secret key used for signing. Required and must be long enough. Recommend using {@link #genKey(String)}
@@ -216,6 +281,9 @@ public final class Jwt {
          */
         private final FailHandler failHandler;
 
+        /**
+         * ConfigBuilder for the Jwt middleware
+         */
         // Override lombok builder to hide specific setters
         public static class ConfigBuilder {
             @SuppressWarnings("unused")
