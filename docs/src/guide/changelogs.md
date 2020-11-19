@@ -2,7 +2,13 @@
 
 ![Maven Central](https://img.shields.io/maven-central/v/com.jinyframework/core?style=flat-square)
 
-### 0.3.1 (Current)
+### 0.3.2 (Current)
+
+- Implement JWT Middleware
+- Split middleware packages into dedicated jars (and subProject)
+- Improve custom data in handlers
+
+### 0.3.1
 
 - CORS improvement
 - Handle core exceptions internally

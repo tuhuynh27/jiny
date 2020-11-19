@@ -33,7 +33,7 @@ Pull requests are encouraged and always welcome. [Pick an issue](https://github.
 To install and work on Jiny locally:
 
 ```
-$ git clone https://github.com/huynhminhtufu/jiny.git
+$ git clone https://github.com/tuhuynh27/jiny.git
 $ cd jiny
 $ ./gradlew dependencies
 ```
