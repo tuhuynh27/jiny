@@ -98,6 +98,9 @@ public class HTTPServerTest extends HTTPTest {
                 throw new RuntimeException("Panicked!");
             });
 
+            server.get("/hasCase",ctx -> HttpResponse.of("hasCase"));
+            server.get("/noncase",ctx -> HttpResponse.of("noncase"));
+
             val catRouter = new HttpRouter();
             catRouter.use(ctx -> {
                 ctx.getData().put("att", "cat");

@@ -152,6 +152,27 @@ public abstract class HTTPTest {
     }
 
     @Test
+    @DisplayName("Path case")
+    void pathCase() throws IOException {
+        val hasOk = HttpClient.builder()
+                .url(url + "/hasCase").method("GET")
+                .build().perform();
+        assertEquals(200,hasOk.getStatus());
+        val hasFail = HttpClient.builder()
+                .url(url + "/hascase").method("GET")
+                .build().perform();
+        assertEquals(404,hasFail.getStatus());
+        val nonOk = HttpClient.builder()
+                .url(url + "/noncase").method("GET")
+                .build().perform();
+        assertEquals(200,nonOk.getStatus());
+        val nonFail = HttpClient.builder()
+                .url(url + "/nonCase").method("GET")
+                .build().perform();
+        assertEquals(404,nonFail.getStatus());
+    }
+
+    @Test
     @DisplayName("Global Middleware")
     void globalMiddleware() throws IOException {
         val res = HttpClient.builder()
