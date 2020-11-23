@@ -27,8 +27,8 @@ public final class HttpServer extends AbstractHttpRouter<Handler> {
     private String serverHost;
     private ServerSocket serverSocket;
     private int maxThread = Runtime.getRuntime().availableProcessors() * 20;
-    private int coreThread = 10;
-    private long keepAliveTime = 60L;
+    private static final int coreThread = Runtime.getRuntime().availableProcessors() * 2;
+    private static final long keepAliveTime = 60L;
     private Executor executor = new ThreadPoolExecutor(coreThread, maxThread,
             keepAliveTime, TimeUnit.SECONDS,
             new SynchronousQueue<>(), threadFactory);
@@ -135,7 +135,6 @@ public final class HttpServer extends AbstractHttpRouter<Handler> {
                 val clientSocket = serverSocket.accept();
                 executor.execute(
                         new RequestPipeline(clientSocket, middlewares, handlers, responseHeaders, transformer));
-                log.info("Threads: " + Thread.activeCount());
             }
         } catch (IOException e) {
             log.error(e.getMessage(), e);
