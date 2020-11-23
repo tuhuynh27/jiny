@@ -15,8 +15,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.util.Map;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 /**
  * The type Http server.
@@ -25,9 +24,15 @@ import java.util.concurrent.Executors;
 public final class HttpServer extends AbstractHttpRouter<Handler> {
     private final int serverPort;
     private final ServerThreadFactory threadFactory = new ServerThreadFactory("request-processor");
-    private final Executor executor = Executors.newCachedThreadPool(threadFactory);
     private String serverHost;
     private ServerSocket serverSocket;
+    private int maxThread = Runtime.getRuntime().availableProcessors() * 20;
+    private int coreThread = 10;
+    private long keepAliveTime = 60L;
+    private Executor executor = new ThreadPoolExecutor(coreThread, maxThread,
+            keepAliveTime, TimeUnit.SECONDS,
+            new SynchronousQueue<>(), threadFactory);
+
 
     private HttpServer(final int serverPort) {
         this.serverPort = serverPort;
@@ -88,6 +93,32 @@ public final class HttpServer extends AbstractHttpRouter<Handler> {
     }
 
     /**
+     * Sets num of request threads. Default: available processors * 2
+     *
+     * @param maxThread the max thread
+     * @return the http server
+     * @throws IOException the io exception
+     */
+    public HttpServer setMaxRequestThreads(final int maxThread) throws IOException {
+        if (maxThread < 1) {
+            throw new ArithmeticException("maxThread cannot lower than 1");
+        }
+        this.maxThread = maxThread;
+        return this;
+    }
+
+    /**
+     * Sets executor. Default: {@link #executor}
+     *
+     * @param executor the executor
+     * @return the executor
+     */
+    public HttpServer setExecutor(Executor executor) {
+        this.executor = executor;
+        return this;
+    }
+
+    /**
      * Start.
      */
     public void start() {
@@ -99,11 +130,12 @@ public final class HttpServer extends AbstractHttpRouter<Handler> {
                             new InetSocketAddress(serverHost, serverPort) :
                             new InetSocketAddress(InetAddress.getLoopbackAddress(), serverPort);
             serverSocket.bind(socketAddress);
-            log.info("Started Jiny HTTP Server on " + serverPort);
+            log.info("Started Jiny HTTP Server on " + serverPort + " using " + maxThread + " threads at max.");
             while (!Thread.interrupted()) {
                 val clientSocket = serverSocket.accept();
                 executor.execute(
                         new RequestPipeline(clientSocket, middlewares, handlers, responseHeaders, transformer));
+                log.info("Threads: " + Thread.activeCount());
             }
         } catch (IOException e) {
             log.error(e.getMessage(), e);
