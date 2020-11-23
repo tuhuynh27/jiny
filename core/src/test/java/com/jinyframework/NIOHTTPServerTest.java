@@ -98,6 +98,9 @@ public class NIOHTTPServerTest extends HTTPTest {
                 throw new RuntimeException("Panicked!");
             });
 
+            server.get("/hasCase",ctx -> HttpResponse.ofAsync("hasCase"));
+            server.get("/noncase",ctx -> HttpResponse.ofAsync("noncase"));
+
             val catRouter = new HttpRouterNIO();
             catRouter.use(ctx -> {
                 ctx.setDataParam("att", "cat");

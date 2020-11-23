@@ -54,7 +54,7 @@ public final class ParserUtils {
             }
         }
 
-        val path = metaArr.length >= 2 ? metaArr[1].toLowerCase() : "";
+        val path = metaArr.length >= 2 ? metaArr[1] : "";
 
         val indexOfQuestionMark = path.indexOf('?');
         val queryParamsString = indexOfQuestionMark == -1 ? null : path.substring(indexOfQuestionMark + 1);
