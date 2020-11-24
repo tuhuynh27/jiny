@@ -7,6 +7,7 @@ import lombok.val;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The type Server thread factory.
@@ -15,7 +16,7 @@ import java.util.concurrent.ThreadFactory;
 public final class ServerThreadFactory implements ThreadFactory {
     private final String name;
     private final List<String> stats;
-    private int counter;
+    private final AtomicInteger counter = new AtomicInteger(1);
     private boolean isDebug = false;
 
     /**
@@ -24,15 +25,13 @@ public final class ServerThreadFactory implements ThreadFactory {
      * @param name the name
      */
     public ServerThreadFactory(@NonNull String name) {
-        counter = 1;
         this.name = name;
         stats = new ArrayList<>();
     }
 
     @Override
     public Thread newThread(final Runnable runnable) {
-        val t = new Thread(runnable, name + "-thread-" + counter);
-        counter++;
+        val t = new Thread(runnable, name + "-thread-" + counter.getAndIncrement());
         val info = String.format("Created thread id %d with name %s on %d", t.getId(), t.getName(),
                 System.currentTimeMillis());
         stats.add(info);
