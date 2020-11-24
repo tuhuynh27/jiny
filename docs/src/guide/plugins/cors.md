@@ -6,13 +6,13 @@ Cross-origin resource sharing (CORS) is a mechanism that allows restricted resou
   
 ## Install
 
-Latest version: ![Maven Central](https://img.shields.io/maven-central/v/com.jinyframework/middlewares?style=flat-square)
+Latest version: ![Maven Central](https://img.shields.io/maven-central/v/com.jinyframework/cors-middleware?style=flat-square)
 
 `build.gradle`
 
 ```groovy
 dependencies {
-    compile group: 'com.jinyframework', name: 'middlewares', version: '{latest_version}'
+    compile group: 'com.jinyframework', name: 'jwt-middleware', version: '{latest_version}'
 }
 ```
 

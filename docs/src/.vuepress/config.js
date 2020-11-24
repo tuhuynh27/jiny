@@ -101,6 +101,7 @@ module.exports = {
           collapsable: true,
           children: [
             'plugins/cors',
+            'plugins/jwt',
             'plugins/websocket',
           ]
         },
