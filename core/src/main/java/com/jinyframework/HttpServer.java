@@ -26,12 +26,10 @@ public final class HttpServer extends AbstractHttpRouter<Handler> {
     private final ServerThreadFactory threadFactory = new ServerThreadFactory("request-processor");
     private String serverHost;
     private ServerSocket serverSocket;
-    private int maxThread = Runtime.getRuntime().availableProcessors() * 20;
-    private static final int coreThread = Runtime.getRuntime().availableProcessors() * 2;
-    private static final long keepAliveTime = 60L;
-    private Executor executor = new ThreadPoolExecutor(coreThread, maxThread,
-            keepAliveTime, TimeUnit.SECONDS,
-            new SynchronousQueue<>(), threadFactory);
+    private int maxThread = 200;
+    private int minThread = 8;
+    private long keepAliveTime = 60000L;
+    private ExecutorService executor;
 
 
     private HttpServer(final int serverPort) {
@@ -93,27 +91,51 @@ public final class HttpServer extends AbstractHttpRouter<Handler> {
     }
 
     /**
-     * Sets num of request threads. Default: available processors * 2
+     * Sets the max num of request threads. Default: 200
      *
      * @param maxThread the max thread
      * @return the http server
-     * @throws IOException the io exception
      */
-    public HttpServer setMaxRequestThreads(final int maxThread) throws IOException {
-        if (maxThread < 1) {
-            throw new ArithmeticException("maxThread cannot lower than 1");
+    public HttpServer maxExecutorThreads(final int maxThread) {
+        if (maxThread < minThread) {
+            throw new ArithmeticException("maxThread cannot lower than minThread");
         }
         this.maxThread = maxThread;
         return this;
     }
 
     /**
-     * Sets executor. Default: {@link #executor}
+     * Sets the min num of request threads. Default: 8
+     *
+     * @param minThread the min thread
+     * @return the http server
+     */
+    public HttpServer minExecutorThreads(final int minThread) {
+        if (minThread < 1) {
+            throw new ArithmeticException("minThread cannot lower than 1");
+        }
+        this.minThread = minThread;
+        return this;
+    }
+
+    /**
+     * Sets the thread idle timeout http server. Default: 60000
+     *
+     * @param timeoutInMillis the timeout in millis
+     * @return the http server
+     */
+    public HttpServer threadIdleTimeout(final long timeoutInMillis) {
+        keepAliveTime = timeoutInMillis;
+        return this;
+    }
+
+    /**
+     * Sets thread pool executor to be used. Other thread executor settings will be ignored.
      *
      * @param executor the executor
      * @return the executor
      */
-    public HttpServer setExecutor(Executor executor) {
+    public HttpServer setExecutor(ExecutorService executor) {
         this.executor = executor;
         return this;
     }
@@ -124,6 +146,11 @@ public final class HttpServer extends AbstractHttpRouter<Handler> {
     public void start() {
         Intro.begin();
         try {
+            if (executor == null) {
+                executor = new ThreadPoolExecutor(minThread, maxThread,
+                        keepAliveTime, TimeUnit.MILLISECONDS,
+                        new SynchronousQueue<>(true), threadFactory, new ThreadPoolExecutor.DiscardPolicy());
+            }
             serverSocket = new ServerSocket();
             val socketAddress =
                     serverHost != null ?
@@ -145,12 +172,16 @@ public final class HttpServer extends AbstractHttpRouter<Handler> {
      * Stop.
      */
     public void stop() {
-        if (!serverSocket.isClosed()) {
-            try {
+        try {
+            if (!serverSocket.isClosed()) {
                 serverSocket.close();
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
             }
+            if (!executor.isTerminated() && !executor.isShutdown()) {
+                executor.shutdown();
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        } finally {
             log.info("Stopped Jiny HTTP Server on port " + serverPort);
         }
     }
