@@ -12,7 +12,7 @@
 
 ## What is Jiny?
 
-**Jiny** features a **lightweight (Servlet-free and no dependency), expressive and unopinionated** pure HTTP Server/Client including request parser, routing, middlewares, proxy-mode and more. If you need a quick start & simple way to write a JVM server, you would love this framework. Unlike others web frameworks, you can structure your application as you want.
+**Jiny** features a **lightweight (Servlet-free and no dependency), expressive and unopinionated** web framework. If you need a quick start & simple way to write a JVM server, you would love this framework. Unlike others web frameworks, you can structure your application as you want.
 
 ## Quick Start
 

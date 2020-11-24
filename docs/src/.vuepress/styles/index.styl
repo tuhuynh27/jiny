@@ -13,7 +13,8 @@
 @require '~vuepress-plugin-tabs/dist/themes/default.styl'
 
 .tabs-component
-  margin 0
+  max-width 600px
+  margin auto
 
 .tabs-component-tabs
   @media only screen and (max-width: 768px)
@@ -28,3 +29,44 @@
 
 .tabs-component-tab
   border solid 1px #fff
+
+.home
+  max-width unset !important
+  padding: 3.6rem 0 0 0 !important
+
+.features
+  max-width 960px !important
+  margin auto !important
+
+.hero
+  padding-left 1.5rem;
+
+.generic-block
+  padding: 3em 1em
+  margin auto
+  h3
+    padding 0
+    margin 0
+    font-size 2.25rem
+    @media only screen and (max-width: 768px)
+      font-size unset
+  .mid
+    max-width 1366px
+    margin auto
+    display flex
+    align-items center
+    justify-content space-between
+  .left
+    width 45%
+  .right
+    width 45%
+  &.faint
+    background #f5f7f9
+    border 1px solid #e6ecf1
+  &.reverse
+    .mid
+      flex-direction row-reverse
+    .left
+      text-align left
+    .right
+      text-align right

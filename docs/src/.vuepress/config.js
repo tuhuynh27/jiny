@@ -43,6 +43,10 @@ module.exports = {
         link: '/guide/',
       },
       {
+        text: 'Example',
+        link: 'https://github.com/tuhuynh27/jiny/tree/master/examples',
+      },
+      {
         text: 'Tutorials',
         link: 'https://tuhuynh.com/tags/jiny',
       },

@@ -3,7 +3,7 @@
 ![](https://i.imgur.com/viYCs8l.png)
 
 ## What is Jiny framework?
-Jiny features a lightweight, expressive and unopinionated pure HTTP Server/Client including request parser, routing, middlewares, proxy-mode and more. If you need a quick start & simple way to write a JVM server, you would love this framework. Unlike other restrictive Java web frameworks, you can structure your application as you want.
+Jiny features a lightweight, expressive and unopinionated web framework. If you need a quick start & simple way to write a JVM server, you would love this framework. Unlike other restrictive Java web frameworks, you can structure your application as you want.
 
 ## Why I build this framework?
 
