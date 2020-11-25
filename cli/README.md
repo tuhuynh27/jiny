@@ -14,3 +14,7 @@ $ chmod +x /usr/local/bin/jiny
 ```
 $ jiny
 ```
+
+## Demo
+
+![](https://user-images.githubusercontent.com/13906546/100203157-d1d2f380-2f34-11eb-9c69-7a10c41a9f9b.png)

@@ -5,6 +5,23 @@
 - JDK 1.8 or higher
 - Gradle/Maven build configuration
 
+You can install via CLI or Build tool
+
+## CLI
+
+### Install JinyCLI
+
+```shell script
+curl -o /usr/local/bin/jiny https://raw.githubusercontent.com/tuhuynh27/jiny/master/cli/binaries/macos/jinycli
+chmod +x /usr/local/bin/jiny
+```
+
+### Run
+
+```shell script
+jiny
+```
+
 ## Build tool
 
 ### Gradle Project (Recommended)
