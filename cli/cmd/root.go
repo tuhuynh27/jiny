@@ -13,7 +13,7 @@ type Metadata struct {
 }
 
 var rootCmd = &cobra.Command{
-	Use:   "jiny-cli",
+	Use:   "jinycli",
 	Short: "JinyFramework CLI",
 	Long: `Lightweight, modern, simple Java web framework for rapid development in the API era`,
 	Run: func(cmd *cobra.Command, args []string) {

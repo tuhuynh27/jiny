@@ -25,6 +25,9 @@ dependencies {
     compile group: 'com.google.code.gson', name: 'gson', version: '2.8.6'
     compile group: 'ch.qos.logback', name:'logback-classic', version: '1.0.9'
     compile group: 'ch.qos.logback', name:'logback-core', version: '1.0.9'
+
+	// Use JUnit test framework
+    testImplementation 'junit:junit:4.13'
 }
 
 application {
