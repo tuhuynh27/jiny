@@ -1,6 +1,6 @@
 package cmd
 
-const BuildGradle = `plugins {
+const BuildGradleTemplate = `plugins {
     // Apply the java plugin to add support for Java
     id 'java'
 
@@ -32,9 +32,38 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClassName = '{{ .MainClassName }}'
+    mainClassName = '{{ .SourcePackage }}.App'
 }
 `
 
-const SettingsGradle = `rootProject.name = '{{ .ArtifactName }}'
+const SettingsGradleTemplate = `rootProject.name = '{{ .ProjectName }}'
+`
+
+const AppTemplate = `package {{ .SourcePackage }};
+
+import com.jinyframework.*;
+import static com.jinyframework.core.AbstractRequestBinder.HttpResponse.of;
+
+import lombok.val;
+
+public class App {
+    public static void main(String[] args) {
+        val server = HttpServer.port(1234);
+        server.get("/hello", ctx -> of("Hello World!"));
+        server.start();
+    }
+}
+`
+
+const AppTestTemplate = `package {{ .SourcePackage }};
+
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class AppTest {
+    @Test public void testAppHasAGreeting() {
+        App classUnderTest = new App();
+        assertNotNull("app should have a greeting", classUnderTest.getGreeting());
+    }
+}
 `
