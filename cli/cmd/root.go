@@ -27,7 +27,7 @@ var rootCmd = &cobra.Command{
 		}
 		sourcePackagePrompt := promptui.Prompt{
 			Label:    "Source Package",
-			Default:  "com.test-project",
+			Default:  "com.yourcompany",
 		}
 		projectNameGot, _ := projectNamePrompt.Run()
 		sourcePackageGot, _ := sourcePackagePrompt.Run()
