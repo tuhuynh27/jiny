@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
-	"html/template"
 	"os"
 	"strings"
+	"text/template"
 )
 
 type Metadata struct {
+	Feature      int
 	ProjectName   string
 	SourcePackage string
 }
@@ -21,6 +22,10 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		Intro()
 
+		featuresPrompt := promptui.Select{
+			Label: "Jiny Features",
+			Items: []string{"Basic", "JSON support", "JSON and basic middlewares (CORS, JWT) support"},
+		}
 		projectNamePrompt := promptui.Prompt{
 			Label:    "Project Name",
 			Default:  "test",
@@ -29,15 +34,30 @@ var rootCmd = &cobra.Command{
 			Label:    "Source Package",
 			Default:  "com.yourcompany",
 		}
-		projectNameGot, _ := projectNamePrompt.Run()
-		sourcePackageGot, _ := sourcePackagePrompt.Run()
+		featureGot, _, err := featuresPrompt.Run()
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		fmt.Println(featureGot)
+		projectNameGot, err := projectNamePrompt.Run()
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		sourcePackageGot, err := sourcePackagePrompt.Run()
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
 
 		path, _ := os.Getwd()
 		path = path +  string(os.PathSeparator)
 		addPath := projectNameGot + string(os.PathSeparator)
 		path = path + addPath
-		m := Metadata{ProjectName: projectNameGot, SourcePackage: sourcePackageGot}
+		m := Metadata{Feature: featureGot, ProjectName: projectNameGot, SourcePackage: sourcePackageGot}
 
+		// Check if dest dir is exist, if not create it
 		if _, err := os.Stat(path); os.IsNotExist(err) {
 			_ = os.Mkdir(path, os.ModePerm)
 		}
@@ -70,6 +90,7 @@ var rootCmd = &cobra.Command{
 		_ = appTestGradleTemplate.Execute(appTestGradleFile, m)
 
 		fmt.Println("Your Jiny project was created at: " + projectNameGot)
+		fmt.Println("You can start by running: cd " + projectNameGot + " && gradle run")
 	},
 }
 
