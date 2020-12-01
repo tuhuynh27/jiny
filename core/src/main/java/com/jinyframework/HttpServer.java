@@ -26,8 +26,8 @@ public final class HttpServer extends AbstractHttpRouter<Handler> {
     private final ServerThreadFactory threadFactory = new ServerThreadFactory("request-processor");
     private String serverHost;
     private ServerSocket serverSocket;
-    private int maxThread = 200;
-    private int minThread = 8;
+    private int maxThread = Runtime.getRuntime().availableProcessors() * 2 * 30;
+    private int minThread = Runtime.getRuntime().availableProcessors() * 2;
     private long keepAliveTime = 60000L;
     private ExecutorService executor;
 
@@ -124,7 +124,7 @@ public final class HttpServer extends AbstractHttpRouter<Handler> {
      * @param timeoutInMillis the timeout in millis
      * @return the http server
      */
-    public HttpServer threadIdleTimeout(final long timeoutInMillis) {
+    public HttpServer setThreadIdleTimeout(final long timeoutInMillis) {
         keepAliveTime = timeoutInMillis;
         return this;
     }
@@ -135,7 +135,7 @@ public final class HttpServer extends AbstractHttpRouter<Handler> {
      * @param executor the executor
      * @return the executor
      */
-    public HttpServer setExecutor(ExecutorService executor) {
+    public HttpServer useExecutor(ExecutorService executor) {
         this.executor = executor;
         return this;
     }
@@ -157,7 +157,11 @@ public final class HttpServer extends AbstractHttpRouter<Handler> {
                             new InetSocketAddress(serverHost, serverPort) :
                             new InetSocketAddress(InetAddress.getLoopbackAddress(), serverPort);
             serverSocket.bind(socketAddress);
-            log.info("Started Jiny HTTP Server on " + serverPort + " using " + maxThread + " threads at max.");
+            if (executor == null) {
+                log.info("Started Jiny HTTP Server on " + serverPort + " using " + maxThread + " threads at max");
+            } else {
+                log.info("Started Jiny HTTP Server on " + serverPort + " using custom thread pool");
+            }
             while (!Thread.interrupted()) {
                 val clientSocket = serverSocket.accept();
                 executor.execute(
