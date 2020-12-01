@@ -2,7 +2,13 @@
 
 ![Maven Central](https://img.shields.io/maven-central/v/com.jinyframework/core?style=flat-square)
 
-### 0.3.2 (Current)
+### 0.3.3 (Current)
+
+- Fix path parsing (respect casing)
+- Support custom thread pool for worker threads
+- Jiny CLI
+
+### 0.3.2
 
 - Implement JWT Middleware
 - Split middleware packages into dedicated jars (and subProject)
