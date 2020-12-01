@@ -26,8 +26,8 @@ public final class HttpServer extends AbstractHttpRouter<Handler> {
     private final ServerThreadFactory threadFactory = new ServerThreadFactory("request-processor");
     private String serverHost;
     private ServerSocket serverSocket;
-    private int maxThread = Runtime.getRuntime().availableProcessors() * 30;
-    private int minThread = Runtime.getRuntime().availableProcessors();
+    private int maxThread = Runtime.getRuntime().availableProcessors() * 2 * 30;
+    private int minThread = Runtime.getRuntime().availableProcessors() * 2;
     private long keepAliveTime = 60000L;
     private ExecutorService executor;
 
