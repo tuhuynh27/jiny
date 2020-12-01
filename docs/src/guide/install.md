@@ -7,16 +7,22 @@
 
 You can install via CLI or Build tool
 
-## CLI
+## Start new Gradle project Jiny CLI
 
-### Install JinyCLI
+### Install Jiny CLI
+
+For Unix (Linux/macOS) users, run:
 
 ```shell script
 curl -o /usr/local/bin/jiny https://raw.githubusercontent.com/tuhuynh27/jiny/master/cli/binaries/macos/jinycli
 chmod +x /usr/local/bin/jiny
 ```
 
+For Windows users, please download the .exe file [here](https://github.com/tuhuynh27/jiny/blob/master/cli/binaries/windows/jinycli.exe).
+
 ### Run
+
+Run and follow the CLI's instruction, after finish you will have a Gradle Java Project with Jiny included
 
 ```shell script
 jiny
