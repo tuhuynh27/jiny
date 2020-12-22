@@ -174,5 +174,4 @@ fun main(args: Array<String>) {
 
 <div style="text-align: center; margin-top: 1.5rem; margin-bottom: 2rem;">
 <a href="https://oddgame.io" target="_blank"><img src="https://i.imgur.com/0JNoKJd.png" style="max-width: 92px; margin-right: 0.5rem;" /></a>
-<a href="https://engineering.linecorp.com/en/opensource/" target="_blank"><img src="https://i.imgur.com/PfIIONx.png" style="max-width: 100px;" /></a>
 </div>
