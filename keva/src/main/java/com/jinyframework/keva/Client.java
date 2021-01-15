@@ -27,6 +27,7 @@ public final class Client {
 
                 if ("q".equals(consoleLine)) {
                     socketOut.println("Client is shutting down...");
+                    socketOut.flush();
                     break;
                 }
                 socketOut.println(consoleLine);
