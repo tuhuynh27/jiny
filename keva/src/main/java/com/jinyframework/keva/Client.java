@@ -14,7 +14,7 @@ public final class Client {
         try {
             val consoleIn = new BufferedReader(new InputStreamReader(System.in));
             // Communication Endpoint for client and server
-            val socket = new Socket("LocalHost", 6767);
+            val socket = new Socket("localhost", 6767);
             log.info("Client Started");
             log.info("Press 'q' to quit client");
             val socketIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -26,8 +26,6 @@ public final class Client {
                 }
 
                 if ("q".equals(consoleLine)) {
-                    socketOut.println("Client is shutting down...");
-                    socketOut.flush();
                     break;
                 }
                 socketOut.println(consoleLine);
@@ -35,9 +33,12 @@ public final class Client {
                 val line = socketIn.readLine();
                 log.info("Received from server: {}", line);
             }
-            socket.close();
+            socketOut.println("Client is shutting down");
+            socketOut.flush();
+            consoleIn.close();
             socketIn.close();
             socketOut.close();
+            socket.close();
         } catch (Exception e) {
             log.error("{} {}", e.getMessage(), e.getCause());
         }

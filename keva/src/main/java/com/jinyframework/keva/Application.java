@@ -15,9 +15,19 @@ public final class Application {
                     .host("localhost")
                     .port(6767)
                     .build();
+
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try {
+                    server.shutdown();
+                } catch (Exception e) {
+                    log.error("Problem occurred when stopping server: ", e);
+                } finally {
+                    log.info("Bye");
+                }
+            }));
             server.run();
         } catch (Exception e) {
-            log.error("There was a problem running server: ",e);
+            log.error("There was a problem running server: ", e);
         }
     }
 }

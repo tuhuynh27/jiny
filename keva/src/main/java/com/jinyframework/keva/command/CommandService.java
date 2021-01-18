@@ -1,11 +1,13 @@
 package com.jinyframework.keva.command;
 
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import lombok.var;
 
 import java.io.PrintWriter;
 import java.util.*;
 
+@Slf4j
 public final class CommandService {
 
     private static final Map<String, CommandHandler> commandHandlerMap = initMap();
@@ -18,14 +20,20 @@ public final class CommandService {
     }
 
     public static void handleCommand(PrintWriter socketOut, String line) {
-        val args = parseTokens(line);
-        val commandName = args.get(0).toLowerCase();
-        var handler = commandHandlerMap.get(commandName);
-        if (handler == null) {
-            handler = commandHandlerMap.get(getCommandName(Unsupported.class));
+        Object output;
+        try {
+            val args = parseTokens(line);
+            val commandName = args.get(0).toLowerCase();
+            var handler = commandHandlerMap.get(commandName);
+            if (handler == null) {
+                handler = commandHandlerMap.get(getCommandName(Unsupported.class));
+            }
+            args.remove(0);
+            output = handler.handle(args);
+        } catch (Exception e) {
+            log.error("Error while handling command: ",e);
+            output = "ERROR";
         }
-        args.remove(0);
-        val output = handler.handle(args);
         socketOut.println(output);
         socketOut.flush();
     }

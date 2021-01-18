@@ -25,7 +25,7 @@ task runServer(type: JavaExec) {
     group = "Execution"
     description = "Start server"
     classpath = sourceSets.main.runtimeClasspath
-    main = "com.jinyframework.keva.Server"
+    main = "com.jinyframework.keva.Application"
 }
 
 task runClient(type: JavaExec) {

@@ -26,9 +26,10 @@ public final class ConnectionService {
                 log.info("Received from client: " + line);
                 CommandService.handleCommand(socketOut, line);
             }
-            socket.close();
+            log.info("{} disconnected",socket.getRemoteSocketAddress());
             socketIn.close();
             socketOut.close();
+            socket.close();
         } catch (Exception e) {
             log.error("Error occurred while handling socket: ", e);
         }
