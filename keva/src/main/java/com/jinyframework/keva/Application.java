@@ -14,6 +14,7 @@ public final class Application {
             val server = Server.builder()
                     .host("localhost")
                     .port(6767)
+                    .heartbeatTimeout(60000)
                     .build();
 
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
