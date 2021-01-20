@@ -1,9 +1,9 @@
 Development:
 - run server:
 ```
-./gradlew --no-daemon --quiet --console plain :keva:runServer
+./gradlew --no-daemon --quiet --console plain :keva:server:run
 ```
 - run client:
 ```
-./gradlew --no-daemon --quiet --console plain :keva:runClient
+./gradlew --no-daemon --quiet --console plain :keva:client:run
 ```
