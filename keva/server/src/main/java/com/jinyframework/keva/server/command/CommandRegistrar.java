@@ -10,7 +10,7 @@ public final class CommandRegistrar {
     private CommandRegistrar() {
     }
 
-    public static Map<CommandName, CommandHandler> getRegistrar() {
+    public static Map<CommandName, CommandHandler> getHandlerMap() {
         return RegistrarHolder.registrar;
     }
 
