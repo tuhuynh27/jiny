@@ -12,7 +12,7 @@ import java.io.PrintWriter;
 import java.util.Map;
 
 import static com.jinyframework.keva.server.ServiceFactory.commandService;
-import static com.jinyframework.keva.server.storage.StorageService.socketStore;
+import static com.jinyframework.keva.server.storage.StorageFactory.socketStore;
 
 @Slf4j
 public class ConnectionServiceImpl implements ConnectionService {
@@ -22,10 +22,12 @@ public class ConnectionServiceImpl implements ConnectionService {
 
     @Override
     public void handleConnection(KevaSocket kevaSocket) {
+        val socketId = kevaSocket.getId();
         try {
-            socketMap.put(kevaSocket.getId(), kevaSocket);
+            socketMap.put(socketId, kevaSocket);
             val socket = kevaSocket.getSocket();
-            log.info("{} {} connected", socket.getRemoteSocketAddress(), kevaSocket.getId());
+            val remoteAddr = socket.getRemoteSocketAddress();
+            log.info("{} {} connected", remoteAddr, socketId);
 
             @Cleanup
             val socketIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -34,8 +36,8 @@ public class ConnectionServiceImpl implements ConnectionService {
             while (kevaSocket.isAlive()) {
                 val line = socketIn.readLine();
                 if (line == null) {
-                    socketMap.remove(kevaSocket.getId());
-                    log.info("{} {} disconnected", kevaSocket.getSocket().getRemoteSocketAddress(), kevaSocket.getId());
+                    socketMap.remove(socketId);
+                    log.info("{} {} disconnected", remoteAddr, socketId);
                     break;
                 }
                 kevaSocket.getLastOnlineLong().set(System.currentTimeMillis());
@@ -43,7 +45,7 @@ public class ConnectionServiceImpl implements ConnectionService {
                 commandService.handleCommand(socketOut, line);
             }
         } catch (Exception e) {
-            log.error("Error while handling socket {}: {}", kevaSocket.getId(), e);
+            log.error("Error while handling socket {}: {}", socketId, e);
         }
     }
 

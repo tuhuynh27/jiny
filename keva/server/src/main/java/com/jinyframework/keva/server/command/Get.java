@@ -2,7 +2,7 @@ package com.jinyframework.keva.server.command;
 
 import java.util.List;
 
-import static com.jinyframework.keva.server.storage.StorageService.hashStore;
+import static com.jinyframework.keva.server.storage.StorageFactory.hashStore;
 
 public class Get implements CommandHandler {
     @Override

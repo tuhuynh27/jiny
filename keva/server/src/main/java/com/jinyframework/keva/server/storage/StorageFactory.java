@@ -5,9 +5,9 @@ import com.jinyframework.keva.server.core.KevaSocket;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public final class StorageService {
+public final class StorageFactory {
 
-    private StorageService() {
+    private StorageFactory() {
     }
 
     public static Map<String, String> hashStore() {
