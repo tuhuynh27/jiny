@@ -21,7 +21,8 @@ import static com.jinyframework.keva.server.ServiceFactory.connectionService;
 public class Server {
     private final String host;
     private final int port;
-    private final long heartbeatTimeout;
+    private long heartbeatTimeout;
+    private static final long DEFAULT_HEARTBEAT = 60000;
     private ServerSocket serverSocket;
     private ExecutorService executor;
 
@@ -36,6 +37,9 @@ public class Server {
     }
 
     private void startHeartbeat() {
+        if (heartbeatTimeout <= 0) {
+            heartbeatTimeout = DEFAULT_HEARTBEAT;
+        }
         val heartbeatInterval = heartbeatTimeout / 2;
 
         val scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
