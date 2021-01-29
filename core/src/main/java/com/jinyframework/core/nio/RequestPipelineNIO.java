@@ -28,15 +28,11 @@ public final class RequestPipelineNIO {
     private final RequestTransformer transformer;
 
     public void run() {
-        process().thenAccept(canContinue -> {
-            if (canContinue) {
-                run();
-            }
-        });
+        process().thenAccept(any -> run());
     }
 
-    private CompletableFuture<Boolean> process() {
-        val promise = new CompletableFuture<Boolean>();
+    private CompletableFuture<Void> process() {
+        val promise = new CompletableFuture<Void>();
         val defaultResponseHeaders = responseHeaders;
 
         clientSocketChannel.read(byteBuffer, null, new CompletionHandler<Integer, Object>() {
@@ -61,7 +57,7 @@ public final class RequestPipelineNIO {
                                     @Override
                                     public void completed(Integer result, Object attachment) {
                                         byteBuffer.clear();
-                                        promise.complete(true);
+                                        promise.complete(null);
                                     }
 
                                     @SneakyThrows
@@ -69,7 +65,7 @@ public final class RequestPipelineNIO {
                                     public void failed(Throwable e, Object attachment) {
                                         byteBuffer.clear();
                                         clientSocketChannel.close();
-                                        promise.complete(false);
+                                        promise.completeExceptionally(e);
                                     }
                                 });
                     });
@@ -80,7 +76,7 @@ public final class RequestPipelineNIO {
             @Override
             public void failed(Throwable e, Object attachment) {
                 clientSocketChannel.close();
-                promise.complete(false);
+                promise.completeExceptionally(e);
             }
         });
 
