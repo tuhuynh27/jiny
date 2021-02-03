@@ -60,6 +60,10 @@ public class Server {
     }
 
     private void startSnapshot() {
+        if (snapshotConfig == null) {
+            return;
+        }
+
         val recoveryPath = snapshotConfig.getRecoveryPath();
         if (recoveryPath != null && !recoveryPath.isEmpty()) {
             snapshotService().recover(recoveryPath);

@@ -57,6 +57,9 @@ public class SnapShotServiceImpl implements SnapshotService {
 
     @Override
     public void recover(String snapFilePath) {
+        if (snapFilePath == null || snapFilePath.isEmpty()) {
+            snapFilePath = Paths.get(".", snapFileName).toString();
+        }
         log.info("Recovering hash map from file");
         try {
             @Cleanup
