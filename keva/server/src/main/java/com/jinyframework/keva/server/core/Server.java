@@ -82,6 +82,10 @@ public class Server {
         while (!serverStopping.get()) {
             try {
                 val socket = serverSocket.accept();
+                if (serverStopping.get()) {
+                    socket.close();
+                    break;
+                }
                 executor.execute(() -> {
                     val kevaSocket = KevaSocket.builder()
                             .socket(socket)
