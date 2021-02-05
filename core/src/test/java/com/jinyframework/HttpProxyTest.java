@@ -36,8 +36,8 @@ public class HttpProxyTest {
         proxy.use("/nio", "localhost:2222");
         new Thread(proxy::start).start();
 
-        // Wait for server to start
-        TimeUnit.SECONDS.sleep(1);
+        // Wait for all servers  to start
+        TimeUnit.SECONDS.sleep(2);
     }
 
     @Test
