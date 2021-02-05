@@ -39,7 +39,6 @@ public class SnapshotServiceTest {
         // Wait for server to start
         TimeUnit.SECONDS.sleep(1);
         return server;
-
     }
 
     void stop(Server server) throws Exception {
@@ -132,5 +131,4 @@ public class SnapshotServiceTest {
             fail(e);
         }
     }
-
 }
