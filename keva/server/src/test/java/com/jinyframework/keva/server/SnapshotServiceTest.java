@@ -48,9 +48,11 @@ public class SnapshotServiceTest {
 
     void deleteFile(String filePath) {
         val f = new File(filePath);
-        val delete = f.delete();
-        if (!delete) {
-            fail("Delete dump file failed");
+        if (f.exists()) {
+            val delete = f.delete();
+            if (!delete) {
+                fail("Delete dump file failed");
+            }
         }
     }
 
