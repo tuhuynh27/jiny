@@ -10,7 +10,7 @@ public final class StorageFactory {
     private static KevaStore kevaStore;
     private static ConcurrentHashMap<String, KevaSocket> socketHashMap;
 
-    public static KevaStore getKevaStore() {
+    public synchronized static KevaStore getKevaStore() {
         if (kevaStore == null) {
             kevaStore = new KevaStoreImpl();
         }
@@ -18,7 +18,7 @@ public final class StorageFactory {
         return kevaStore;
     }
 
-    public static ConcurrentHashMap<String, KevaSocket> getSocketHashMap() {
+    public synchronized static ConcurrentHashMap<String, KevaSocket> getSocketHashMap() {
         if (socketHashMap == null) {
             socketHashMap = new ConcurrentHashMap<>();
         }
