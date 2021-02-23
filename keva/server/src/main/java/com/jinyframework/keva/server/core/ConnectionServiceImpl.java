@@ -1,5 +1,6 @@
 package com.jinyframework.keva.server.core;
 
+import com.jinyframework.keva.server.ServiceFactory;
 import com.jinyframework.keva.server.command.CommandService;
 import com.jinyframework.keva.server.storage.StorageFactory;
 import lombok.Cleanup;
@@ -13,11 +14,9 @@ import java.io.PrintWriter;
 import java.net.SocketException;
 import java.util.Map;
 
-import static com.jinyframework.keva.server.ServiceFactory.commandService;
-
 @Slf4j
 public class ConnectionServiceImpl implements ConnectionService {
-    private final CommandService commandService = commandService();
+    private final CommandService commandService = ServiceFactory.getCommandService();
 
     private final Map<String, KevaSocket> socketMap = StorageFactory.getSocketHashMap();
 
