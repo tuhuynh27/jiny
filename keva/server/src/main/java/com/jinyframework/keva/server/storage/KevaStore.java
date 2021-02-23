@@ -4,10 +4,15 @@ import java.util.Map;
 import java.util.Set;
 
 public interface KevaStore {
-    public Object get(String key);
-    public void put(String key, Object value);
-    public void putAll(Map<String, Object> m);
-    public void remove(String key);
-    public void expire(String key, long expireTimeInMilliSecond);
-    public Set<Map.Entry<String, Object>> entrySetCopy();
+    Object get(String key);
+
+    void put(String key, Object value);
+
+    void putAll(Map<String, Object> m);
+
+    void remove(String key);
+
+    void expire(String key, long expireTimeInMilliSecond);
+
+    Set<Map.Entry<String, Object>> entrySetCopy();
 }
