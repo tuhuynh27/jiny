@@ -1,6 +1,8 @@
-# Jiny Keva Binary Builds
+# Jiny Keva Binary Builds (for macOS x86)
 
-(produced by GraalVM)
+Jiny Keva is an open source (Apache 2.0 licensed), in-memory data structure store, used as a database or cache. Keva provides data structures such as strings, hashes, lists, sets, sorted sets.
+
+(binaries produced by GraalVM)
 
 ## Install
 
