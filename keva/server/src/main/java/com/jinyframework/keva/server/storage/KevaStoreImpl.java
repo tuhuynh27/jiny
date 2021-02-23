@@ -5,10 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class KevaStoreImpl implements KevaStore {
     private final ConcurrentHashMap<String, Object> keva = new ConcurrentHashMap<>();
-
-    public ConcurrentHashMap<String, Object> getKevaStore() {
-        return keva;
-    }
+    private final Timer timer = new Timer();
 
     public Object get(String key) {
         return keva.get(key);
@@ -27,7 +24,7 @@ public class KevaStoreImpl implements KevaStore {
     }
 
     public void expire(String key, long expireTimeInMilliSecond) {
-        new Timer().schedule(new TimerTask() {
+        timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 keva.remove(key);
