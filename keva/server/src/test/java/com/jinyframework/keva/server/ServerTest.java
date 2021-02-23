@@ -105,7 +105,7 @@ public class ServerTest {
             assertEquals("1", setAbc);
             assertEquals("123", getAbc);
             assertEquals("1", expireAbc);
-            Thread.sleep(1000);
+            Thread.sleep(2000);
             val getAbcNull = client.exchange("get abc");
             assertEquals("null", getAbcNull);
         } catch (Exception e) {
