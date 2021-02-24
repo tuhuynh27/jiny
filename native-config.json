@@ -164,5 +164,13 @@
   {
     "name": "ch.qos.logback.classic.pattern.LineSeparatorConverter",
     "allDeclaredConstructors": true
+  },
+  {
+    "name": "java.lang.String",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "java.util.HashMap",
+    "allDeclaredConstructors": true
   }
 ]

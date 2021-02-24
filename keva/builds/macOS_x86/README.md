@@ -13,14 +13,14 @@ Jiny Keva is an open source (Apache 2.0 licensed), in-memory data structure stor
 - Server
 
 ```shell
-$ curl -o /usr/local/bin/keva-server https://raw.githubusercontent.com/tuhuynh27/jiny/keva/expire/keva/builds/macOS_x86/keva-server
+$ curl -o /usr/local/bin/keva-server https://raw.githubusercontent.com/tuhuynh27/jiny/master/keva/builds/macOS_x86/keva-server
 $ chmod +x /usr/local/bin/keva-server
 ```
 
 - CLI Client
 
 ```shell
-$ curl -o /usr/local/bin/keva-client https://raw.githubusercontent.com/tuhuynh27/jiny/keva/expire/keva/builds/macOS_x86/keva-client
+$ curl -o /usr/local/bin/keva-client https://raw.githubusercontent.com/tuhuynh27/jiny/master/keva/builds/macOS_x86/keva-client
 $ chmod +x /usr/local/bin/keva-client
 ```
 
