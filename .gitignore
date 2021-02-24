@@ -6,5 +6,4 @@ gradle.properties
 
 testproject/
 run.sh
-config.json
 dump.keva
