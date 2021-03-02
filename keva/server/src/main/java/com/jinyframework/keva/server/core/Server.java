@@ -10,7 +10,6 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.time.Duration;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -64,26 +63,9 @@ public class Server {
         log.info("Heartbeat service started");
     }
 
-    private void startSnapshot() {
-        if (config == null || config.getSnapshotEnabled() == null || !config.getSnapshotEnabled()) {
-            return;
-        }
-
-        val recoveryPath = config.getRecoveryPath();
-        if (recoveryPath != null && !recoveryPath.isEmpty()) {
-            ServiceFactory.getSnapshotService().recover(recoveryPath);
-        }
-
-        val snapIntervalDur = Duration.parse(config.getSnapshotInterval());
-        if (snapIntervalDur.toMillis() > 0) {
-            ServiceFactory.getSnapshotService().start(snapIntervalDur, config.getBackupPath());
-        }
-    }
-
     public void run() throws IOException {
         startServer();
         startHeartbeat();
-        startSnapshot();
         while (!serverStopping.get()) {
             try {
                 val socket = serverSocket.accept();

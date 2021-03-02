@@ -18,6 +18,12 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
     private static final Logger logger = Logger.getLogger("NoHeapDBStoreImpl");
     public static String JOURNAL_VERSION = "JAVAOFFHEAPVERSION_1";
     public static byte[] clearBytes = null;
+    // Performance tracking data
+    private final boolean trackPerformance = false;
+    private final int persistCount = 0;
+    private final long worstPersistTime = 0;
+    private final int deleteCount = 0;
+    private final long worstDeleteTime = 0;
     // Keep an index of LinkedList, where the index key is the size
     // of the empty record. The LinkedList contains pointers (offsets) to
     // the empty records
@@ -45,12 +51,6 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
     // Used when iterating through the index
     protected long iterateNext = 0;
     boolean debugLogging = false;
-    // Performance tracking data
-    private final boolean trackPerformance = false;
-    private final int persistCount = 0;
-    private final long worstPersistTime = 0;
-    private final int deleteCount = 0;
-    private final long worstDeleteTime = 0;
     private long objectGetTime = 0;
     private long objectPutTime = 0;
 
