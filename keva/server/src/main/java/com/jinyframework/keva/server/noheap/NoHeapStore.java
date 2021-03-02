@@ -1,6 +1,6 @@
 package com.jinyframework.keva.server.noheap;
 
-public interface NoHeapDBStore {
+public interface NoHeapStore {
     byte INACTIVE_RECORD = 0;
     byte ACTIVE_RECORD = 1;
     byte EMPTY_RECORD_TYPE = -1;

@@ -1,5 +1,7 @@
 package com.jinyframework.keva.server.noheap;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
@@ -7,73 +9,61 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public class NoHeapDBStoreImpl implements NoHeapDBStore {
+@Slf4j
+public class NoHeapStoreImpl implements NoHeapStore {
     protected static final int MEGABYTE = 1024 * 1024;
     protected static final int JOURNAL_SIZE_FACTOR = 100;
     protected static final int DEFAULT_JOURNAL_SIZE = MEGABYTE * JOURNAL_SIZE_FACTOR;
 
-    private static final Logger logger = Logger.getLogger("NoHeapDBStoreImpl");
     public static String JOURNAL_VERSION = "JAVAOFFHEAPVERSION_1";
-    public static byte[] clearBytes = null;
-    // Performance tracking data
-    private final boolean trackPerformance = false;
-    private final int persistCount = 0;
-    private final long worstPersistTime = 0;
-    private final int deleteCount = 0;
-    private final long worstDeleteTime = 0;
     // Keep an index of LinkedList, where the index key is the size
     // of the empty record. The LinkedList contains pointers (offsets) to
     // the empty records
     //
-    public TreeMap<Integer, LinkedList<Long>> emptyIdx =
-            new TreeMap<Integer, LinkedList<Long>>();
+    public TreeMap<Integer, LinkedList<Long>> emptyIdx = new TreeMap<>();
     // The journal is where persisted data is stored.
     // Intend to move the bulk of the internals out of this class
     // and hide implementation within its own class
     //
     protected RandomAccessFile journal = null;
     protected FileChannel channel = null;
-    protected int numBuffers = 1;
     protected ByteBuffer buffer = null;
     protected int bufferSize = DEFAULT_JOURNAL_SIZE;
     protected int recordCount;
     protected long currentEnd = 0;
     // Keep an index of all active entries in the storage file
     //
-    protected HashBase index = null;
+    protected HashStore index = null;
     protected String journalFolder = "";
     protected String journalName = "";
     protected boolean inMemory = true;
     protected boolean reuseExisting = true;
     // Used when iterating through the index
     protected long iterateNext = 0;
-    boolean debugLogging = false;
+
+    boolean debugLogging = true;
     private long objectGetTime = 0;
     private long objectPutTime = 0;
 
-    private NoHeapDBStoreImpl() {
+    private NoHeapStoreImpl() {
     }
 
     // TODO: Need to add optional expected capacity
-    public NoHeapDBStoreImpl(String folder, String name) {
+    public NoHeapStoreImpl(String folder, String name) {
         this(folder, name, Storage.IN_MEMORY, DEFAULT_JOURNAL_SIZE, true);
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-
-    public NoHeapDBStoreImpl(String folder, String name, Storage type) {
+    public NoHeapStoreImpl(String folder, String name, Storage type) {
         this(folder, name, type, DEFAULT_JOURNAL_SIZE, true);
     }
 
-    public NoHeapDBStoreImpl(String folder, String name, Storage type, int sizeInBytes) {
+    public NoHeapStoreImpl(String folder, String name, Storage type, int sizeInBytes) {
         this(folder, name, type, sizeInBytes, true);
     }
 
-    public NoHeapDBStoreImpl(String folder, String name, Storage type,
-                             int sizeInBytes, boolean reuseExisting) {
+    public NoHeapStoreImpl(String folder, String name, Storage type,
+                           int sizeInBytes, boolean reuseExisting) {
         this.reuseExisting = reuseExisting;
         this.journalFolder = folder;
         this.journalName = name;
@@ -101,7 +91,7 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
             buffer = ByteBuffer.allocateDirect(bufferSize);
             currentEnd = buffer.position();
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Exception", e);
+            log.error(e.getMessage(), e);
         }
 
     }
@@ -120,7 +110,7 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
             if (!created) {
                 // It may have failed because the directory already existed
                 if (!filePath.exists()) {
-                    logger.severe("Directory creation failed: " + journalFolder);
+                    log.error("Directory creation failed: " + journalFolder);
                     return;
                 }
             }
@@ -133,13 +123,12 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
                 fileExists = file.exists();
                 if (fileExists && !reuseExisting) {
                     File newFile = new File(journalPath + "_prev");
-                    logger.info("Moving journal " + journalPath + " to " + newFile.getName());
+                    log.info("Moving journal " + journalPath + " to " + newFile.getName());
                     file.renameTo(newFile);
                 }
             } catch (Exception ignored) {
             }
 
-            //System.out.println("*** Creating journal: " + filename.toString());
             journal = new RandomAccessFile(journalPath, "rw");
             if (fileExists && reuseExisting) {
                 // Existing file, so use its existing length
@@ -157,7 +146,7 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
                 currentEnd = scanJournal();
 
                 if (debugLogging) {
-                    logger.info("Initialized journal '" + journalName +
+                    log.info("Initialized journal '" + journalName +
                             "', existing filename=" + journalPath);
                 }
             } else {
@@ -169,13 +158,13 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
                 currentEnd = journal.getFilePointer();
 
                 if (debugLogging) {
-                    logger.info("Created journal '" + journalName +
+                    log.info("Created journal '" + journalName +
                             "', filename=" + journalPath);
                 }
             }
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Exception", e);
+            log.error(e.getMessage(), e);
         }
 
     }
@@ -236,14 +225,13 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
                 bb.position((int) currentEnd);
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Exception", e);
+            log.error(e.getMessage(), e);
             try {
-                StringBuffer sb = new StringBuffer("Persist data: ");
-                sb.append(" Journal: ").append(journalName);
-                sb.append(", length: ").append(channel.size());
-                sb.append(", currentEnd: ").append(currentEnd);
-                sb.append(", recordSize: ").append(recordSize);
-                logger.info(sb.toString());
+                String sb = "Persist data: " + " Journal: " + journalName +
+                        ", length: " + channel.size() +
+                        ", currentEnd: " + currentEnd +
+                        ", recordSize: " + recordSize;
+                log.info(sb);
             } catch (Exception ignored) {
             }
         }
@@ -253,7 +241,7 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
 
     private void writeJournalHeader(RandomAccessFile journal) throws IOException {
         // write the journal version number to the file
-        journal.writeUTF(NoHeapDBStoreImpl.JOURNAL_VERSION);
+        journal.writeUTF(NoHeapStoreImpl.JOURNAL_VERSION);
 
         // write the journal name to the file
         journal.writeUTF(journalName);
@@ -265,11 +253,10 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
 
     protected void createIndexJournal(String journalPath, boolean inMemory, boolean reuseExisting) {
         try {
-            //int size = Math.min(this.bufferSize / 4, 1024*1024*64);
             int size = bufferSize / 4;
-            index = new HashBaseImpl(size, journalPath, inMemory, reuseExisting);
+            index = new HashStoreImpl(size, journalPath, inMemory, reuseExisting);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -309,7 +296,6 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
                 location.offset = records.remove();
 
                 // No need to append an empty record, just return offset
-                location.newEmptyRecordSize = -1;
                 return location;
             }
 
@@ -322,7 +308,7 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
             // No exact size match, find one just large enough
             for (Integer size : this.emptyIdx.keySet()) {
                 // If we're to split this record, make sure there's enough
-                // room for the new record and another emtpy record with
+                // room for the new record and another empty record with
                 // a header and at least one byte of data
                 //
                 if (size >= recordLength + Header.HEADER_SIZE + 1) {
@@ -357,20 +343,20 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
                 emptyIdx.remove(offset);
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Exception", e);
+            log.error(e.getMessage(), e);
         }
 
         return location;
     }
 
-    private JournalLocationData setNewRecordLocation(int datalen) {
-        int recordSize = Header.HEADER_SIZE + datalen;
+    private JournalLocationData setNewRecordLocation(int dataLength) {
+        int recordSize = Header.HEADER_SIZE + dataLength;
 
         try {
             // Always persist messages at the end of the journal unless
             // there's an empty position large enough within the journal
             //
-            JournalLocationData location = getStorageLocation(datalen);
+            JournalLocationData location = getStorageLocation(dataLength);
             if (location.offset == -1) {
                 // None found, need to add record to the end of the journal
                 // Seek there now only if we're not already there
@@ -390,7 +376,7 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
 
                 if ((currentPos + recordSize) >= journalLen) {
                     // Need to grow the buffer/file by another page
-                    currentPos = expandJournal(journalLen, currentPos);
+                    currentPos = expandJournal(journalLen);
                 }
 
                 location.offset = currentEnd;
@@ -404,22 +390,22 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
 
             return location;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             System.exit(-1);
         }
 
         return null;
     }
 
-    protected long expandJournal(long journalLen, long currentPos) throws IOException {
+    protected long expandJournal(long journalLen) throws IOException {
         if (debugLogging) {
-            logger.info("Expanding journal size");
+            log.info("Expanding journal size");
         }
 
         if (inMemory) {
             long newLength =
                     journalLen + (MEGABYTE * JOURNAL_SIZE_FACTOR);
-            System.out.print("Expanding ByteBuffer size to " + newLength + "...");
+            log.info("Expanding ByteBuffer size to " + newLength + "...");
             ByteBuffer newBuffer = ByteBuffer.allocateDirect((int) newLength);
             if (buffer.hasArray()) {
                 byte[] array = buffer.array();
@@ -429,19 +415,18 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
                 newBuffer.put(buffer);
             }
             buffer = newBuffer;
-            journalLen = buffer.capacity();
         } else {
-            System.out.print("Expanding RandomAccessFile journal size to " + (journalLen + (MEGABYTE * JOURNAL_SIZE_FACTOR)) + "...");
+            log.info("Expanding RandomAccessFile journal size to " + (journalLen + (MEGABYTE * JOURNAL_SIZE_FACTOR)) + "...");
             ((MappedByteBuffer) buffer).force();
             journal.setLength(journalLen + (MEGABYTE * JOURNAL_SIZE_FACTOR));
             channel = journal.getChannel();
             journalLen = channel.size();
             buffer = channel.map(FileChannel.MapMode.READ_WRITE, 0, journalLen);
         }
-        System.out.println("done");
+        log.info("Expanded journal size");
 
         // Since we re-mapped the file, double-check the position
-        currentPos = buffer.position();
+        long currentPos = buffer.position();
         if (currentPos != currentEnd) {
             buffer.position((int) currentEnd);
         }
@@ -562,18 +547,18 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
 
     @Override
     public boolean putObject(String key, Object obj) {
-        try (ByteArrayOutputStream bstream = new ByteArrayOutputStream();
-             ObjectOutputStream ostream = new ObjectOutputStream(bstream)) {
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream)) {
 
             // Grab the payload and determine the record size
             //
-            ostream.writeObject(obj);
-            byte[] bytes = bstream.toByteArray();
-            ostream.close();
+            objectOutputStream.writeObject(obj);
+            byte[] bytes = byteArrayOutputStream.toByteArray();
+            objectOutputStream.close();
 
             return putVal(key, bytes, BYTEARRAY_RECORD_TYPE);
         } catch (Exception e) {
-            logger.severe("Exception: " + e.toString());
+            log.error(e.getMessage(), e);
         }
 
         return false;
@@ -629,10 +614,10 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
 
         byte[] bytes = (byte[]) obj;
         try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
-             ObjectInputStream ostream = new ObjectInputStream(bis)) {
-            object = ostream.readObject();
+             ObjectInputStream objectInputStream = new ObjectInputStream(bis)) {
+            object = objectInputStream.readObject();
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Exception", e);
+            log.error(e.getMessage(), e);
         }
 
         return object;
@@ -641,12 +626,10 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
     @Override
     public boolean remove(String key) {
         Long offset = (long) -1;
-        int datalength = -1;
+        int dataLength = -1;
 
         try {
             synchronized (this) {
-                //bufferSize = buffer.capacity();
-
                 // Locate the message in the journal
                 offset = getRecordOffset(key);
 
@@ -658,10 +641,10 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
                 buffer.position(offset.intValue());
                 buffer.put(INACTIVE_RECORD);
                 buffer.put(EMPTY_RECORD_TYPE);
-                datalength = buffer.getInt();
+                dataLength = buffer.getInt();
 
                 // Store the empty record location and size for later reuse
-                storeEmptyRecord(offset, datalength);
+                storeEmptyRecord(offset, dataLength);
 
                 // Remove from the journal index
                 index.remove(key);
@@ -669,13 +652,13 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
 
             return true;
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Exception", e);
+            log.error(e.getMessage(), e);
 
-            logger.severe("deleteMessage data, offset=" + offset + ", length=" + datalength + ", bufferSize=" + bufferSize);
+            log.error("deleteMessage data, offset=" + offset + ", length=" + dataLength + ", bufferSize=" + bufferSize);
             try {
-                logger.severe("current journal data, filePointer=" + journal.getFilePointer()
+                log.error("current journal data, filePointer=" + journal.getFilePointer()
                         + ", filesize=" + journal.length());
-            } catch (Exception e1) {
+            } catch (Exception ignored) {
             }
         }
 
@@ -697,44 +680,44 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
         try {
             long start = System.currentTimeMillis();
             synchronized (this) {
-                int datalen;
+                int dataLength;
 
                 switch (type) {
                     case LONG_RECORD_TYPE:
-                        datalen = Long.BYTES;
+                        dataLength = Long.BYTES;
                         break;
                     case INT_RECORD_TYPE:
-                        datalen = Integer.BYTES;
+                        dataLength = Integer.BYTES;
                         break;
                     case DOUBLE_RECORD_TYPE:
-                        datalen = Double.BYTES;
+                        dataLength = Double.BYTES;
                         break;
                     case FLOAT_RECORD_TYPE:
-                        datalen = Float.BYTES;
+                        dataLength = Float.BYTES;
                         break;
                     case SHORT_RECORD_TYPE:
-                        datalen = Short.BYTES;
+                        dataLength = Short.BYTES;
                         break;
                     case CHAR_RECORD_TYPE:
-                        datalen = 2; // 16-bit Unicode character
+                        dataLength = 2; // 16-bit Unicode character
                         break;
                     case TEXT_RECORD_TYPE:
-                        datalen = ((String) val).getBytes().length;
+                        dataLength = ((String) val).getBytes().length;
                         break;
                     case BYTEARRAY_RECORD_TYPE:
-                        datalen = ((byte[]) val).length;
+                        dataLength = ((byte[]) val).length;
                         break;
                     default:
                         return false;
                 }
 
-                JournalLocationData location = setNewRecordLocation(datalen);
+                JournalLocationData location = setNewRecordLocation(dataLength);
 
                 // First write the header
                 //
                 buffer.put(ACTIVE_RECORD);
                 buffer.put(type);
-                buffer.putInt(datalen);
+                buffer.putInt(dataLength);
 
                 // Write record value
                 //
@@ -789,7 +772,7 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
                 return true;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
         return false;
@@ -802,8 +785,6 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
         }
         return null;
     }
-
-    //////////////////////////////////////////////////////////////////////////
 
     protected Object getValue(Long offset, byte type) {
         Object val = null;
@@ -863,7 +844,7 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
                 this.objectGetTime += (end - start);
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Exception", e);
+            log.error(e.getMessage(), e);
         }
 
         return val;
@@ -888,7 +869,7 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
             // Return the first active record found
             return getNextRecord(current);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
         return null;
@@ -900,7 +881,7 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
     }
 
     protected Object getNextRecord(long current) {
-        int recordSize = 0;
+        int recordSize;
         try {
             ByteBuffer bb = buffer;
             if (bb.position() != current) {
@@ -912,7 +893,7 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
             // saved record
             //
             boolean found = false;
-            byte type = NoHeapDBStore.EMPTY_RECORD_TYPE;
+            byte type = NoHeapStore.EMPTY_RECORD_TYPE;
             while (!found && current < (bufferSize - Header.HEADER_SIZE)) {
                 // Begin reading the next record header
                 //
@@ -952,7 +933,7 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
                 return getValue(current, type);
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Exception", e);
+            log.error(e.getMessage(), e);
         }
 
         return null;
@@ -979,8 +960,8 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
     }
 
     public void outputStats() {
-        System.out.println("Data Store:");
-        System.out.println(" -size: " + buffer.capacity());
+        log.info("Data Store:");
+        log.info(" -size: " + buffer.capacity());
         index.outputStats();
     }
 
@@ -994,7 +975,7 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
         int size;               // 4 bytes
     }
 
-    class JournalLocationData {
+    static class JournalLocationData {
         long offset;
         int newEmptyRecordSize;
     }

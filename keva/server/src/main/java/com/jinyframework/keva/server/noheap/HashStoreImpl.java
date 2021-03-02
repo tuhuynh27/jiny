@@ -1,15 +1,15 @@
 package com.jinyframework.keva.server.noheap;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public class HashBaseImpl implements HashBase {
-    protected static final Logger logger = Logger.getLogger("NIOPersistence");
+@Slf4j
+public class HashStoreImpl implements HashStore {
     protected static final int PAGE_SIZE = 1024 * 1024;
     protected static final int SIZE_FACTOR = 100;
     protected static final int DEFAULT_INDEX_JOURNAL_SIZE = SIZE_FACTOR * PAGE_SIZE;
@@ -23,31 +23,24 @@ public class HashBaseImpl implements HashBase {
     protected static final int INDEX_ENTRY_SIZE_BYTES =
             1 + Integer.BYTES + KEY_SIZE + Long.BYTES;
     protected static int LOAD_THRESHOLD = 70;
-    protected long sizeInBytes = DEFAULT_INDEX_JOURNAL_SIZE;
-    protected int previousOffset = 0; // the last record inserted into the index
+    protected long sizeInBytes;
     protected int bucketsFree = 0;
     protected int bucketsUsed = 0;
     protected int totalBuckets = 0;
     protected int collisions = 0;
     protected String journalPath = "";
-    protected boolean inMemory = true;
+    protected boolean inMemory;
     protected RandomAccessFile indexFile = null;
     protected FileChannel indexChannel = null;
     protected ByteBuffer indexBuffer = null;
-    protected byte keyLength = 16;
     protected long indexCurrentEnd = 0;
-    protected int indexRecordReadCount = 1;
-    // Used when iterating through the index
-    protected int iterateNext = 0;
 
-    public HashBaseImpl(String journalPath, boolean inMemory, boolean reuseExisting) {
+    public HashStoreImpl(String journalPath, boolean inMemory, boolean reuseExisting) {
         this(DEFAULT_INDEX_JOURNAL_SIZE, journalPath, inMemory, reuseExisting);
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-
-    public HashBaseImpl(int size, String journalPath, boolean inMemory, boolean reuseExisting) {
-        boolean success = false;
+    public HashStoreImpl(int size, String journalPath, boolean inMemory, boolean reuseExisting) {
+        boolean success;
         sizeInBytes = size;
         this.inMemory = inMemory;
         this.journalPath = journalPath;
@@ -71,7 +64,7 @@ public class HashBaseImpl implements HashBase {
             indexCurrentEnd = indexBuffer.position();
             return true;
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Exception", e);
+            log.error(e.getMessage(), e);
         }
 
         return false;
@@ -89,10 +82,10 @@ public class HashBaseImpl implements HashBase {
                 fileExists = file.exists();
                 if (fileExists && !reuseExisting) {
                     File newFile = new File(journalPath + "_prev");
-                    logger.info("Moving journal " + journalPath + " to " + newFile.getName());
+                    log.info("Moving journal " + journalPath + " to " + newFile.getName());
                     file.renameTo(newFile);
                 }
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
 
             indexFile = new RandomAccessFile(journalPath, "rw");
@@ -110,7 +103,7 @@ public class HashBaseImpl implements HashBase {
 
             return true;
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Exception", e);
+            log.error(e.getMessage(), e);
         }
 
         return false;
@@ -132,7 +125,7 @@ public class HashBaseImpl implements HashBase {
                 f.delete();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -152,17 +145,17 @@ public class HashBaseImpl implements HashBase {
         return bucket * INDEX_ENTRY_SIZE_BYTES;
     }
 
-    protected boolean enlargeIndex() {
+    protected void enlargeIndex() {
         try {
             // Hold a reference to the original buffer to copy its contents
             ByteBuffer oldBuffer = indexBuffer;
 
             if (inMemory) {
-                logger.log(Level.INFO, "Expanding in-memory index...");
+                log.info("Expanding in-memory index...");
                 sizeInBytes += (PAGE_SIZE * SIZE_FACTOR);
                 createIndexJournalBB();
             } else {
-                logger.log(Level.INFO, "Expanding persisted index...");
+                log.info("Expanding persisted index...");
                 ((MappedByteBuffer) indexBuffer).force();
                 indexFile.setLength(sizeInBytes + (PAGE_SIZE * SIZE_FACTOR));
                 indexChannel = indexFile.getChannel();
@@ -196,20 +189,18 @@ public class HashBaseImpl implements HashBase {
 
             totalBuckets = (int) (sizeInBytes / INDEX_ENTRY_SIZE_BYTES);
             bucketsFree = totalBuckets - bucketsUsed;
-            logger.log(Level.INFO, "Done!");
+            log.info("Done!");
 
-            return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
-        return false;
     }
 
     protected int findBucket(Integer hashcode, int offset, boolean mustFind) {
         boolean found = false;
         byte occupied = 1;
-        while (occupied > 0 && !found) {
+        while (occupied > 0) {
             int keyHash = indexBuffer.getInt();
             if (keyHash == hashcode) {
                 if (KEY_SIZE > 0) {
@@ -240,8 +231,8 @@ public class HashBaseImpl implements HashBase {
         return offset;
     }
 
-    protected boolean putInternal(byte[] fixedKeyBytes, Integer hashcode,
-                                  byte keyLength, Long value) {
+    protected void putInternal(byte[] fixedKeyBytes, Integer hashcode,
+                               byte keyLength, Long value) {
         int offset = getHashBucket(hashcode);
         indexBuffer.position(offset);
         indexBuffer.mark();
@@ -272,8 +263,6 @@ public class HashBaseImpl implements HashBase {
         indexBuffer.putLong(value); // indexed record location
 
         bucketsUsed++;
-
-        return true;
     }
 
     @Override
@@ -303,7 +292,7 @@ public class HashBaseImpl implements HashBase {
 
             putInternal(fixedKeyBytes, key.hashCode(), keyLength, value);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
     }
@@ -319,7 +308,7 @@ public class HashBaseImpl implements HashBase {
                 offset = findBucket(key.hashCode(), offset, true);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
         return offset;
@@ -362,14 +351,13 @@ public class HashBaseImpl implements HashBase {
 
     @Override
     public void outputStats() {
-        System.out.println("Index " + journalPath + " Stats:");
-        System.out.println(" -size: " + size());
-        System.out.println(" -load: " + getLoad());
-        System.out.println(" -entries: " + entries());
-        System.out.println(" -capacity: " + capacity());
-        System.out.println(" -available: " + available());
-        System.out.println(" -collisions: " + getCollisions());
-
+        log.info("Index " + journalPath + " Stats:");
+        log.info(" -size: " + size());
+        log.info(" -load: " + getLoad());
+        log.info(" -entries: " + entries());
+        log.info(" -capacity: " + capacity());
+        log.info(" -available: " + available());
+        log.info(" -collisions: " + getCollisions());
     }
 
     public long size() {
@@ -393,10 +381,5 @@ public class HashBaseImpl implements HashBase {
         int capac = capacity();
         float f = (float) used / (float) capac;
         return (int) (f * 100); // percentage
-    }
-
-    public enum Storage {
-        IN_MEMORY,
-        PERSISTED
     }
 }

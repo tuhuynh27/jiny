@@ -2,30 +2,32 @@ package com.jinyframework.keva.server.storage;
 
 import com.jinyframework.keva.server.core.KevaSocket;
 import com.jinyframework.keva.server.noheap.NoHeapDB;
-import com.jinyframework.keva.server.noheap.NoHeapDBStore;
+import com.jinyframework.keva.server.noheap.NoHeapStore;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
 import java.util.concurrent.ConcurrentHashMap;
 
 @Setter
+@Slf4j
 public final class StorageFactory {
-    private static NoHeapDBStore noHeapDBStore;
+    private static NoHeapStore noHeapStore;
     private static ConcurrentHashMap<String, KevaSocket> socketHashMap;
 
-    public synchronized static NoHeapDBStore getNoHeapDBStore() {
-        if (noHeapDBStore == null) {
+    public synchronized static NoHeapStore getNoHeapDBStore() {
+        if (noHeapStore == null) {
             try {
                 val db = new NoHeapDB();
-                db.createStore("Keva", NoHeapDBStore.Storage.IN_MEMORY, 128);
-                noHeapDBStore = db.getStore("Keva");
+                db.createStore("Keva", NoHeapStore.Storage.IN_MEMORY, 128);
+                noHeapStore = db.getStore("Keva");
             } catch (Exception ex) {
-                System.out.println("Cannot get noHeapDbStore");
+                log.error("Cannot get noHeapDbStore");
                 System.exit(1);
             }
         }
 
-        return noHeapDBStore;
+        return noHeapStore;
     }
 
     public synchronized static ConcurrentHashMap<String, KevaSocket> getSocketHashMap() {

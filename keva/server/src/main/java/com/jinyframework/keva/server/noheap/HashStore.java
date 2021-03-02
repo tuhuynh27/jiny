@@ -1,6 +1,6 @@
 package com.jinyframework.keva.server.noheap;
 
-public interface HashBase {
+public interface HashStore {
     void put(String k, Long v);
 
     Long get(String k);
