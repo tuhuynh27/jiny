@@ -277,7 +277,7 @@ public class HashBaseImpl implements HashBase {
     }
 
     @Override
-    public boolean put(String key, Long value) {
+    public void put(String key, Long value) {
         //
         // Entry:
         // 1 (byte)  key length
@@ -301,12 +301,11 @@ public class HashBaseImpl implements HashBase {
                         0, Math.min(KEY_SIZE, keyLength));
             }
 
-            return putInternal(fixedKeyBytes, key.hashCode(), keyLength, value);
+            putInternal(fixedKeyBytes, key.hashCode(), keyLength, value);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return false;
     }
 
     protected int getHashBucketOffset(String key) {

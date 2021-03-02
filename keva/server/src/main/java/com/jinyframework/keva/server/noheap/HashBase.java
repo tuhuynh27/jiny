@@ -1,7 +1,7 @@
 package com.jinyframework.keva.server.noheap;
 
 public interface HashBase {
-    boolean put(String k, Long v);
+    void put(String k, Long v);
 
     Long get(String k);
 

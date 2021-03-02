@@ -454,13 +454,9 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
         // are other records of the same size (in a LinkedList). If
         // so, add this one to the end of the linked list
         //
-        LinkedList<Long> emptyRecs = emptyIdx.get(length);
-        if (emptyRecs == null) {
-            // There are no other records of this size. Add an entry
-            // in the hash table for this new linked list of records
-            emptyRecs = new LinkedList<Long>();
-            emptyIdx.put(length, emptyRecs);
-        }
+        LinkedList<Long> emptyRecs = emptyIdx.computeIfAbsent(length, k -> new LinkedList<>());
+        // There are no other records of this size. Add an entry
+        // in the hash table for this new linked list of records
 
         // Add the pointer (file offset) to the new empty record
         emptyRecs.add(offset);
@@ -492,8 +488,7 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
                 File f = new File(createJournalFolderName(journalFolder, journalName));
                 f.delete();
             }
-        } catch (EOFException eof) {
-        } catch (IOException io) {
+        } catch (IOException ignored) {
         }
     }
 
@@ -993,7 +988,6 @@ public class NoHeapDBStoreImpl implements NoHeapDBStore {
         //   Boolean    - Active record indicator
         //   Byte       - Message type (0=Empty, 1=Bytes, 2=String)
         //   Integer    - Size of record's payload (not header)
-
         public static final int HEADER_SIZE = Integer.BYTES + 2;
         byte active;            // 1 byte
         byte type;              // 1 byte
