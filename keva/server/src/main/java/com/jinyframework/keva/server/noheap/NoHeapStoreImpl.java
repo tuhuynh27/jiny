@@ -34,7 +34,7 @@ public class NoHeapStoreImpl implements NoHeapStore {
     protected long currentEnd = 0;
     // Keep an index of all active entries in the storage file
     //
-    protected HashStore index = null;
+    protected IndexStore index = null;
     protected String journalFolder = "";
     protected String journalName = "";
     protected boolean inMemory = true;
@@ -254,7 +254,7 @@ public class NoHeapStoreImpl implements NoHeapStore {
     protected void createIndexJournal(String journalPath, boolean inMemory, boolean reuseExisting) {
         try {
             int size = bufferSize / 4;
-            index = new HashStoreImpl(size, journalPath, inMemory, reuseExisting);
+            index = new IndexStoreImpl(size, journalPath, inMemory, reuseExisting);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }

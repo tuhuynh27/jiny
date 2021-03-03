@@ -9,7 +9,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 
 @Slf4j
-public class HashStoreImpl implements HashStore {
+public class IndexStoreImpl implements IndexStore {
     protected static final int PAGE_SIZE = 1024 * 1024;
     protected static final int SIZE_FACTOR = 100;
     protected static final int DEFAULT_INDEX_JOURNAL_SIZE = SIZE_FACTOR * PAGE_SIZE;
@@ -28,18 +28,18 @@ public class HashStoreImpl implements HashStore {
     protected int bucketsUsed = 0;
     protected int totalBuckets = 0;
     protected int collisions = 0;
-    protected String journalPath = "";
+    protected String journalPath;
     protected boolean inMemory;
     protected RandomAccessFile indexFile = null;
     protected FileChannel indexChannel = null;
     protected ByteBuffer indexBuffer = null;
     protected long indexCurrentEnd = 0;
 
-    public HashStoreImpl(String journalPath, boolean inMemory, boolean reuseExisting) {
+    public IndexStoreImpl(String journalPath, boolean inMemory, boolean reuseExisting) {
         this(DEFAULT_INDEX_JOURNAL_SIZE, journalPath, inMemory, reuseExisting);
     }
 
-    public HashStoreImpl(int size, String journalPath, boolean inMemory, boolean reuseExisting) {
+    public IndexStoreImpl(int size, String journalPath, boolean inMemory, boolean reuseExisting) {
         boolean success;
         sizeInBytes = size;
         this.inMemory = inMemory;
