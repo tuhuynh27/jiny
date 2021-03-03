@@ -24,7 +24,11 @@ public final class ConfigManager {
         configHolder = config;
     }
 
-    public static void loadConfigFromFile(String filePath, Properties overrideProps) throws Exception {
+    public static void loadConfigFromFile(String filePath) throws Exception {
+        loadConfigFromFile(filePath,null);
+    }
+
+    public static void loadConfigFromFile(String filePath, ConfigHolder overrideHolder) throws Exception {
         if (filePath.isEmpty()) {
             filePath = DEFAULT_FILE_PATH;
         }
@@ -33,12 +37,7 @@ public final class ConfigManager {
         val file = new FileInputStream(filePath);
         props.load(file);
 
-        if (overrideProps != null && !overrideProps.isEmpty()) {
-            for (val override : overrideProps.stringPropertyNames()) {
-                props.setProperty(override, overrideProps.getProperty(override));
-            }
-        }
-
         configHolder = ConfigHolder.fromProperties(props);
+        configHolder.merge(overrideHolder);
     }
 }
