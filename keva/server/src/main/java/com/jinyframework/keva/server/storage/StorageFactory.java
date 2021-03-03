@@ -19,7 +19,7 @@ public final class StorageFactory {
         if (noHeapStore == null) {
             try {
                 val db = new NoHeapStoreManager();
-                db.createStore("Keva", NoHeapStore.Storage.IN_MEMORY, 128);
+                db.createStore("Keva", NoHeapStore.Storage.PERSISTED, 128);
                 noHeapStore = db.getStore("Keva");
             } catch (Exception ex) {
                 log.error("Cannot get noHeapDbStore");

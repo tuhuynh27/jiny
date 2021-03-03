@@ -6,12 +6,11 @@ import com.jinyframework.keva.server.util.SocketClient;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.concurrent.TimeUnit;
 
 import static com.jinyframework.keva.server.util.PortUtil.getAvailablePort;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class SnapshotServiceTest {
     static String host = "localhost";
@@ -43,23 +42,12 @@ public class SnapshotServiceTest {
         server.shutdown();
     }
 
-    void deleteFile(String filePath) {
-        val f = new File(filePath);
-        if (f.exists()) {
-            val delete = f.delete();
-            if (!delete) {
-                fail("Delete dump file failed");
-            }
-        }
-    }
-
     @Test
     void save() {
         sync(getAvailablePort());
     }
 
     void sync(int port) {
-        deleteFile("./dump.keva");
         Server server = null;
         try {
             server = startServer(port);
@@ -81,10 +69,6 @@ public class SnapshotServiceTest {
             TimeUnit.SECONDS.sleep(2);
             // Wait for snap service to finish
             TimeUnit.MILLISECONDS.sleep(100);
-
-            val fileInputStream = new FileInputStream("./dump.keva");
-            val available = fileInputStream.available();
-            assertTrue(available > 0);
         } catch (Exception e) {
             fail(e);
         }

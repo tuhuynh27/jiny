@@ -9,9 +9,7 @@ public class NoHeapStoreManager {
 
     HashMap<String, NoHeapStore> stores = new HashMap<>();
 
-    String homeDirectory =
-            System.getProperty("user.home") +
-                    File.separator + "JavaOffHeap";
+    String homeDirectory = System.getProperty("user.dir");
 
     public NoHeapStoreManager() {
     }
@@ -37,8 +35,7 @@ public class NoHeapStoreManager {
                                NoHeapStore.Storage storageType,
                                int size) {
         NoHeapStoreImpl noHeapDB = new
-                NoHeapStoreImpl(homeDirectory, "joh-" + name + "-",
-                storageType,
+                NoHeapStoreImpl(homeDirectory, name + "-", storageType,
                 size * MEGABYTE, true);
 
         stores.put(name, noHeapDB);
