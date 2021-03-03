@@ -18,7 +18,7 @@ public class ArgsHolder {
     }
 
     public void addArgVal(String name, String value) {
-        values.put(name,value);
+        values.put(name, value);
     }
 
     @SuppressWarnings("ReturnOfNull")

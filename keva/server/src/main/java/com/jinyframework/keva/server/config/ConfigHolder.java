@@ -83,19 +83,19 @@ public class ConfigHolder {
         return configHolder;
     }
 
+    private static <T> T parse(String s, Class<T> clazz) throws Exception {
+        return clazz.getConstructor(new Class[]{String.class}).newInstance(s);
+    }
+
     public void merge(ConfigHolder overrideHolder) throws Exception {
         if (overrideHolder != null) {
             for (val field : overrideHolder.getClass().getDeclaredFields()) {
                 val overrideVal = field.get(overrideHolder);
                 if (overrideVal != null) {
-                    field.set(this,overrideVal);
+                    field.set(this, overrideVal);
                 }
             }
         }
-    }
-
-    private static <T> T parse(String s, Class<T> clazz) throws Exception {
-        return clazz.getConstructor(new Class[]{String.class}).newInstance(s);
     }
 
     @Override

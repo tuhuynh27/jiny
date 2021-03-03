@@ -1,8 +1,8 @@
 package com.jinyframework.keva.server.storage;
 
 import com.jinyframework.keva.server.core.KevaSocket;
-import com.jinyframework.keva.server.noheap.NoHeapDB;
 import com.jinyframework.keva.server.noheap.NoHeapStore;
+import com.jinyframework.keva.server.noheap.NoHeapStoreManager;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -18,7 +18,7 @@ public final class StorageFactory {
     public synchronized static NoHeapStore getNoHeapDBStore() {
         if (noHeapStore == null) {
             try {
-                val db = new NoHeapDB();
+                val db = new NoHeapStoreManager();
                 db.createStore("Keva", NoHeapStore.Storage.IN_MEMORY, 128);
                 noHeapStore = db.getStore("Keva");
             } catch (Exception ex) {

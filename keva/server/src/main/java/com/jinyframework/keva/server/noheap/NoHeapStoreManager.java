@@ -3,7 +3,7 @@ package com.jinyframework.keva.server.noheap;
 import java.io.File;
 import java.util.HashMap;
 
-public class NoHeapDB {
+public class NoHeapStoreManager {
     protected final static int MEGABYTE = 1024 * 1024;
     protected final static int DEFAULT_STORE_SIZE = MEGABYTE * 100;
 
@@ -13,10 +13,10 @@ public class NoHeapDB {
             System.getProperty("user.home") +
                     File.separator + "JavaOffHeap";
 
-    public NoHeapDB() {
+    public NoHeapStoreManager() {
     }
 
-    public NoHeapDB(String homeDirectory) {
+    public NoHeapStoreManager(String homeDirectory) {
         this.homeDirectory = homeDirectory;
     }
 
