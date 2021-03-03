@@ -18,7 +18,6 @@ public class SnapshotServiceTest {
     static String snapInterval = "PT2S";
 
     Server startServer(int port) throws Exception {
-<<<<<<< HEAD
         val server = new Server(ConfigHolder.builder()
                 .hostname(host)
                 .port(port)
@@ -27,12 +26,6 @@ public class SnapshotServiceTest {
                 .backupPath("./dump.keva")
                 .recoveryPath("./dump.keva")
                 .build());
-=======
-        val server = Server.builder()
-                .host(host)
-                .port(port)
-                .build();
->>>>>>> b81b1e7 (remove old store)
         new Thread(() -> {
             try {
                 server.run();
