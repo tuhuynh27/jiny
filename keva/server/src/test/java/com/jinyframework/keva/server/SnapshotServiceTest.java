@@ -14,22 +14,20 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public class SnapshotServiceTest {
     static String host = "localhost";
-    static String snapInterval = "PT2S";
 
     Server startServer(int port) throws Exception {
         val server = new Server(ConfigHolder.builder()
                 .hostname(host)
                 .port(port)
                 .snapshotEnabled(true)
-                .snapshotInterval(snapInterval)
-                .backupPath("./dump.keva")
-                .recoveryPath("./dump.keva")
+                .snapshotLocation("./")
                 .build());
         new Thread(() -> {
             try {
                 server.run();
             } catch (Exception e) {
-                fail(e);
+                e.printStackTrace();
+                System.exit(1);
             }
         }).start();
 

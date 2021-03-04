@@ -30,17 +30,13 @@ public class ConfigHolder {
     @CliProp(name = "ht", type = CliPropType.VAL)
     private Long heartbeatTimeout;
 
-    @ConfigProp(name = "snapshot_interval", defaultVal = "PT2M")
-    @CliProp(name = "sn", type = CliPropType.VAL)
-    private String snapshotInterval;
+    @ConfigProp(name = "snapshot_location", defaultVal = "./")
+    @CliProp(name = "sl", type = CliPropType.VAL)
+    private String snapshotLocation;
 
-    @ConfigProp(name = "backup_path", defaultVal = "./dump.keva")
-    @CliProp(name = "bk", type = CliPropType.VAL)
-    private String backupPath;
-
-    @ConfigProp(name = "recovery_path", defaultVal = "./dump.keva")
-    @CliProp(name = "rc", type = CliPropType.VAL)
-    private String recoveryPath;
+    @ConfigProp(name = "heap_size", defaultVal = "69696969")
+    @CliProp(name = "hs", type = CliPropType.VAL)
+    private Long heapSize;
 
     public static ConfigHolder fromProperties(@NonNull Properties props) throws Exception {
         val configHolder = builder().build();
@@ -106,9 +102,8 @@ public class ConfigHolder {
                 ", hostname='" + hostname + '\'' +
                 ", port=" + port +
                 ", heartbeatTimeout=" + heartbeatTimeout +
-                ", snapshotInterval='" + snapshotInterval + '\'' +
-                ", backupPath='" + backupPath + '\'' +
-                ", recoveryPath='" + recoveryPath + '\'' +
+                ", snapshotLocation='" + snapshotLocation + '\'' +
+                ", heapSize=" + heapSize +
                 '}';
     }
 }

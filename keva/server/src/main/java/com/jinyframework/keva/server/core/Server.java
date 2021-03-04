@@ -66,7 +66,7 @@ public class Server {
     public void run() throws IOException {
         startServer();
         startHeartbeat();
-        while (!serverStopping.get()) {
+        while (!Thread.interrupted() && !serverStopping.get()) {
             try {
                 val socket = serverSocket.accept();
                 if (serverStopping.get()) {
