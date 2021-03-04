@@ -20,8 +20,7 @@ public class IndexStoreImpl implements IndexStore {
     // 0 (bytes) key size
     // 8 (long)  record location
     //
-    protected static final int INDEX_ENTRY_SIZE_BYTES =
-            1 + Integer.BYTES + KEY_SIZE + Long.BYTES;
+    protected static final int INDEX_ENTRY_SIZE_BYTES = 1 + Integer.BYTES + KEY_SIZE + Long.BYTES;
     protected static int LOAD_THRESHOLD = 70;
     protected long sizeInBytes;
     protected int bucketsFree = 0;

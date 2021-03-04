@@ -9,11 +9,11 @@ import java.util.Properties;
 @Getter
 @Setter
 public class ConfigHolder {
-    @ConfigProp(name = "heartbeat_enabled", defaultVal = "false")
+    @ConfigProp(name = "heartbeat_enabled", defaultVal = "true")
     @CliProp(name = "hb", type = CliPropType.FLAG)
     private Boolean heartbeatEnabled;
 
-    @ConfigProp(name = "snapshot_enabled", defaultVal = "false")
+    @ConfigProp(name = "snapshot_enabled", defaultVal = "true")
     @CliProp(name = "ss", type = CliPropType.FLAG)
     private Boolean snapshotEnabled;
 
@@ -33,13 +33,12 @@ public class ConfigHolder {
     @CliProp(name = "sl", type = CliPropType.VAL)
     private String snapshotLocation;
 
-    @ConfigProp(name = "heap_size", defaultVal = "69696969")
+    @ConfigProp(name = "heap_size", defaultVal = "64")
     @CliProp(name = "hs", type = CliPropType.VAL)
     private Integer heapSize;
 
     public static ConfigHolder fromProperties(@NonNull Properties props) throws Exception {
         val configHolder = builder().build();
-
         val fields = ConfigHolder.class.getDeclaredFields();
         for (val field : fields) {
             if (field.isAnnotationPresent(ConfigProp.class)) {
@@ -58,14 +57,14 @@ public class ConfigHolder {
         val fields = ConfigHolder.class.getDeclaredFields();
         for (val field : fields) {
             if (field.isAnnotationPresent(CliProp.class)) {
-                val cliAnnot = field.getAnnotation(CliProp.class);
+                val cliAnnotate = field.getAnnotation(CliProp.class);
                 String strVal = null;
-                switch (cliAnnot.type()) {
+                switch (cliAnnotate.type()) {
                     case VAL:
-                        strVal = args.getArgVal(cliAnnot.name());
+                        strVal = args.getArgVal(cliAnnotate.name());
                         break;
                     case FLAG:
-                        strVal = args.getFlag(cliAnnot.name());
+                        strVal = args.getFlag(cliAnnotate.name());
                         break;
                 }
                 if (strVal != null) {

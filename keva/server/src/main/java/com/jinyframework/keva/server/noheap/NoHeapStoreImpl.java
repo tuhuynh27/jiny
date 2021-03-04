@@ -98,8 +98,7 @@ public class NoHeapStoreImpl implements NoHeapStore {
 
     protected final String createJournalFolderName(String folder, String name) {
         return journalFolder + File.separator +
-                journalName + // queue or server
-                "journal";
+                journalName + "Data";
     }
 
     protected final void createMessageJournalMBB(String journalPath, boolean reuseExisting) {

@@ -37,7 +37,7 @@ public class NoHeapStoreManager {
                                NoHeapStore.Storage storageType,
                                int size) {
         NoHeapStoreImpl noHeapDB = new
-                NoHeapStoreImpl(homeDirectory, name + "-", storageType,
+                NoHeapStoreImpl(homeDirectory, name, storageType,
                 size * MEGABYTE, true);
 
         stores.put(name, noHeapDB);
