@@ -1,5 +1,6 @@
 package com.jinyframework.keva.server.storage;
 
+import com.jinyframework.keva.server.config.ConfigManager;
 import com.jinyframework.keva.server.core.KevaSocket;
 import com.jinyframework.keva.server.noheap.NoHeapStore;
 import com.jinyframework.keva.server.noheap.NoHeapStoreManager;
@@ -19,7 +20,7 @@ public final class StorageFactory {
         if (noHeapStore == null) {
             try {
                 val db = new NoHeapStoreManager();
-                db.createStore("Keva", NoHeapStore.Storage.PERSISTED, 128);
+                db.createStore("Keva", NoHeapStore.Storage.PERSISTED, ConfigManager.getConfig().getHeapSize());
                 noHeapStore = db.getStore("Keva");
             } catch (Exception ex) {
                 log.error("Cannot get noHeapDbStore");

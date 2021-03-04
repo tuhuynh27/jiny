@@ -9,7 +9,6 @@ import java.util.Properties;
 @Getter
 @Setter
 public class ConfigHolder {
-
     @ConfigProp(name = "heartbeat_enabled", defaultVal = "false")
     @CliProp(name = "hb", type = CliPropType.FLAG)
     private Boolean heartbeatEnabled;
@@ -30,13 +29,13 @@ public class ConfigHolder {
     @CliProp(name = "ht", type = CliPropType.VAL)
     private Long heartbeatTimeout;
 
-    @ConfigProp(name = "snapshot_location", defaultVal = "./")
+    @ConfigProp(name = "snapshot_location", defaultVal = "")
     @CliProp(name = "sl", type = CliPropType.VAL)
     private String snapshotLocation;
 
     @ConfigProp(name = "heap_size", defaultVal = "69696969")
     @CliProp(name = "hs", type = CliPropType.VAL)
-    private Long heapSize;
+    private Integer heapSize;
 
     public static ConfigHolder fromProperties(@NonNull Properties props) throws Exception {
         val configHolder = builder().build();

@@ -1,6 +1,7 @@
 package com.jinyframework.keva.server.noheap;
 
-import java.io.File;
+import com.jinyframework.keva.server.config.ConfigManager;
+
 import java.util.HashMap;
 
 public class NoHeapStoreManager {
@@ -9,7 +10,8 @@ public class NoHeapStoreManager {
 
     HashMap<String, NoHeapStore> stores = new HashMap<>();
 
-    String homeDirectory = System.getProperty("user.dir");
+    String snapshotConnection = ConfigManager.getConfig().getSnapshotLocation();
+    String homeDirectory = snapshotConnection.length() == 0 ? System.getProperty("user.dir") : snapshotConnection;
 
     public NoHeapStoreManager() {
     }
