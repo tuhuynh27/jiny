@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import lombok.var;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -41,7 +40,7 @@ public final class RequestPipeline implements Runnable {
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new PrintWriter(socket.getOutputStream(), false);
 
-        var canContinue = true;
+        boolean canContinue = true;
         while (canContinue) {
             canContinue = process();
         }
@@ -53,10 +52,10 @@ public final class RequestPipeline implements Runnable {
 
     public boolean process() throws IOException {
         val requestStringArr = new ArrayList<String>();
-        var inputLine = "";
-        var isFirstLine = true;
-        var method = "";
-        var contentLength = 0;
+        String inputLine = "";
+        boolean isFirstLine = true;
+        String method = "";
+        int contentLength = 0;
         try {
             while (!socket.isClosed()) {
                 inputLine = in.readLine();
