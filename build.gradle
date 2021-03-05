@@ -1,9 +1,12 @@
+plugins {
+    id "org.sonarqube" version "3.1.1"
+}
+
 subprojects {
     apply plugin: 'idea'
     apply plugin: 'java-library'
     apply plugin: 'signing'
     apply plugin: 'maven-publish'
-    apply plugin: 'org.sonarqube'
 
     group 'com.jinyframework'
     version '0.3.3'
@@ -39,12 +42,12 @@ subprojects {
             }
         }
     }
+}
 
-    sonarqube {
-        properties {
-            property "sonar.projectKey", "tuhuynh27_jiny"
-            property "sonar.organization", "huynhminhtufu-github"
-            property "sonar.host.url", "https://sonarcloud.io"
-        }
+sonarqube {
+    properties {
+        property "sonar.projectKey", "tuhuynh27_jiny"
+        property "sonar.organization", "huynhminhtufu-github"
+        property "sonar.host.url", "https://sonarcloud.io"
     }
 }
