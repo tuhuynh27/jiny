@@ -6,7 +6,6 @@ import com.jinyframework.core.utils.ParserUtils.HttpMethod;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import lombok.var;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -26,7 +25,7 @@ public final class RequestBinderNIO extends AbstractRequestBinder<HandlerNIO> {
     }
 
     public CompletableFuture<HttpResponse> getResponseObject() {
-        var is404 = true;
+        boolean is404 = true;
         val middlewaresMatched = middlewares.stream()
                 .filter(e -> context.getPath().startsWith(e.getPath()))
                 .map(HandlerMetadata::getHandlers)

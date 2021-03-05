@@ -6,7 +6,6 @@ import com.jinyframework.core.utils.ParserUtils.HttpMethod;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import lombok.var;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +27,7 @@ public final class RequestBinder extends AbstractRequestBinder<Handler> {
                 .flatMap(e -> Arrays.stream(e).distinct())
                 .collect(Collectors.toList());
 
-        for (var h : handlerMetadata) {
+        for (val h : handlerMetadata) {
             val binder = binderInit(h);
 
             if (binder.isMatchCatchAll() ||
@@ -52,7 +51,7 @@ public final class RequestBinder extends AbstractRequestBinder<Handler> {
     }
 
     public HttpResponse resolveHandlerChain(@NonNull final List<AbstractRequestBinder.Handler> handlers, final HttpResponse customResult) throws Exception {
-        for (var i = 0; i < handlers.size(); i++) {
+        for (int i = 0; i < handlers.size(); i++) {
             val isLastItem = (i == handlers.size() - 1);
             val resultFromPreviousHandler = handlers.get(i).handleFunc(context);
             if (!isLastItem && !resultFromPreviousHandler.isAllowNext()) {

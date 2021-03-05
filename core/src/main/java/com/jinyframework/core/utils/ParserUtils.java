@@ -7,7 +7,6 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import lombok.var;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -105,7 +104,7 @@ public final class ParserUtils {
      * @return the string
      */
     public String httpResponseStringBuilder(final int statusCode, @NonNull final Map<String, String> headers, final String body) {
-        var httpStatusText = "";
+        String httpStatusText = "";
         switch (statusCode) {
             case 200:
                 httpStatusText = "OK";
