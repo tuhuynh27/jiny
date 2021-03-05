@@ -3,6 +3,7 @@ subprojects {
     apply plugin: 'java-library'
     apply plugin: 'signing'
     apply plugin: 'maven-publish'
+    apply plugin: 'org.sonarqube'
 
     group 'com.jinyframework'
     version '0.3.3'
@@ -36,6 +37,14 @@ subprojects {
                     password = project.findProperty("sonatypePassword") ?: System.getenv("sonatypePassword")
                 }
             }
+        }
+    }
+
+    sonarqube {
+        properties {
+            property "sonar.projectKey", "tuhuynh27_jiny"
+            property "sonar.organization", "huynhminhtufu-github"
+            property "sonar.host.url", "https://sonarcloud.io"
         }
     }
 }
