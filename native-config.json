@@ -172,5 +172,21 @@
   {
     "name": "java.util.HashMap",
     "allDeclaredConstructors": true
+  },
+  {
+    "name": "java.lang.Integer",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "java.lang.Long",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "java.lang.Boolean",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "com.jinyframework.keva.server.config",
+    "allDeclaredFields": true
   }
 ]

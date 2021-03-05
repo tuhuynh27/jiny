@@ -13,8 +13,12 @@ public class ArgsHolder {
         flags.add(name);
     }
 
+    @SuppressWarnings("ReturnOfNull")
     public String getFlag(String name) {
-        return Boolean.toString(flags.contains(name));
+        if (flags.contains(name)) {
+            return "true";
+        }
+        return null;
     }
 
     public void addArgVal(String name, String value) {
