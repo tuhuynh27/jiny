@@ -48,7 +48,7 @@ public class Server {
     }
 
     private void startHeartbeat() {
-        if (config == null || !config.getHeartbeatEnabled()) {
+        if (config == null || config.getHeartbeatEnabled() == null || !config.getHeartbeatEnabled()) {
             return;
         }
 
@@ -65,7 +65,7 @@ public class Server {
     }
 
     private void startSnapshot() {
-        if (!config.getSnapshotEnabled()) {
+        if (config == null || config.getSnapshotEnabled() == null || !config.getSnapshotEnabled()) {
             return;
         }
 
