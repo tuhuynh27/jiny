@@ -50,7 +50,6 @@ public class Server {
         if (config == null || config.getHeartbeatEnabled() == null || !config.getHeartbeatEnabled()) {
             return;
         }
-
         Long heartbeatTimeout = config.getHeartbeatTimeout();
         if (heartbeatTimeout <= 0) {
             heartbeatTimeout = HEARTBEAT_TIMEOUT;

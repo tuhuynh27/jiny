@@ -26,7 +26,7 @@ public class ArgsHolder {
     }
 
     @SuppressWarnings("ReturnOfNull")
-    public String getArgVal(String name) throws Exception {
+    public String getArgVal(String name) {
         if (values.containsKey(name)) {
             return values.get(name);
         }
