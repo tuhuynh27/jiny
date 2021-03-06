@@ -1,9 +1,9 @@
 package com.jinyframework.keva.server.storage;
 
+import com.jinyframework.keva.store.NoHeapStore;
+import com.jinyframework.keva.store.NoHeapStoreManager;
 import com.jinyframework.keva.server.config.ConfigManager;
 import com.jinyframework.keva.server.core.ServerSocket;
-import com.jinyframework.keva.server.noheap.NoHeapStore;
-import com.jinyframework.keva.server.noheap.NoHeapStoreManager;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -24,7 +24,7 @@ public final class StorageFactory {
                 val heapSizeInMegabytes = ConfigManager.getConfig().getHeapSize();
                 db.createStore("Keva",
                         shouldPersist ? NoHeapStore.Storage.PERSISTED : NoHeapStore.Storage.IN_MEMORY,
-                        heapSizeInMegabytes);
+                        heapSizeInMegabytes, ConfigManager.getConfig().getSnapshotLocation());
                 noHeapStore = db.getStore("Keva");
             } catch (Exception ex) {
                 log.error(ex.getMessage(), ex);

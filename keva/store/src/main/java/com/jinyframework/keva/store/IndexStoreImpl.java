@@ -1,4 +1,4 @@
-package com.jinyframework.keva.internal;
+package com.jinyframework.keva.store;
 
 import lombok.extern.slf4j.Slf4j;
 
