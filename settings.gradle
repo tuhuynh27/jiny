@@ -4,6 +4,7 @@ include 'core'
 include 'middlewares:cors'
 include 'middlewares:jwt'
 include 'websocket'
+include 'keva:internal'
 include 'keva:server'
 include 'keva:client'
 
