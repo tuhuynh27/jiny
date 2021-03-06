@@ -1,7 +1,7 @@
 package com.jinyframework.keva.server.storage;
 
 import com.jinyframework.keva.server.config.ConfigManager;
-import com.jinyframework.keva.server.core.KevaSocket;
+import com.jinyframework.keva.server.core.ServerSocket;
 import com.jinyframework.keva.server.noheap.NoHeapStore;
 import com.jinyframework.keva.server.noheap.NoHeapStoreManager;
 import lombok.Setter;
@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public final class StorageFactory {
     private static NoHeapStore noHeapStore;
-    private static ConcurrentHashMap<String, KevaSocket> socketHashMap;
+    private static ConcurrentHashMap<String, ServerSocket> socketHashMap;
 
     public synchronized static NoHeapStore getNoHeapDBStore() {
         if (noHeapStore == null) {
@@ -36,7 +36,7 @@ public final class StorageFactory {
         return noHeapStore;
     }
 
-    public synchronized static ConcurrentHashMap<String, KevaSocket> getSocketHashMap() {
+    public synchronized static ConcurrentHashMap<String, ServerSocket> getSocketHashMap() {
         if (socketHashMap == null) {
             socketHashMap = new ConcurrentHashMap<>();
         }
