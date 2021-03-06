@@ -27,6 +27,7 @@ public final class StorageFactory {
                         heapSizeInMegabytes);
                 noHeapStore = db.getStore("Keva");
             } catch (Exception ex) {
+                log.error(ex.getMessage(), ex);
                 log.error("Cannot get noHeapDbStore");
                 System.exit(1);
             }

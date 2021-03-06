@@ -1,8 +1,10 @@
 package com.jinyframework.keva.server;
 
 import com.jinyframework.keva.server.config.ConfigHolder;
+import com.jinyframework.keva.server.config.ConfigManager;
 import com.jinyframework.keva.server.core.Server;
 import com.jinyframework.keva.server.util.SocketClient;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 
@@ -12,21 +14,25 @@ import static com.jinyframework.keva.server.util.PortUtil.getAvailablePort;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
+@Slf4j
 public class SnapshotServiceTest {
     static String host = "localhost";
 
     Server startServer(int port) throws Exception {
-        val server = new Server(ConfigHolder.builder()
+        val config = ConfigHolder.builder()
                 .hostname(host)
                 .port(port)
                 .snapshotEnabled(true)
                 .snapshotLocation("./")
-                .build());
+                .heapSize(8)
+                .build();
+        ConfigManager.setConfig(config);
+        val server = new Server(config);
         new Thread(() -> {
             try {
                 server.run();
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception ex) {
+                log.error(ex.getMessage(), ex);
                 System.exit(1);
             }
         }).start();

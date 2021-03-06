@@ -24,7 +24,8 @@ public final class Application {
         try {
             val config = ArgsParser.parse(args);
             log.info(config.toString());
-            val overrider = ConfigHolder.fromArgs(config);
+            // TODO: Check @blu
+            // val overrider = ConfigHolder.fromArgs(config);
 
             val configFilePath = config.getArgVal("f");
             if (configFilePath != null) {
