@@ -1,11 +1,5 @@
 [
   {
-    "name" : "com.sample.ColorConverter",
-    "allPublicConstructors": true,
-    "allPublicMethods": true,
-    "allDeclaredMethods": true
-  },
-  {
     "name": "ch.qos.logback.classic.pattern.DateConverter",
     "allDeclaredConstructors": true
   },
@@ -118,10 +112,6 @@
     "allDeclaredConstructors": true
   },
   {
-    "name": "ch.qos.logback.classic.pattern.LocalSequenceNumberConverter",
-    "allDeclaredConstructors": true
-  },
-  {
     "name": "ch.qos.logback.core.pattern.color.YellowCompositeConverter",
     "allDeclaredConstructors": true
   },
@@ -131,10 +121,6 @@
   },
   {
     "name": "ch.qos.logback.classic.pattern.color.HighlightingCompositeConverter",
-    "allDeclaredConstructors": true
-  },
-  {
-    "name": "ch.qos.logback.core.pattern.color.GrayCompositeConverter",
     "allDeclaredConstructors": true
   },
   {
@@ -172,5 +158,21 @@
   {
     "name": "java.util.HashMap",
     "allDeclaredConstructors": true
+  },
+  {
+    "name": "java.lang.Integer",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "java.lang.Long",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "java.lang.Boolean",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "com.jinyframework.keva.server.config.ConfigHolder",
+    "allDeclaredFields": true
   }
 ]
