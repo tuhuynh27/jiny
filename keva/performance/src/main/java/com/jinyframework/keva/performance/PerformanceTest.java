@@ -35,7 +35,7 @@ public class PerformanceTest {
         log.info("Test started for: " + noHeapStore.getClass());
 
         long averageTime = 0;
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 1_000_000; i++) {
             long startTime = System.nanoTime();
             ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
 
@@ -46,7 +46,7 @@ public class PerformanceTest {
                         noHeapStore.putString(x, String.valueOf(x));
 
                         // Get value
-                        // noHeapStore.getString(x);
+                        noHeapStore.getString(x);
                     }
                 });
             }
