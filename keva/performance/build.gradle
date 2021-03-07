@@ -11,7 +11,7 @@ dependencies {
     compile group: 'ch.qos.logback', name:'logback-core', version: '1.0.9'
 }
 
-applicationDefaultJvmArgs = ["-XX:MaxDirectMemorySize=4096m -Xmx4g"]
+applicationDefaultJvmArgs = ["-XX:MaxDirectMemorySize=4096m"]
 
 application {
     mainClassName = 'com.jinyframework.keva.performance.PerformanceTest'
