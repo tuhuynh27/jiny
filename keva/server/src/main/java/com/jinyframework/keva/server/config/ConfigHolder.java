@@ -3,6 +3,8 @@ package com.jinyframework.keva.server.config;
 import com.jinyframework.keva.server.util.ArgsHolder;
 import lombok.*;
 
+import java.lang.reflect.Field;
+import java.util.Objects;
 import java.util.Properties;
 
 @Builder(toBuilder = true)
@@ -52,9 +54,9 @@ public class ConfigHolder {
     }
 
     public static ConfigHolder fromArgs(@NonNull ArgsHolder args) throws Exception {
-        val configHolder = builder().build();
+        final ConfigHolder configHolder = builder().build();
 
-        val fields = ConfigHolder.class.getDeclaredFields();
+        final Field[] fields = ConfigHolder.class.getDeclaredFields();
         for (val field : fields) {
             if (field.isAnnotationPresent(CliProp.class)) {
                 val cliAnnotate = field.getAnnotation(CliProp.class);
@@ -83,13 +85,24 @@ public class ConfigHolder {
 
     public void merge(ConfigHolder overrideHolder) throws Exception {
         if (overrideHolder != null) {
-            for (val field : overrideHolder.getClass().getDeclaredFields()) {
-                val overrideVal = field.get(overrideHolder);
+            for (final Field field : overrideHolder.getClass().getDeclaredFields()) {
+                final Object overrideVal = field.get(overrideHolder);
                 if (overrideVal != null) {
                     field.set(this, overrideVal);
                 }
             }
         }
+    }
+    public static ConfigHolder makeDefaultConfig() {
+        return builder()
+                .snapshotLocation("")
+                .hostname("localhost")
+                .port(6767)
+                .heapSize(64)
+                .heartbeatEnabled(true)
+                .heartbeatTimeout(120000L)
+                .snapshotEnabled(true)
+                .build();
     }
 
     @Override
@@ -103,5 +116,19 @@ public class ConfigHolder {
                 ", snapshotLocation='" + snapshotLocation + '\'' +
                 ", heapSize=" + heapSize +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final ConfigHolder that = (ConfigHolder) o;
+        return Objects.equals(heartbeatEnabled, that.heartbeatEnabled) &&
+                Objects.equals(snapshotEnabled, that.snapshotEnabled) &&
+                Objects.equals(hostname, that.hostname) &&
+                Objects.equals(port, that.port) &&
+                Objects.equals(heartbeatTimeout, that.heartbeatTimeout) &&
+                Objects.equals(snapshotLocation, that.snapshotLocation) &&
+                Objects.equals(heapSize, that.heapSize);
     }
 }
