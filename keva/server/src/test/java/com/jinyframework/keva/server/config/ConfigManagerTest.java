@@ -1,6 +1,5 @@
 package com.jinyframework.keva.server.config;
 
-import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.junit.jupiter.api.Test;
@@ -50,10 +49,10 @@ class ConfigManagerTest {
             }
         }
 
-        @Cleanup
-        val fileWriter = new FileWriter(testPropPath);
-        fileWriter.write("port = 123123\nheartbeat_enabled = false");
-        fileWriter.flush();
+        try (val fileWriter = new FileWriter(testPropPath)) {
+            fileWriter.write("port = 123123\nheartbeat_enabled = false");
+            fileWriter.flush();
+        }
 
         final String[] args = {
                 "-f", testPropPath
@@ -77,10 +76,10 @@ class ConfigManagerTest {
             }
         }
 
-        @Cleanup
-        val fileWriter = new FileWriter(testPropPath);
-        fileWriter.write("port = 123123\nheartbeat_enabled = false");
-        fileWriter.flush();
+        try (val fileWriter = new FileWriter(testPropPath)) {
+            fileWriter.write("port = 123123\nheartbeat_enabled = false");
+            fileWriter.flush();
+        }
 
         final String[] args = {
                 "-f", testPropPath, "-p", "123"

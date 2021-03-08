@@ -1,7 +1,6 @@
 package com.jinyframework.keva.server.config;
 
 import com.jinyframework.keva.server.util.ArgsParser;
-import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
@@ -46,8 +45,9 @@ public final class ConfigManager {
             filePath = DEFAULT_FILE_PATH;
         }
         val props = new Properties();
-        @Cleanup val file = new FileInputStream(filePath);
-        props.load(file);
+        try (val file = new FileInputStream(filePath)) {
+            props.load(file);
+        }
 
         configHolder = ConfigHolder.fromProperties(props);
     }
