@@ -3,7 +3,6 @@ package com.jinyframework.keva.server.config;
 import com.jinyframework.keva.server.util.ArgsHolder;
 import lombok.*;
 
-import java.lang.reflect.Field;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -54,9 +53,9 @@ public class ConfigHolder {
     }
 
     public static ConfigHolder fromArgs(@NonNull ArgsHolder args) throws Exception {
-        final ConfigHolder configHolder = builder().build();
+        val configHolder = builder().build();
 
-        final Field[] fields = ConfigHolder.class.getDeclaredFields();
+        val fields = ConfigHolder.class.getDeclaredFields();
         for (val field : fields) {
             if (field.isAnnotationPresent(CliProp.class)) {
                 val cliAnnotate = field.getAnnotation(CliProp.class);
@@ -83,16 +82,6 @@ public class ConfigHolder {
         return clazz.getConstructor(new Class[]{String.class}).newInstance(s);
     }
 
-    public void merge(ConfigHolder overrideHolder) throws Exception {
-        if (overrideHolder != null) {
-            for (final Field field : overrideHolder.getClass().getDeclaredFields()) {
-                final Object overrideVal = field.get(overrideHolder);
-                if (overrideVal != null) {
-                    field.set(this, overrideVal);
-                }
-            }
-        }
-    }
     public static ConfigHolder makeDefaultConfig() {
         return builder()
                 .snapshotLocation("")
@@ -103,6 +92,17 @@ public class ConfigHolder {
                 .heartbeatTimeout(120000L)
                 .snapshotEnabled(true)
                 .build();
+    }
+
+    public void merge(ConfigHolder overrideHolder) throws Exception {
+        if (overrideHolder != null) {
+            for (val field : overrideHolder.getClass().getDeclaredFields()) {
+                val overrideVal = field.get(overrideHolder);
+                if (overrideVal != null) {
+                    field.set(this, overrideVal);
+                }
+            }
+        }
     }
 
     @Override
@@ -130,5 +130,10 @@ public class ConfigHolder {
                 Objects.equals(heartbeatTimeout, that.heartbeatTimeout) &&
                 Objects.equals(snapshotLocation, that.snapshotLocation) &&
                 Objects.equals(heapSize, that.heapSize);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(heartbeatEnabled, snapshotEnabled, hostname, port, heartbeatTimeout, snapshotLocation, heapSize);
     }
 }
