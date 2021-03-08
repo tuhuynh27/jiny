@@ -95,7 +95,7 @@ public class ConfigHolder {
     }
 
     public void merge(ConfigHolder overrideHolder) throws Exception {
-        if (overrideHolder != null) {
+        if (overrideHolder != null && !equals(overrideHolder)) {
             for (val field : overrideHolder.getClass().getDeclaredFields()) {
                 val overrideVal = field.get(overrideHolder);
                 if (overrideVal != null) {
