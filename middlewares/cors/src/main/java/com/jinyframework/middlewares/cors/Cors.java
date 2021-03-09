@@ -12,19 +12,28 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.jinyframework.middlewares.cors.Cors.Config.*;
+
 /**
  * Middleware to help handle Cross-Origin Resource Sharing
  * <p>
  * Specification: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
  */
 public final class Cors {
+    private static final String VARY_HEADERS = String.join(",", "Origin",
+            "Access-Control-Request-Method",
+            "Access-Control-Request-Headers");
+
+    private Cors() {
+    }
+
     /**
      * A configuration that allows "simple requests" for all origins.
      *
      * @return the config
      */
     public static Config allowDefault() {
-        return Config.defaultBuilder().build();
+        return withDefault();
     }
 
     /**
@@ -33,12 +42,12 @@ public final class Cors {
      * @return the config
      */
     public static Config allowAll() {
-        return Config.builder()
-                     .allowAllOrigins(true)
-                     .allowAllHeaders(true)
-                     .allowCredentials(false)
-                     .optionPass(false)
-                     .build();
+        return builder()
+                .allowAllOrigins(true)
+                .allowAllHeaders(true)
+                .allowCredentials(false)
+                .optionPass(false)
+                .build();
     }
 
     /**
@@ -57,7 +66,7 @@ public final class Cors {
         }
 
         if (config.allowHeaders.isEmpty()) {
-            builder.allowHeaders(Config.ALLOW_HEADERS_DEFAULT);
+            builder.allowHeaders(ALLOW_HEADERS_DEFAULT);
         } else if (config.allowHeaders.contains("*")) {
             builder.allowAllHeaders(true);
             builder.clearAllowHeaders();
@@ -66,13 +75,13 @@ public final class Cors {
         }
 
         if (config.allowMethods.isEmpty()) {
-            builder.allowMethods(Config.ALLOW_METHODS_DEFAULT);
+            builder.allowMethods(ALLOW_METHODS_DEFAULT);
         }
 
         val finalConfig = builder.build();
         return ctx -> {
             if (ctx.getMethod() == HttpMethod.OPTIONS
-                && !ctx.headerParam("Access-Control-Request-Method").isEmpty()) {
+                    && !ctx.headerParam("Access-Control-Request-Method").isEmpty()) {
                 handlePreflight(ctx, finalConfig);
                 if (finalConfig.optionPass) {
                     return HttpResponse.next();
@@ -86,10 +95,6 @@ public final class Cors {
         };
     }
 
-    private static final String VARY_HEADERS = String.join(",", "Origin",
-                                                          "Access-Control-Request-Method",
-                                                          "Access-Control-Request-Headers");
-
     private static void handlePreflight(Context ctx, @NonNull Config config) {
         val origin = ctx.headerParam("Origin");
 
@@ -101,12 +106,12 @@ public final class Cors {
 
         val reqMethod = ctx.headerParam("Access-Control-Request-Method");
         if (ctx.getMethod() != HttpMethod.OPTIONS
-            || !isAllowedMethod(reqMethod, config.getAllowMethods())) {
+                || !isAllowedMethod(reqMethod, config.getAllowMethods())) {
             return;
         }
 
         val reqHeaders = ctx.headerParam("Access-Control-Request-Headers")
-                            .split(",");
+                .split(",");
         if (!config.allowAllHeaders && !isAllowedHeaders(reqHeaders, config.allowHeaders)) {
             return;
         }
@@ -115,10 +120,10 @@ public final class Cors {
 
         if (!reqHeaders[0].isEmpty()) {
             ctx.putHeader("Access-Control-Allow-Headers", Stream.concat(Arrays.stream(reqHeaders),
-                                                                        Stream.of("Origin"))
-                                                                .distinct()
-                                                                .map(Util::normalizeHeader)
-                                                                .collect(Collectors.joining(",")));
+                    Stream.of("Origin"))
+                    .distinct()
+                    .map(Util::normalizeHeader)
+                    .collect(Collectors.joining(",")));
         } else {
             ctx.putHeader("Access-Control-Allow-Headers", String.join(",", config.allowHeaders));
         }
@@ -214,38 +219,38 @@ public final class Cors {
     @Getter
     @Builder(toBuilder = true)
     public static final class Config {
+        public static final List<String> ALLOW_HEADERS_DEFAULT = Stream.of("Origin", "Accept", "Content-Type",
+                "X-Requested-With")
+                .collect(Collectors.toList());
+        public static final List<String> ALLOW_METHODS_DEFAULT = Stream.of("GET", "POST", "HEAD").collect(
+                Collectors.toList());
         /**
          * Accept request from any origins.
          * Defaults to {@code false} but will be set to {@code true}
          * if {@link #allowOrigins} is empty or contains {@code "*"}.
-         * */
+         */
         private final boolean allowAllOrigins;
-
         /**
          * Accept request with any headers.
          * Defaults to {@code false} but will be set to {@code true}
          * if {@link #allowHeaders} contains {@code "*"}.
-         * */
+         */
         private final boolean allowAllHeaders;
-
         /**
          * If true, the credential header will be set in response to make Cookies available.
          */
         private final boolean allowCredentials;
-
         /**
          * Whitelisted headers that are made available for client to access.
          */
         @Singular
         private final List<String> exposeHeaders;
-
         /**
          * Whitelisted origins that the server will accept.
          * If list is empty, all origins are permitted.
          */
         @Singular
         private final List<String> allowOrigins;
-
         /**
          * Whitelisted methods that the server will accept.
          * If list is empty, it will be set to
@@ -253,7 +258,6 @@ public final class Cors {
          */
         @Singular
         private final List<String> allowMethods;
-
         /**
          * Whitelisted headers that the server will accept in a request.
          * {@code Origin} header will automatically be added as well.
@@ -263,44 +267,30 @@ public final class Cors {
          */
         @Singular
         private final List<String> allowHeaders;
-
         /**
          * Continue processing for OPTION preflight request. Defaults to {@code false}
          */
         private final boolean optionPass;
-
         /**
          * The maximum age (in seconds) of the cache duration for preflight responses.
          * Defaults is {@code 0} (header not set)
          */
         private final int maxAge;
 
-        public static final List<String> ALLOW_HEADERS_DEFAULT = Stream.of("Origin", "Accept", "Content-Type",
-                                                            "X-Requested-With")
-                                                        .collect(Collectors.toList());
-        public static final List<String> ALLOW_METHODS_DEFAULT = Stream.of("GET", "POST", "HEAD").collect(
-                Collectors.toList());
-
-        /**
-         * The type Config builder.
-         */
-        // Override anything if needed
-        public static class ConfigBuilder {
-        }
-
         /**
          * Default ConfigBuilder that allows "simple request" for all origins.
          *
          * @return the config builder
          */
-        public static ConfigBuilder defaultBuilder() {
+        public static Config withDefault() {
             return builder()
                     .allowAllOrigins(true)
                     .allowCredentials(false)
                     .allowMethods(ALLOW_METHODS_DEFAULT)
                     .allowHeaders(ALLOW_HEADERS_DEFAULT)
                     .optionPass(false)
-                    .maxAge(0);
+                    .maxAge(0)
+                    .build();
         }
     }
 }
