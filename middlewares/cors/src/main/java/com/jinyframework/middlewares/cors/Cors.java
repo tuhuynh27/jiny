@@ -33,7 +33,7 @@ public final class Cors {
      * @return the config
      */
     public static Config allowDefault() {
-        return defaultBuilder().build();
+        return withDefault();
     }
 
     /**
@@ -282,14 +282,15 @@ public final class Cors {
          *
          * @return the config builder
          */
-        public static ConfigBuilder defaultBuilder() {
+        public static Config withDefault() {
             return builder()
                     .allowAllOrigins(true)
                     .allowCredentials(false)
                     .allowMethods(ALLOW_METHODS_DEFAULT)
                     .allowHeaders(ALLOW_HEADERS_DEFAULT)
                     .optionPass(false)
-                    .maxAge(0);
+                    .maxAge(0)
+                    .build();
         }
     }
 }
