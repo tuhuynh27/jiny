@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.jinyframework.middlewares.cors.Cors.Config.*;
+
 /**
  * Middleware to help handle Cross-Origin Resource Sharing
  * <p>
@@ -31,7 +33,7 @@ public final class Cors {
      * @return the config
      */
     public static Config allowDefault() {
-        return Config.defaultBuilder().build();
+        return defaultBuilder().build();
     }
 
     /**
@@ -40,7 +42,7 @@ public final class Cors {
      * @return the config
      */
     public static Config allowAll() {
-        return Config.builder()
+        return builder()
                 .allowAllOrigins(true)
                 .allowAllHeaders(true)
                 .allowCredentials(false)
@@ -64,7 +66,7 @@ public final class Cors {
         }
 
         if (config.allowHeaders.isEmpty()) {
-            builder.allowHeaders(Config.ALLOW_HEADERS_DEFAULT);
+            builder.allowHeaders(ALLOW_HEADERS_DEFAULT);
         } else if (config.allowHeaders.contains("*")) {
             builder.allowAllHeaders(true);
             builder.clearAllowHeaders();
@@ -73,7 +75,7 @@ public final class Cors {
         }
 
         if (config.allowMethods.isEmpty()) {
-            builder.allowMethods(Config.ALLOW_METHODS_DEFAULT);
+            builder.allowMethods(ALLOW_METHODS_DEFAULT);
         }
 
         val finalConfig = builder.build();
