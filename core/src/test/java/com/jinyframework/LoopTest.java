@@ -34,7 +34,7 @@ public class LoopTest {
         server.stop();
     }
 
-    @RepeatedTest(10)
+    @RepeatedTest(2)
     @DisplayName("Transformer")
     void transformer() throws IOException, InterruptedException {
         val res = HttpClient.builder()
