@@ -32,8 +32,8 @@ public final class HttpClient {
      * @throws IOException the io exception
      */
     public ResponseObject perform() throws IOException {
-        val url = new URL(this.url);
-        val conn = (HttpURLConnection) url.openConnection();
+        val urlObj = new URL(url);
+        val conn = (HttpURLConnection) urlObj.openConnection();
         conn.setRequestMethod(method);
         conn.setRequestProperty("Content-Type", "application/json; " + StandardCharsets.UTF_8);
         conn.setRequestProperty("Accept", "application/json");
@@ -49,41 +49,43 @@ public final class HttpClient {
 
         if (body != null && !body.isEmpty()) {
             conn.setDoOutput(true);
-            @Cleanup OutputStream os = conn.getOutputStream();
-            val input = body.getBytes(StandardCharsets.UTF_8);
-            os.write(input, 0, input.length);
-            os.flush();
+            try (OutputStream os = conn.getOutputStream()) {
+                val input = body.getBytes(StandardCharsets.UTF_8);
+                os.write(input, 0, input.length);
+                os.flush();
+            }
         }
 
         val responseStatus = conn.getResponseCode();
         val responseStatusText = conn.getResponseMessage();
         val isError = responseStatus >= 400;
 
-        val headers = new HashMap<String, String>();
+        val resHeaders = new HashMap<String, String>();
         for (val entry : conn.getHeaderFields().entrySet()) {
-            headers.put(entry.getKey(), String.join("; ", entry.getValue()));
+            resHeaders.put(entry.getKey(), String.join("; ", entry.getValue()));
         }
 
-        @Cleanup val in = new BufferedReader(
-                new InputStreamReader(!isError ? conn.getInputStream() : conn.getErrorStream()));
-        val responseStringArr = new ArrayList<String>();
-        var decodedString = "";
-        while ((decodedString = in.readLine()) != null) {
-            responseStringArr.add(decodedString);
+        final ArrayList<String> responseStringArr;
+        try (val in = new BufferedReader(
+                new InputStreamReader(!isError ? conn.getInputStream() : conn.getErrorStream()))) {
+            responseStringArr = new ArrayList<>();
+            var decodedString = "";
+            while ((decodedString = in.readLine()) != null) {
+                responseStringArr.add(decodedString);
+            }
+            val sb = new StringBuilder();
+            for (val s : responseStringArr) {
+                sb.append(s);
+            }
+
+            conn.disconnect();
+
+            return ResponseObject.builder()
+                    .status(responseStatus)
+                    .statusText(responseStatusText)
+                    .headers(resHeaders)
+                    .body(sb.toString()).build();
         }
-
-        val sb = new StringBuilder();
-        for (val s : responseStringArr) {
-            sb.append(s);
-        }
-
-        conn.disconnect();
-
-        return ResponseObject.builder()
-                .status(responseStatus)
-                .statusText(responseStatusText)
-                .headers(headers)
-                .body(sb.toString()).build();
     }
 
     /**

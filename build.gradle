@@ -7,6 +7,7 @@ subprojects {
     apply plugin: 'java-library'
     apply plugin: 'signing'
     apply plugin: 'maven-publish'
+    apply plugin: 'jacoco'
 
     group 'com.jinyframework'
     version '0.3.3'
@@ -42,6 +43,18 @@ subprojects {
             }
         }
     }
+
+    jacocoTestReport {
+        getExecutionData().setFrom(fileTree(buildDir).include("/jacoco/*.exec"))
+        reports {
+            xml.enabled true
+        }
+    }
+
+    test {
+        finalizedBy jacocoTestReport
+    }
+
 }
 
 sonarqube {

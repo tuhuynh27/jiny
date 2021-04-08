@@ -1,23 +1,19 @@
 package com.jinyframework.middlewares.cors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import com.jinyframework.core.AbstractRequestBinder.Context;
+import com.jinyframework.core.utils.ParserUtils.HttpMethod;
+import com.jinyframework.middlewares.cors.Cors.Config;
+import lombok.val;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.net.HttpURLConnection;
 import java.util.HashMap;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import com.jinyframework.core.AbstractRequestBinder.Context;
-import com.jinyframework.core.utils.ParserUtils.HttpMethod;
-import com.jinyframework.middlewares.cors.Cors.Config;
-
-import lombok.val;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("middlewares.cors.Cors")
-public class CorsTest {
+class CorsTest {
     static final String uri = "http://localhost";
 
     @Test
@@ -127,18 +123,18 @@ public class CorsTest {
     @DisplayName("Request + Allow headers")
     void requestAllowHeaders() throws Exception {
         val handler = Cors.newHandler(Config.builder()
-                                            .allowAllOrigins(false)
-                                            .allowOrigin(uri)
-                                            .allowHeader("Bar")
-                                            .build());
+                .allowAllOrigins(false)
+                .allowOrigin(uri)
+                .allowHeader("Bar")
+                .build());
         val reqHeaders = new HashMap<String, String>();
         reqHeaders.put("Origin".toLowerCase(), uri);
-        reqHeaders.put("Access-Control-Request-Method".toLowerCase(),"GET");
-        reqHeaders.put("Access-Control-Request-Headers".toLowerCase(),"Bar");
+        reqHeaders.put("Access-Control-Request-Method".toLowerCase(), "GET");
+        reqHeaders.put("Access-Control-Request-Headers".toLowerCase(), "Bar");
         val successCtx = Context.builder()
-                                .method(HttpMethod.OPTIONS)
-                                .header(reqHeaders)
-                                .responseHeaders(new HashMap<>()).build();
+                .method(HttpMethod.OPTIONS)
+                .header(reqHeaders)
+                .responseHeaders(new HashMap<>()).build();
         val successRes = handler.handleFunc(successCtx);
         assertTrue(successCtx.getResponseHeaders().get("Access-Control-Allow-Headers").contains("Bar"));
         assertEquals(successRes.getHttpStatusCode(), HttpURLConnection.HTTP_NO_CONTENT);
@@ -148,16 +144,16 @@ public class CorsTest {
     @DisplayName("Default settings for empty config fields")
     void defaultSettingEmptyFields() throws Exception {
         val handler = Cors.newHandler(Config.builder()
-                                            .allowOrigin(uri)
-                                            .build());
+                .allowOrigin(uri)
+                .build());
         val reqHeaders = new HashMap<String, String>();
         reqHeaders.put("Origin".toLowerCase(), uri);
-        reqHeaders.put("Access-Control-Request-Method".toLowerCase(),"HEAD");
+        reqHeaders.put("Access-Control-Request-Method".toLowerCase(), "HEAD");
         val ctx = Context.builder()
-                         .method(HttpMethod.OPTIONS)
-                         .header(reqHeaders)
-                         .responseHeaders(new HashMap<>())
-                         .build();
+                .method(HttpMethod.OPTIONS)
+                .header(reqHeaders)
+                .responseHeaders(new HashMap<>())
+                .build();
         handler.handleFunc(ctx);
         assertTrue(ctx.getResponseHeaders().get("Access-Control-Allow-Headers").contains("Content-Type"));
         assertTrue(ctx.getResponseHeaders().get("Access-Control-Allow-Headers").contains("Origin"));

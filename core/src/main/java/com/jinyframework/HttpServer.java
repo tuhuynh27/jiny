@@ -157,11 +157,7 @@ public final class HttpServer extends AbstractHttpRouter<Handler> {
                             new InetSocketAddress(serverHost, serverPort) :
                             new InetSocketAddress(InetAddress.getLoopbackAddress(), serverPort);
             serverSocket.bind(socketAddress);
-            if (executor == null) {
-                log.info("Started Jiny HTTP Server on " + serverPort + " using " + maxThread + " threads at max");
-            } else {
-                log.info("Started Jiny HTTP Server on " + serverPort + " using custom thread pool");
-            }
+            log.info("Started Jiny HTTP Server on " + serverPort + " using " + maxThread + " threads at max");
             while (!Thread.interrupted()) {
                 val clientSocket = serverSocket.accept();
                 executor.execute(

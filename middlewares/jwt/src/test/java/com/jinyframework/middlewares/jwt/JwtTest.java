@@ -20,7 +20,7 @@ import static com.jinyframework.core.AbstractRequestBinder.HttpResponse.reject;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("middlewares.jwt.Jwt")
-public class JwtTest {
+class JwtTest {
     private static final HttpServer server = HttpServer.port(1235);
     private static final String url = "http://localhost:1235";
 

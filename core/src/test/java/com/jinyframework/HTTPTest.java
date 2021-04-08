@@ -41,13 +41,15 @@ public abstract class HTTPTest {
         val res = HttpClient.builder()
                 .url(url + "/immediate").method("GET")
                 .build().perform();
-        assertEquals(res.getBody(),"Foo");
+        assertEquals(res.getBody(), "Foo");
     }
 
-    // Temporary disable: CI error
-    // @Test
-    // @DisplayName("Transformer")
+    @Test
+    @DisplayName("Transformer")
     void transformer() throws IOException {
+        // Reason for failing on CI still not known
+        if (isCI) return;
+
         val res = HttpClient.builder()
                 .url(url + "/transform").method("POST").body("transform")
                 .build().perform();
@@ -158,19 +160,19 @@ public abstract class HTTPTest {
         val hasOk = HttpClient.builder()
                 .url(url + "/hasCase").method("GET")
                 .build().perform();
-        assertEquals(200,hasOk.getStatus());
+        assertEquals(200, hasOk.getStatus());
         val hasFail = HttpClient.builder()
                 .url(url + "/hascase").method("GET")
                 .build().perform();
-        assertEquals(404,hasFail.getStatus());
+        assertEquals(404, hasFail.getStatus());
         val nonOk = HttpClient.builder()
                 .url(url + "/noncase").method("GET")
                 .build().perform();
-        assertEquals(200,nonOk.getStatus());
+        assertEquals(200, nonOk.getStatus());
         val nonFail = HttpClient.builder()
                 .url(url + "/nonCase").method("GET")
                 .build().perform();
-        assertEquals(404,nonFail.getStatus());
+        assertEquals(404, nonFail.getStatus());
     }
 
     @Test
