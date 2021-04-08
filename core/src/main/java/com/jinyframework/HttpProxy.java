@@ -189,6 +189,7 @@ public final class HttpProxy {
                         val endpoint = endpointMap.get(matchedKey);
                         val serverMetadata = endpoint.split(":");
 
+                        @Cleanup
                         val serverSocketChannel = AsynchronousSocketChannel.open(group);
                         serverSocketChannel.connect(new InetSocketAddress(serverMetadata[0], Integer.parseInt(serverMetadata[1])), null, new CompletionHandler<Void, Object>() {
                             @Override
@@ -216,6 +217,7 @@ public final class HttpProxy {
                                                         log.error(e.getMessage(), e);
                                                         byteBuffer.clear();
                                                         clientSocketChannel.close();
+                                                        serverSocketChannel.close();
                                                         promise.complete(false);
                                                     }
                                                 });
