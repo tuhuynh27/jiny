@@ -25,11 +25,19 @@ a shared way.
 
 ### Use embedded in app as a library:
 
-`build.gradle`
+Include this to `build.gradle`
 
 ```groovy
 dependencies {
     compile group: 'com.jinyframework', name: 'keva-store', version: '0.3.4'
+}
+```
+
+Or download .jar file [here](https://github.com/tuhuynh27/jiny/raw/master/keva/builds/jar/keva-store.jar), move that .jar file to `./libs` and include this to `build.gradle`:
+
+```groovy
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
 }
 ```
 
