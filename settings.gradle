@@ -4,10 +4,6 @@ include 'core'
 include 'middlewares:cors'
 include 'middlewares:jwt'
 include 'websocket'
-include 'keva:store'
-include 'keva:performance'
-include 'keva:server'
-include 'keva:client'
 
 // Test only (with gitignore)
 include 'testproject'
