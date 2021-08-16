@@ -1,7 +1,5 @@
-<p>
-    <a href="https://jinyframework.com" target="_blank">
-        <img alt="Jiny Framework" src="https://i.imgur.com/viYCs8l.png" />
-    </a>
+<p align="center">
+  <img width="150" src="https://i.imgur.com/OpG00Ct.png">
 </p>
 
 ![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/tuhuynh27/jiny/Java%20CI%20runner/master?label=build&style=flat-square)
